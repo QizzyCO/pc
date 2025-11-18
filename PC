@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <style>
+        .btn-buy {
+            background-color: #1d3557;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 15px;
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>halo</h1>
+    <div class="container">
+        <a href="file:///C:/Users/Personal/Documents/pc.html" class="btn-buy">Beli Sekarang</a>
+    </div>
+   
+   <img src="https://www.catster.com/wp-content/uploads/2023/11/Ginger-cat-sitting-in-the-loaf-position-on-the-floor_haru_Shutterstock-800x534.jpg.webp">
+</body>
+</html>
