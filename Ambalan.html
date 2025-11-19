@@ -123,8 +123,8 @@
     <img id="detailImg" src="https://picsum.photos/seed/1/800/600" alt="gambar produk" />
     <h3 id="detailTitle">Nama Produk</h3>
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><div class="price" id="detailPrice">Rp0</div><div class="badge">Terlaris</div></div>
-    <p id="detailDesc" style="color:var(--muted)">Deskripsi singkat produk akan muncul di sini.</p>
-    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn primary">Beli Sekarang</button><button class="btn" onclick="addToCart()">Tambah ke Keranjang</button></div>
+    <p id="detailDesc" style="color:var(--muted)">pelaksana : Dimas.</p>
+    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn primary">Masukkan Wishlist</button><button class="btn" onclick="addToCart()">Ikuti</button></div>
   </div>
 
   <script>
@@ -149,11 +149,11 @@
         el.innerHTML = `
           <img src="${p.img}" alt="${p.title}" />
           <h3>${p.title}</h3>
-          <div style="display:flex;justify-content:space-between;align-items:center"><div class="price">${p.price}</div><div style="color:var(--muted);font-size:13px">Stok: ${Math.floor(Math.random()*50)+1}</div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><div class="price">${p.price}</div><div style="color:var(--muted);font-size:13px">Pengikut: ${Math.floor(Math.random()*50)+1}</div></div>
           <p style="color:var(--muted);margin:6px 0 0 0">${p.desc}</p>
           <div class="actions">
             <button class="btn" onclick="openDetail(${p.id})">Lihat</button>
-            <button class="btn primary" onclick="buyNow(${p.id})">Beli</button>
+            <button class="btn primary" onclick="buyNow(${p.id})">Ikuti</button>
           </div>
         `
         grid.appendChild(el)
@@ -176,10 +176,10 @@
       document.getElementById('detail').ariaHidden = 'true'
     }
     function buyNow(id){
-      alert('Fungsi Beli untuk produk ID: '+id+' (hanya demo)')
+      alert('Telah ditambahkan ke wishlist: '+id+' ')
     }
     function addToCart(){
-      alert('Produk ditambahkan ke keranjang (demo)')
+      alert('Terima Kasih Partisipasinya(⁠≧⁠▽⁠≦⁠)')
     }
 
     // pencarian sederhana
@@ -198,7 +198,7 @@
           <p style="color:var(--muted);margin:6px 0 0 0">${p.desc}</p>
           <div class="actions">
             <button class="btn" onclick="openDetail(${p.id})">Lihat</button>
-            <button class="btn primary" onclick="buyNow(${p.id})">Beli</button>
+            <button class="btn primary" onclick="buyNow(${p.id})">Ikuti</button>
           </div>
         `
         grid.appendChild(el)
