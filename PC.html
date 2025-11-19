@@ -1,26 +1,212 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-    <style>
-        .btn-buy {
-            background-color: #1d3557;
-            color: white;
-            padding: 12px 20px;
-            text-decoration: none;
-            border-radius: 8px;
-            display: inline-block;
-            margin-top: 15px;
-    </style>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Toko Produk — Halaman Scroll</title>
+  <style>
+    :root{
+      --bg:#0f172a; --card:#ffffff; --muted:#64748b; --accent:#0ea5e9;
+      --max-width:1100px;
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; background:linear-gradient(180deg,#f8fafc 0%, #eef2ff 100%); color:#0f172a; -webkit-font-smoothing:antialiased}
+
+    /* Header */
+    header{position:sticky;top:0;backdrop-filter:blur(6px);background:rgba(255,255,255,0.7);box-shadow:0 2px 6px rgba(12,12,12,0.06);z-index:40}
+    .nav{max-width:var(--max-width);margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px}
+    .brand{font-weight:700;font-size:18px;color:var(--accent)}
+    .search{flex:1}
+    .search input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #e6eef8}
+
+    /* Hero */
+    .hero{max-width:var(--max-width);margin:28px auto;padding:36px 20px;display:grid;grid-template-columns:1fr 420px;gap:24px;align-items:center}
+    .hero-card{background:linear-gradient(180deg,#fff 0,#f8fafc 100%);padding:28px;border-radius:16px;box-shadow:0 8px 30px rgba(19,19,19,0.06)}
+    .hero h1{margin:0;font-size:28px}
+    .hero p{color:var(--muted);margin-top:10px}
+    .cta{display:inline-block;margin-top:16px;padding:10px 16px;border-radius:12px;background:var(--accent);color:white;text-decoration:none}
+
+    /* Product list */
+    .products{max-width:var(--max-width);margin:12px auto;padding:8px 20px 80px 20px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+    .card{background:white;border-radius:14px;padding:12px;box-shadow:0 6px 20px rgba(16,24,40,0.06);display:flex;flex-direction:column;gap:10px}
+    .card img{width:100%;height:180px;object-fit:cover;border-radius:10px}
+    .card h3{margin:0;font-size:16px}
+    .price{font-weight:700;color:#0f172a}
+    .badge{background:#eef2ff;color:var(--accent);padding:6px 8px;border-radius:8px;font-size:12px}
+    .actions{display:flex;gap:8px;margin-top:auto}
+    .btn{flex:1;padding:8px;border-radius:10px;border:1px solid #e6eef8;background:white;cursor:pointer}
+    .btn.primary{background:var(--accent);color:white;border:none}
+
+    /* Product detail strip - anchored at left on wide screens */
+    .detail-strip{position:fixed;right:18px;bottom:18px;width:360px;max-height:70vh;overflow:auto;background:white;border-radius:14px;padding:14px;box-shadow:0 18px 40px rgba(2,6,23,0.12);display:none}
+    .detail-strip.open{display:block}
+    .detail-strip img{width:100%;height:220px;object-fit:cover;border-radius:10px}
+
+    /* Sections for long scroll */
+    section{max-width:var(--max-width);margin:36px auto;padding:12px 20px}
+    .section-title{display:flex;align-items:center;justify-content:space-between}
+
+    footer{padding:36px 20px;text-align:center;color:var(--muted)}
+
+    /* Responsive */
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr;}
+      .detail-strip{position:static;width:auto;max-height:none;margin:12px 20px;}
+    }
+
+  </style>
 </head>
 <body>
-    <h1>halo</h1>
-    <div class="container">
-        <a href="file:///C:/Users/Personal/Documents/pc.html" class="btn-buy">Beli Sekarang</a>
+  <header>
+    <div class="nav">
+      <div class="brand">ASIS Store</div>
+      <div class="search"><input id="q" placeholder="Cari produk..." /></div>
+      <div><button onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})">Hubungi</button></div>
     </div>
-   
-   <img src="https://www.catster.com/wp-content/uploads/2023/11/Ginger-cat-sitting-in-the-loaf-position-on-the-floor_haru_Shutterstock-800x534.jpg.webp">
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="hero-card">
+        <h1>Produk Terbaru & Laris</h1>
+        <p>Temukan pilihan HP, aksesoris, dan perangkat terbaru. Gulir ke bawah untuk melihat katalog lengkap, fitur produk, dan ulasan pengguna.</p>
+        <a class="cta" href="#products">Lihat Produk</a>
+
+        <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap">
+          <div style="background:#fff1f2;border-radius:10px;padding:8px 10px">Gratis ongkir</div>
+          <div style="background:#eef2ff;border-radius:10px;padding:8px 10px">Garansi 1 tahun</div>
+          <div style="background:#ecfdf5;border-radius:10px;padding:8px 10px">Pembayaran aman</div>
+        </div>
+      </div>
+
+      <aside>
+        <div style="background:linear-gradient(180deg,#0ea5e9,#7dd3fc);color:white;padding:18px;border-radius:16px">
+          <h3>Penawaran Spesial</h3>
+          <p>Diskon hingga 30% untuk pembelian pertama. Sampai persediaan habis.</p>
+          <div style="margin-top:10px"><strong>Gunakan kode:</strong> ASIS30</div>
+        </div>
+      </aside>
+    </div>
+
+    <section id="products" class="products">
+      <div class="section-title"><h2>Semua Produk</h2><div style="color:var(--muted)">Menampilkan 12 produk</div></div>
+      <div class="grid" id="productGrid">
+        <!-- Produk akan di-render lewat JS -->
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>Kenapa Memilih Kami</h2><div style="color:var(--muted)">Keunggulan layanan</div></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:14px">
+        <div style="background:white;padding:14px;border-radius:12px;box-shadow:0 8px 30px rgba(16,24,40,0.04)"><h4>Asli & Bergaransi</h4><p style="color:var(--muted)">Produk resmi dengan garansi pabrik.</p></div>
+        <div style="background:white;padding:14px;border-radius:12px;box-shadow:0 8px 30px rgba(16,24,40,0.04)"><h4>Pengiriman Cepat</h4><p style="color:var(--muted)">Kirim hari yang sama untuk area tertentu.</p></div>
+        <div style="background:white;padding:14px;border-radius:12px;box-shadow:0 8px 30px rgba(16,24,40,0.04)"><h4>Layanan Pelanggan</h4><p style="color:var(--muted)">Support 24/7 lewat chat.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>Ulasan Pelanggan</h2><div style="color:var(--muted)">Apa kata mereka</div></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:14px">
+        <blockquote style="background:white;padding:14px;border-radius:12px;box-shadow:0 6px 20px rgba(12,12,12,0.06)">"Pengiriman cepat, HP-nya oke kualitasnya." — Fitria</blockquote>
+        <blockquote style="background:white;padding:14px;border-radius:12px;box-shadow:0 6px 20px rgba(12,12,12,0.06)">"Harga bersaing dan layanan ramah." — Budi</blockquote>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 ASIS Store • Dibuat untuk demo
+    </footer>
+  </main>
+
+  <div id="detail" class="detail-strip" aria-hidden="true">
+    <button style="float:right;border:none;background:transparent;font-size:18px;cursor:pointer" onclick="closeDetail()">✕</button>
+    <img id="detailImg" src="https://picsum.photos/seed/1/800/600" alt="gambar produk" />
+    <h3 id="detailTitle">Nama Produk</h3>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><div class="price" id="detailPrice">Rp0</div><div class="badge">Terlaris</div></div>
+    <p id="detailDesc" style="color:var(--muted)">Deskripsi singkat produk akan muncul di sini.</p>
+    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn primary">Beli Sekarang</button><button class="btn" onclick="addToCart()">Tambah ke Keranjang</button></div>
+  </div>
+
+  <script>
+    const products = [];
+    // buat 12 produk sampel
+    for(let i=1;i<=12;i++){
+      products.push({
+        id:i,
+        title:`HP Model ${i}`,
+        price: (Math.floor(1.5e6 + Math.random()*5e6)).toLocaleString('id-ID',{style:'currency',currency:'IDR'}),
+        img:`https://picsum.photos/seed/product${i}/600/400`,
+        desc:`Spesifikasi singkat untuk HP Model ${i}. Layar lebar, baterai tahan lama, kamera bagus.`
+      })
+    }
+
+    const grid = document.getElementById('productGrid')
+    function render(){
+      grid.innerHTML = ''
+      products.forEach(p=>{
+        const el = document.createElement('div')
+        el.className = 'card'
+        el.innerHTML = `
+          <img src="${p.img}" alt="${p.title}" />
+          <h3>${p.title}</h3>
+          <div style="display:flex;justify-content:space-between;align-items:center"><div class="price">${p.price}</div><div style="color:var(--muted);font-size:13px">Stok: ${Math.floor(Math.random()*50)+1}</div></div>
+          <p style="color:var(--muted);margin:6px 0 0 0">${p.desc}</p>
+          <div class="actions">
+            <button class="btn" onclick="openDetail(${p.id})">Lihat</button>
+            <button class="btn primary" onclick="buyNow(${p.id})">Beli</button>
+          </div>
+        `
+        grid.appendChild(el)
+      })
+    }
+
+    function openDetail(id){
+      const p = products.find(x=>x.id===id)
+      document.getElementById('detailImg').src = p.img
+      document.getElementById('detailTitle').textContent = p.title
+      document.getElementById('detailPrice').textContent = p.price
+      document.getElementById('detailDesc').textContent = p.desc + ' (Deskripsi lengkap bisa ditambahkan di sini)'
+      document.getElementById('detail').classList.add('open')
+      document.getElementById('detail').ariaHidden = 'false'
+      // agar pengguna melihat strip, scroll ke bawah sedikit
+      window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})
+    }
+    function closeDetail(){
+      document.getElementById('detail').classList.remove('open')
+      document.getElementById('detail').ariaHidden = 'true'
+    }
+    function buyNow(id){
+      alert('Fungsi Beli untuk produk ID: '+id+' (hanya demo)')
+    }
+    function addToCart(){
+      alert('Produk ditambahkan ke keranjang (demo)')
+    }
+
+    // pencarian sederhana
+    document.getElementById('q').addEventListener('input', function(e){
+      const q = e.target.value.toLowerCase()
+      const filtered = products.filter(p=>p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q))
+      // render filtered
+      grid.innerHTML = ''
+      filtered.forEach(p=>{
+        const el = document.createElement('div')
+        el.className = 'card'
+        el.innerHTML = `
+          <img src="${p.img}" alt="${p.title}" />
+          <h3>${p.title}</h3>
+          <div style="display:flex;justify-content:space-between;align-items:center"><div class="price">${p.price}</div><div style="color:var(--muted);font-size:13px">Stok: ${Math.floor(Math.random()*50)+1}</div></div>
+          <p style="color:var(--muted);margin:6px 0 0 0">${p.desc}</p>
+          <div class="actions">
+            <button class="btn" onclick="openDetail(${p.id})">Lihat</button>
+            <button class="btn primary" onclick="buyNow(${p.id})">Beli</button>
+          </div>
+        `
+        grid.appendChild(el)
+      })
+    })
+
+    // initial render
+    render()
+  </script>
 </body>
 </html>
