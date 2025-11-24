@@ -131,13 +131,30 @@
     const products = [];
     // buat 12 produk sampel
     for(let i=1;i<=12;i++){
-      products.push({
-        id:i,
-        title:`PROGRAM ${i}`,
-        price: (Math.floor(1.5e6 + Math.random()*5e6)).toLocaleString('id-ID',{style:'currency',currency:'IDR'}),
-        img:`https://picsum.photos/seed/product${i}/600/400`,
-        desc:`Informasi singkat untuk Program ${i}. aman, nyaman, seru, menantang.`
-      })
+  const products = [
+  {
+    id: 1,
+    title: "PROGRAM 1",
+    price: "Rp1.500.000",
+    img: "https://www.freepik.com/free-photos-vectors/cat",   // gambar untuk kartu 1
+    desc: "Ini adalah program pertama."
+  },
+  {
+    id: 2,
+    title: "PROGRAM 2",
+    price: "Rp2.000.000",
+    img: "https://imgs.search.brave.com/tLRx-MkTU7_HPc_4A30vsINJYwL5wbWnfwuB7UJAF_U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMucGV4ZWxzLmNv/bS9waG90b3MvMzc3/NzYyMi9wZXhlbHMt/cGhvdG8tMzc3NzYy/Mi5qcGVnP2F1dG89/Y29tcHJlc3MmY3M9/dGlueXNyZ2ImZHBy/PTEmdz01MDA",   // gambar untuk kartu 2
+    desc: "Ini adalah program kedua."
+  },
+  {
+    id: 3,
+    title: "PROGRAM 3",
+    price: "Rp2.500.000",
+    img: "https://imgs.search.brave.com/P7WQdimSt6545tE5saXJDj-72JnLjpA-0-mvjPv6Ie0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9wbHVz/LnVuc3BsYXNoLmNv/bS9wcmVtaXVtX3Bo/b3RvLTE2NzcxODE3/MjkxNjMtMzNlNmI1/OWQ1YzhmP2ZtPWpw/ZyZxPTYwJnc9MzAw/MCZpeGxpYj1yYi00/LjEuMCZpeGlkPU0z/d3hNakEzZkRCOE1I/eHpaV0Z5WTJoOE1U/TjhmR05oZEh4bGJu/d3dmSHd3Zkh4OE1B/PT0",   // gambar untuk kartu 3
+    desc: "Ini adalah program ketiga."
+  }
+];
+
     }
 
     const grid = document.getElementById('productGrid')
