@@ -128,102 +128,87 @@
   </div>
 
   <script>
-    const products = [];
-    // buat 12 produk sampel
-    for(let i=1;i<=12;i++){
+  // DATA PRODUK
   const products = [
-  {
-    id: 1,
-    title: "PROGRAM 1",
-    price: "Rp1.500.000",
-    img: "https://www.freepik.com/free-photos-vectors/cat",   // gambar untuk kartu 1
-    desc: "Ini adalah program pertama."
-  },
-  {
-    id: 2,
-    title: "PROGRAM 2",
-    price: "Rp2.000.000",
-    img: "https://imgs.search.brave.com/tLRx-MkTU7_HPc_4A30vsINJYwL5wbWnfwuB7UJAF_U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMucGV4ZWxzLmNv/bS9waG90b3MvMzc3/NzYyMi9wZXhlbHMt/cGhvdG8tMzc3NzYy/Mi5qcGVnP2F1dG89/Y29tcHJlc3MmY3M9/dGlueXNyZ2ImZHBy/PTEmdz01MDA",   // gambar untuk kartu 2
-    desc: "Ini adalah program kedua."
-  },
-  {
-    id: 3,
-    title: "PROGRAM 3",
-    price: "Rp2.500.000",
-    img: "https://imgs.search.brave.com/P7WQdimSt6545tE5saXJDj-72JnLjpA-0-mvjPv6Ie0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9wbHVz/LnVuc3BsYXNoLmNv/bS9wcmVtaXVtX3Bo/b3RvLTE2NzcxODE3/MjkxNjMtMzNlNmI1/OWQ1YzhmP2ZtPWpw/ZyZxPTYwJnc9MzAw/MCZpeGxpYj1yYi00/LjEuMCZpeGlkPU0z/d3hNakEzZkRCOE1I/eHpaV0Z5WTJoOE1U/TjhmR05oZEh4bGJu/d3dmSHd3Zkh4OE1B/PT0",   // gambar untuk kartu 3
-    desc: "Ini adalah program ketiga."
+    {
+      id: 1,
+      title: "PROGRAM 1",
+      price: "Rp1.500.000",
+      img: "https://picsum.photos/id/1011/600/400",
+      desc: "Ini adalah program pertama."
+    },
+    {
+      id: 2,
+      title: "PROGRAM 2",
+      price: "Rp2.000.000",
+      img: "https://picsum.photos/id/1025/600/400",
+      desc: "Ini adalah program kedua."
+    },
+    {
+      id: 3,
+      title: "PROGRAM 3",
+      price: "Rp2.500.000",
+      img: "https://picsum.photos/id/1040/600/400",
+      desc: "Ini adalah program ketiga."
+    }
+  ];
+
+  const grid = document.getElementById('productGrid');
+
+  // RENDER PRODUK KE GRID
+  function render(list = products) {
+    grid.innerHTML = "";
+    list.forEach(p => {
+      const el = document.createElement("div");
+      el.className = "card";
+      el.innerHTML = `
+        <img src="${p.img}" alt="${p.title}">
+        <h3>${p.title}</h3>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="price">${p.price}</div>
+          <div style="color:var(--muted);font-size:13px">Pengikut: ${Math.floor(Math.random()*50)+1}</div>
+        </div>
+        <p style="color:var(--muted);margin-top:6px">${p.desc}</p>
+
+        <div class="actions">
+          <button class="btn" onclick="openDetail(${p.id})">Lihat</button>
+          <button class="btn primary" onclick="buyNow(${p.id})">Ikuti</button>
+        </div>
+      `;
+      grid.appendChild(el);
+    });
   }
-];
 
-    }
+  // DETAIL PRODUK
+  function openDetail(id) {
+    const p = products.find(x => x.id === id);
+    document.getElementById("detailImg").src = p.img;
+    document.getElementById("detailTitle").textContent = p.title;
+    document.getElementById("detailPrice").textContent = p.price;
+    document.getElementById("detailDesc").textContent = p.desc;
+    document.getElementById("detail").classList.add("open");
+  }
 
-    const grid = document.getElementById('productGrid')
-    function render(){
-      grid.innerHTML = ''
-      products.forEach(p=>{
-        const el = document.createElement('div')
-        el.className = 'card'
-        el.innerHTML = `
-          <img src="${p.img}" alt="${p.title}" />
-          <h3>${p.title}</h3>
-          <div style="display:flex;justify-content:space-between;align-items:center"><div class="price">${p.price}</div><div style="color:var(--muted);font-size:13px">Pengikut: ${Math.floor(Math.random()*50)+1}</div></div>
-          <p style="color:var(--muted);margin:6px 0 0 0">${p.desc}</p>
-          <div class="actions">
-            <button class="btn" onclick="openDetail(${p.id})">Lihat</button>
-            <button class="btn primary" onclick="buyNow(${p.id})">Ikuti</button>
-          </div>
-        `
-        grid.appendChild(el)
-      })
-    }
+  function closeDetail() {
+    document.getElementById("detail").classList.remove("open");
+  }
 
-    function openDetail(id){
-      const p = products.find(x=>x.id===id)
-      document.getElementById('detailImg').src = p.img
-      document.getElementById('detailTitle').textContent = p.title
-      document.getElementById('detailPrice').textContent = p.price
-      document.getElementById('detailDesc').textContent = p.desc + ' Pelaksana: Dimas'
-      document.getElementById('detail').classList.add('open')
-      document.getElementById('detail').ariaHidden = 'false'
-      // agar pengguna melihat strip, scroll ke bawah sedikit
-      window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})
-    }
-    function closeDetail(){
-      document.getElementById('detail').classList.remove('open')
-      document.getElementById('detail').ariaHidden = 'true'
-    }
-    function buyNow(id){
-      alert('Telah ditambahkan ke wishlist: '+id+' ')
-    }
-    function addToCart(){
-      alert('Terima Kasih Partisipasinya(⁠≧⁠▽⁠≦⁠)')
-    }
+  function buyNow(id) {
+    alert("Program berhasil diikuti! ID: " + id);
+  }
 
-    // pencarian sederhana
-    document.getElementById('q').addEventListener('input', function(e){
-      const q = e.target.value.toLowerCase()
-      const filtered = products.filter(p=>p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q))
-      // render filtered
-      grid.innerHTML = ''
-      filtered.forEach(p=>{
-        const el = document.createElement('div')
-        el.className = 'card'
-        el.innerHTML = `
-          <img src="${p.img}" alt="${p.title}" />
-          <h3>${p.title}</h3>
-          <div style="display:flex;justify-content:space-between;align-items:center"><div class="price">${p.price}</div><div style="color:var(--muted);font-size:13px">Stok: ${Math.floor(Math.random()*50)+1}</div></div>
-          <p style="color:var(--muted);margin:6px 0 0 0">${p.desc}</p>
-          <div class="actions">
-            <button class="btn" onclick="openDetail(${p.id})">Lihat</button>
-            <button class="btn primary" onclick="buyNow(${p.id})">Ikuti</button>
-          </div>
-        `
-        grid.appendChild(el)
-      })
-    })
+  // SEARCH
+  document.getElementById("q").addEventListener("input", e => {
+    const q = e.target.value.toLowerCase();
+    const filtered = products.filter(p =>
+      p.title.toLowerCase().includes(q) ||
+      p.desc.toLowerCase().includes(q)
+    );
+    render(filtered);
+  });
 
-    // initial render
-    render()
+  // PERTAMA KALI TAMPILKAN
+  render();
   </script>
 </body>
 </html>
