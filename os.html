@@ -1,16 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Web OS</title>
+<meta charset="UTF-8" />
+<title>Web OS dengan Wallpaper Video</title>
 <style>
-body {
-    margin: 0;
-    background: url('https://wallpaperaccess.com/full/317501.jpg') center/cover no-repeat;
-    font-family: Arial;
-}
+  /* Video background fullscreen di belakang */
+  #video-background {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1;
+    object-fit: cover;
+  }
 
-/* ICON */
-.icon {
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: white;
+    overflow: hidden;
+  }
+
+  /* Desktop Icon */
+  .icon {
     position: absolute;
     top: 40px;
     left: 40px;
@@ -19,14 +34,16 @@ body {
     color: white;
     font-size: 18px;
     z-index: 1000;
-}
+    user-select: none;
+    cursor: pointer;
+  }
 
-.icon img {
+  .icon img {
     width: 60px;
-}
+  }
 
-/* DOCK */
-.dock {
+  /* DOCK */
+  .dock {
     position: fixed;
     bottom: 20px;
     left: 50%;
@@ -38,32 +55,32 @@ body {
     gap: 25px;
     box-shadow: 0px 6px 20px rgba(0,0,0,0.4);
     z-index: 2000;
-}
+  }
 
-.dock img {
+  .dock img {
     width: 60px;
     transition: transform 0.2s;
     cursor: pointer;
-}
+  }
 
-.dock img:hover {
+  .dock img:hover {
     transform: scale(1.25);
-}
+  }
 
-/* Bounce Animation */
-@keyframes bounce {
+  /* Bounce Animation */
+  @keyframes bounce {
     0% { transform: translateY(0) scale(1); }
     30% { transform: translateY(-15px) scale(1.05); }
     60% { transform: translateY(5px) scale(0.95); }
     100% { transform: translateY(0) scale(1); }
-}
+  }
 
-.bounce {
+  .bounce {
     animation: bounce 0.4s ease;
-}
+  }
 
-/* WINDOW */
-.window {
+  /* Window */
+  .window {
     width: 350px;
     height: 250px;
     background: white;
@@ -75,88 +92,97 @@ body {
     display: none;
     flex-direction: column;
     z-index: 1500;
-}
+    user-select: none;
+  }
 
-.window-header {
+  .window-header {
     background: #0078ff;
     color: white;
     padding: 8px 12px;
     cursor: move;
-}
+    user-select: none;
+  }
 
-.window-body {
+  .window-body {
     flex: 1;
     padding: 10px;
-}
+    color: black;
+  }
 
-.close-btn {
+  .close-btn {
     float: right;
     cursor: pointer;
-}
+  }
 </style>
 </head>
 <body>
 
+<!-- Video Background -->
+<video id="video-background" autoplay muted loop playsinline>
+  <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+
 <!-- Desktop Icon -->
 <div class="icon" onclick="openWindow()">
-    <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png">
-    <div>File</div>
+  <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png" alt="File Icon" />
+  <div>File</div>
 </div>
 
 <!-- Window -->
 <div class="window" id="appWindow">
-    <div class="window-header" id="dragZone">
-        File Explorer
-        <span class="close-btn" onclick="closeWindow()">✖</span>
-    </div>
-    <div class="window-body">
-        <p>Halo! Ini jendela File Explorer.</p>
-    </div>
+  <div class="window-header" id="dragZone">
+    File Explorer
+    <span class="close-btn" onclick="closeWindow()">✖</span>
+  </div>
+  <div class="window-body">
+    <p>Halo! Ini jendela File Explorer.</p>
+  </div>
 </div>
 
-<!-- DOCK -->
+<!-- Dock -->
 <div class="dock">
-    <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" onclick="bounceIcon(this); openWindow()">
-    <img src="https://cdn-icons-png.flaticon.com/512/732/732245.png" onclick="bounceIcon(this)">
-    <img src="https://cdn-icons-png.flaticon.com/512/732/732223.png" onclick="bounceIcon(this)">
+  <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" onclick="bounceIcon(this); openWindow()" alt="App1" />
+  <img src="https://cdn-icons-png.flaticon.com/512/732/732245.png" onclick="bounceIcon(this)" alt="App2" />
+  <img src="https://cdn-icons-png.flaticon.com/512/732/732223.png" onclick="bounceIcon(this)" alt="App3" />
 </div>
 
 <script>
-// Bounce effect
-function bounceIcon(icon) {
+  // Bounce effect
+  function bounceIcon(icon) {
     icon.classList.add("bounce");
     setTimeout(() => icon.classList.remove("bounce"), 400);
-}
+  }
 
-// Open / Close window
-function openWindow() {
+  // Open / Close window
+  function openWindow() {
     document.getElementById("appWindow").style.display = "flex";
-}
-function closeWindow() {
+  }
+  function closeWindow() {
     document.getElementById("appWindow").style.display = "none";
-}
+  }
 
-// Drag window
-const win = document.getElementById("appWindow");
-const dragZone = document.getElementById("dragZone");
-let offsetX = 0, offsetY = 0, isDragging = false;
+  // Drag window
+  const win = document.getElementById("appWindow");
+  const dragZone = document.getElementById("dragZone");
+  let offsetX = 0, offsetY = 0, isDragging = false;
 
-dragZone.addEventListener('mousedown', (e) => {
+  dragZone.addEventListener('mousedown', (e) => {
     isDragging = true;
     offsetX = e.clientX - win.offsetLeft;
     offsetY = e.clientY - win.offsetTop;
-});
+  });
 
-document.addEventListener('mousemove', (e) => {
+  document.addEventListener('mousemove', (e) => {
     if (isDragging) {
-        win.style.left = (e.clientX - offsetX) + "px";
-        win.style.top = (e.clientY - offsetY) + "px";
+      win.style.left = (e.clientX - offsetX) + "px";
+      win.style.top = (e.clientY - offsetY) + "px";
     }
-});
+  });
 
-document.addEventListener('mouseup', () => {
+  document.addEventListener('mouseup', () => {
     isDragging = false;
-});
+  });
 </script>
 
 </body>
