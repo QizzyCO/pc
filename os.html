@@ -223,3 +223,255 @@ function createProgram(gl,vs,fs){
   render();
 })();
 </script>
+<!-- ========== BAGIAN 2: DESKTOP + DOCK + START MENU + SCRIPTS ========== -->
+
+<style>
+  /* ---------- Desktop visuals (additional) ---------- */
+  /* ensure desktop sits above stage when shown */
+  #desktop{
+    position:fixed;
+    inset:0;
+    z-index:8000;
+    display:none; /* shown after unlock */
+    overflow:hidden;
+    background: #0b0b0b;
+  }
+
+  /* Video background (kept from original) */
+  #video-background {
+    position:fixed;
+    right:0;
+    bottom:0;
+    min-width:100%;
+    min-height:100%;
+    width:auto;
+    height:auto;
+    z-index:8000;
+    object-fit:cover;
+  }
+
+  /* Desktop Icon */
+  .icon {
+    position:absolute;
+    top:40px;
+    left:40px;
+    width:80px;
+    text-align:center;
+    font-size:18px;
+    cursor:pointer;
+    user-select:none;
+    z-index:8200;
+    color: #fff;
+  }
+  .icon img { width:60px; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.6)); }
+
+  /* DOCK Mac OS */
+  .dock {
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background: rgba(255,255,255,0.06);
+    padding:10px 20px;
+    border-radius:20px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    backdrop-filter: blur(10px);
+    z-index:8300;
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.5);
+  }
+
+  #start-button {
+    width:50px; height:50px;
+    background: rgba(30,144,255,0.95);
+    border-radius:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+  }
+  #start-button::before { content:""; width:22px; height:22px; background: url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Windows_logo_-_2012.svg') no-repeat center/contain; display:block; }
+
+  .dock img { width:60px; height:60px; cursor:pointer; transition: transform 0.2s; }
+  .dock img:hover { transform: scale(1.5); }
+
+  @keyframes bounce { 0%{transform:translateY(0) scale(1);} 30%{transform:translateY(-12px) scale(1.05);} 60%{transform:translateY(5px) scale(0.95);} 100%{transform:translateY(0) scale(1);} }
+  .bounce { animation: bounce 0.4s ease; }
+
+  /* Start Menu */
+  #start-menu {
+    position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.7);
+    width:600px; height:400px; background: rgba(255,255,255,0.95); color:black; border-radius:15px; box-shadow:0 15px 40px rgba(0,0,0,0.4);
+    display:none; flex-direction:column; padding:20px; z-index:8400; overflow:hidden; opacity:0;
+  }
+  #start-menu.show { display:flex; animation: startMenuShow 0.3s ease forwards; }
+  @keyframes startMenuShow { 0%{transform:translate(-50%,-50%) scale(0.7); opacity:0;} 80%{transform:translate(-50%,-50%) scale(1.05); opacity:1;} 100%{transform:translate(-50%,-50%) scale(1); opacity:1;} }
+
+  .tiles { display:flex; flex-wrap:wrap; gap:15px; }
+  .tile { width:100px; height:100px; background:#0078ff; color:white; display:flex; align-items:center; justify-content:center; border-radius:10px; cursor:pointer; text-align:center; font-weight:bold; font-size:14px; transition: transform 0.2s, background 0.2s; }
+  .tile:hover { transform:scale(1.1); background:#005bb5; }
+
+  /* Window */
+  .window {
+    width:350px; height:250px; background:white; position:absolute; top:120px; left:120px; border-radius:8px; box-shadow:0px 0px 12px rgba(0,0,0,0.6);
+    display:none; flex-direction:column; z-index:8500; user-select:none;
+  }
+  .window-header { background:#0078ff; color:white; padding:8px 12px; cursor:move; user-select:none; }
+  .window-body { flex:1; padding:10px; color:black; }
+  .close-btn { float:right; cursor:pointer; }
+
+  /* responsive small */
+  @media (max-width:480px){
+    #start-menu { width:92vw; height:72vh; }
+  }
+</style>
+
+<!-- Desktop markup -->
+<div id="desktop" aria-hidden="true">
+  <video id="video-background" autoplay muted loop playsinline>
+    <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Desktop Icon -->
+  <div class="icon" onclick="openWindow()">
+    <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png" alt="File Icon" />
+    <div>File</div>
+  </div>
+
+  <!-- Window -->
+  <div class="window" id="appWindow" role="dialog" aria-label="File Explorer">
+    <div class="window-header" id="dragZone">
+      File Explorer
+      <span class="close-btn" onclick="closeWindow()">✖</span>
+    </div>
+    <div class="window-body">
+      <p>Halo! Ini jendela File Explorer.</p>
+    </div>
+  </div>
+
+  <!-- Dock + Start Button -->
+  <div class="dock" role="toolbar" aria-label="Dock">
+    <div id="start-button" title="Start" aria-haspopup="true" aria-controls="start-menu" tabindex="0"></div>
+    <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" onclick="bounceIcon(this); openWindow()" alt="App1" />
+    <img src="https://cdn-icons-png.flaticon.com/512/732/732245.png" onclick="bounceIcon(this)" alt="App2" />
+    <img src="https://cdn-icons-png.flaticon.com/512/732/732223.png" onclick="bounceIcon(this)" alt="App3" />
+  </div>
+
+  <!-- Start Menu -->
+  <div id="start-menu" aria-hidden="true">
+    <h3>Start Menu</h3>
+    <div class="tiles" role="grid">
+      <div class="tile" onclick="alert('File Explorer clicked')">Explorer</div>
+      <div class="tile" onclick="alert('Settings clicked')">Settings</div>
+      <div class="tile" onclick="alert('Browser clicked')">Browser</div>
+      <div class="tile" onclick="alert('Mail clicked')">Mail</div>
+      <div class="tile" onclick="alert('Music clicked')">Music</div>
+      <div class="tile" onclick="alert('Photos clicked')">Photos</div>
+      <div class="tile" onclick="alert('Games clicked')">Games</div>
+      <div class="tile" onclick="alert('Store clicked')">Store</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ---------- Desktop interaction scripts ---------- */
+
+  // Bounce effect dock
+  function bounceIcon(icon) {
+    icon.classList.add("bounce");
+    setTimeout(() => icon.classList.remove("bounce"), 400);
+  }
+
+  // Open/Close window
+  function openWindow() {
+    document.getElementById("appWindow").style.display = "flex";
+  }
+  function closeWindow() {
+    document.getElementById("appWindow").style.display = "none";
+  }
+
+  // Drag window
+  (function attachDrag(){
+    const win = document.getElementById("appWindow");
+    const dragZone = document.getElementById("dragZone");
+    if(!win || !dragZone) return;
+
+    let offsetX = 0, offsetY = 0, isDragging = false;
+
+    dragZone.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      offsetX = e.clientX - win.offsetLeft;
+      offsetY = e.clientY - win.offsetTop;
+      win.style.transition = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        win.style.left = (e.clientX - offsetX) + "px";
+        win.style.top = (e.clientY - offsetY) + "px";
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if(isDragging){
+        isDragging = false;
+        win.style.transition = '';
+      }
+    });
+
+    // touch support
+    let touchStart = null;
+    dragZone.addEventListener('touchstart', (e) => {
+      const t = e.touches[0];
+      touchStart = {x: t.clientX - win.offsetLeft, y: t.clientY - win.offsetTop};
+    }, {passive:true});
+    dragZone.addEventListener('touchmove', (e) => {
+      if(!touchStart) return;
+      const t = e.touches[0];
+      win.style.left = (t.clientX - touchStart.x) + "px";
+      win.style.top = (t.clientY - touchStart.y) + "px";
+    }, {passive:true});
+    dragZone.addEventListener('touchend', () => touchStart = null);
+  })();
+
+  // Start menu toggle with animation
+  (function startMenuLogic(){
+    const startButton = document.getElementById('start-button');
+    const startMenu = document.getElementById('start-menu');
+
+    startButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (startMenu.classList.contains('show')) {
+        startMenu.classList.remove('show');
+        setTimeout(() => startMenu.style.display = 'none', 300);
+      } else {
+        startMenu.style.display = 'flex';
+        requestAnimationFrame(() => {
+          startMenu.classList.add('show');
+        });
+      }
+    });
+
+    // Allow keyboard open (Enter/Space)
+    startButton.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        startButton.click();
+      }
+    });
+
+    // close start menu if click outside
+    document.addEventListener('click', (e) => {
+      if (!startMenu.contains(e.target) && e.target !== startButton) {
+        if (startMenu.classList.contains('show')) {
+          startMenu.classList.remove('show');
+          setTimeout(() => startMenu.style.display = 'none', 300);
+        }
+      }
+    });
+  })();
+
+  // prevent overlay unlock re-trigger (overlay is removed on unlock)
+  // nothing more needed here
+</script>
+
+</body>
+</html>
