@@ -1,318 +1,496 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>Mac Dock + Windows 11 Start dengan Animasi</title>
-<style>
-  /* Video background fullscreen */
-  #video-background {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    z-index: -1;
-    object-fit: cover;
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Web OS — Lockscreen + Desktop</title>
+  <style>
+    :root{
+      --bg-black:#000;
+      --neon-cyan: #00e6ff;
+      --neon-magenta: #ff4dd2;
+    }
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: "Segoe UI", Roboto, system-ui, -apple-system, "Noto Sans", "Helvetica Neue", Arial;
+      background:var(--bg-black);
+      color:white;
+      overflow:hidden;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
 
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
-    color: white;
-  }
+    /* ---------- LOCKSCREEN (Neon WebGL + UI) ---------- */
+    canvas#glcanvas{
+      position:fixed;
+      inset:0;
+      width:100vw;
+      height:100vh;
+      display:block;
+      z-index:1000; /* above desktop background */
+      transition: opacity 700ms ease;
+    }
 
-  /* DOCK Mac OS */
-  .dock {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255,255,255,0.2);
-    padding: 10px 20px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    backdrop-filter: blur(10px);
-    z-index: 3000;
-    box-shadow: 0px 6px 20px rgba(0,0,0,0.4);
-  }
+    .overlay{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:1010;
+      pointer-events:none;
+    }
 
-  /* Tombol Start Windows */
-  #start-button {
-    width: 50px;
-    height: 50px;
-    background: rgba(30,144,255,0.9);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
+    .lock-card{
+      text-align:center;
+      padding:48px 36px;
+      border-radius:20px;
+      backdrop-filter: blur(8px) saturate(1.2);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      pointer-events:auto;
+      opacity:0;
+      transform: translateY(10px) scale(0.995);
+      animation: fadeInUp 700ms cubic-bezier(.2,.9,.2,1) forwards;
+      min-width: 420px;
+      max-width: 88vw;
+    }
+    @keyframes fadeInUp { to { opacity:1; transform: translateY(0) scale(1); } }
 
-  #start-button::before {
-    content: "";
-    width: 22px;
-    height: 22px;
-    background: url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Windows_logo_-_2012.svg') no-repeat center/contain;
-    display: block;
-  }
+    .clock {
+      font-size: clamp(48px, 10vw, 120px);
+      line-height:1;
+      letter-spacing: -0.02em;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 18px rgba(0,230,255,0.12), 0 0 40px rgba(0,230,255,0.08);
+      margin: 0 0 10px 0;
+      animation: glowPulse 2.6s ease-in-out infinite;
+    }
+    @keyframes glowPulse {
+      0% { text-shadow: 0 0 18px rgba(0,230,255,0.12); transform: scale(1); }
+      50% { text-shadow: 0 0 30px rgba(0,230,255,0.22); transform: scale(1.02); }
+      100%{ text-shadow: 0 0 18px rgba(0,230,255,0.12); transform: scale(1); }
+    }
 
-  /* Ikon dock Mac OS */
-  .dock img {
-    width: 60px;
-    height: 60px;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
+    .date { font-size: clamp(14px, 2.2vw, 22px); color: rgba(255,255,255,0.9); margin-bottom:22px; }
+    .hint { font-size:14px; color: rgba(255,255,255,0.75); display:flex; gap:10px; align-items:center; justify-content:center; margin-top:8px; transform: translateY(6px); }
+    .hint .key { padding:8px 12px; border-radius:8px; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.06); box-shadow: inset 0 -6px 14px rgba(0,0,0,0.25); color:#fff; font-weight:600; }
+    .fingerprint { margin-top:18px; width:58px; height:58px; border-radius:50%; display:block; margin-left:auto; margin-right:auto; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.06), transparent 40%), conic-gradient(from 180deg, rgba(0,230,255,0.07), rgba(255,77,210,0.06)); opacity:0.9; }
 
-  .dock img:hover {
-    transform: scale(1.5);
-  }
+    .locking-out { animation: lockFadeOut 600ms cubic-bezier(.2,.9,.2,1) forwards; }
+    @keyframes lockFadeOut { to { opacity:0; transform: scale(0.98) translateY(8px); filter: blur(4px); } }
 
-  /* Bounce effect */
-  @keyframes bounce {
-    0% { transform: translateY(0) scale(1); }
-    30% { transform: translateY(-12px) scale(1.05); }
-    60% { transform: translateY(5px) scale(0.95); }
-    100% { transform: translateY(0) scale(1); }
-  }
+    .status { position:fixed; right:18px; bottom:18px; font-size:13px; color: rgba(255,255,255,0.7); z-index:1015; text-shadow: 0 1px 4px rgba(0,0,0,0.6); user-select:none; }
 
-  .bounce {
-    animation: bounce 0.4s ease;
-  }
+    /* ---------- DESKTOP (initially hidden) ---------- */
+    #desktop{
+      position:fixed;
+      inset:0;
+      display:none; /* shown after unlock */
+      z-index:0;
+      overflow:hidden;
+    }
 
-  /* Start Menu Windows 11 style dengan animasi muncul */
-  @keyframes startMenuShow {
-    0% { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
-    80% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
-    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-  }
+    /* Video background from original desktop (kept but under canvas) */
+    #video-background {
+      position:fixed;
+      right:0;
+      bottom:0;
+      min-width:100%;
+      min-height:100%;
+      width:auto;
+      height:auto;
+      z-index:0;
+      object-fit:cover;
+    }
 
-  #start-menu {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.7);
-    width: 600px;
-    height: 400px;
-    background: rgba(255,255,255,0.95);
-    color: black;
-    border-radius: 15px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-    display: none;
-    flex-direction: column;
-    padding: 20px;
-    z-index: 4000;
-    overflow: hidden;
-    opacity: 0;
-  }
+    /* Desktop Icon */
+    .icon {
+      position:absolute;
+      top:40px;
+      left:40px;
+      width:80px;
+      text-align:center;
+      font-size:18px;
+      cursor:pointer;
+      user-select:none;
+      z-index:1020; /* above video and canvas after unlock */
+    }
+    .icon img { width:60px; }
 
-  #start-menu.show {
-    display: flex;
-    animation: startMenuShow 0.3s ease forwards;
-  }
+    /* DOCK Mac OS */
+    .dock {
+      position:fixed;
+      bottom:20px;
+      left:50%;
+      transform:translateX(-50%);
+      background: rgba(255,255,255,0.08);
+      padding:10px 20px;
+      border-radius:20px;
+      display:flex;
+      align-items:center;
+      gap:15px;
+      backdrop-filter: blur(10px);
+      z-index:1030;
+      box-shadow: 0px 6px 20px rgba(0,0,0,0.4);
+    }
 
-  #start-menu h3 {
-    margin: 0 0 15px 0;
-    font-weight: bold;
-  }
+    #start-button {
+      width:50px; height:50px;
+      background: rgba(30,144,255,0.95);
+      border-radius:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+    }
+    #start-button::before { content:""; width:22px; height:22px; background: url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Windows_logo_-_2012.svg') no-repeat center/contain; display:block; }
 
-  .tiles {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-  }
+    .dock img { width:60px; height:60px; cursor:pointer; transition: transform 0.2s; }
+    .dock img:hover { transform: scale(1.5); }
 
-  .tile {
-    width: 100px;
-    height: 100px;
-    background: #0078ff;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    cursor: pointer;
-    text-align: center;
-    font-weight: bold;
-    font-size: 14px;
-    transition: transform 0.2s, background 0.2s;
-  }
+    @keyframes bounce { 0%{transform:translateY(0) scale(1);} 30%{transform:translateY(-12px) scale(1.05);} 60%{transform:translateY(5px) scale(0.95);} 100%{transform:translateY(0) scale(1);} }
+    .bounce { animation: bounce 0.4s ease; }
 
-  .tile:hover {
-    transform: scale(1.1);
-    background: #005bb5;
-  }
+    /* Start Menu */
+    #start-menu {
+      position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.7);
+      width:600px; height:400px; background: rgba(255,255,255,0.95); color:black; border-radius:15px; box-shadow:0 15px 40px rgba(0,0,0,0.4);
+      display:none; flex-direction:column; padding:20px; z-index:1040; overflow:hidden; opacity:0;
+    }
+    #start-menu.show { display:flex; animation: startMenuShow 0.3s ease forwards; }
+    @keyframes startMenuShow { 0%{transform:translate(-50%,-50%) scale(0.7); opacity:0;} 80%{transform:translate(-50%,-50%) scale(1.05); opacity:1;} 100%{transform:translate(-50%,-50%) scale(1); opacity:1;} }
 
-  /* Desktop Icon */
-  .icon {
-    position: absolute;
-    top: 40px;
-    left: 40px;
-    width: 80px;
-    text-align: center;
-    font-size: 18px;
-    cursor: pointer;
-    user-select: none;
-    z-index: 1000;
-  }
+    .tiles { display:flex; flex-wrap:wrap; gap:15px; }
+    .tile { width:100px; height:100px; background:#0078ff; color:white; display:flex; align-items:center; justify-content:center; border-radius:10px; cursor:pointer; text-align:center; font-weight:bold; font-size:14px; transition: transform 0.2s, background 0.2s; }
+    .tile:hover { transform:scale(1.1); background:#005bb5; }
 
-  .icon img {
-    width: 60px;
-  }
+    /* Window */
+    .window {
+      width:350px; height:250px; background:white; position:absolute; top:120px; left:120px; border-radius:8px; box-shadow:0px 0px 12px rgba(0,0,0,0.6);
+      display:none; flex-direction:column; z-index:1050; user-select:none;
+    }
+    .window-header { background:#0078ff; color:white; padding:8px 12px; cursor:move; user-select:none; }
+    .window-body { flex:1; padding:10px; color:black; }
+    .close-btn { float:right; cursor:pointer; }
 
-  /* Window */
-  .window {
-    width: 350px;
-    height: 250px;
-    background: white;
-    position: absolute;
-    top: 120px;
-    left: 120px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 12px rgba(0,0,0,0.6);
-    display: none;
-    flex-direction: column;
-    z-index: 1500;
-    user-select: none;
-  }
-
-  .window-header {
-    background: #0078ff;
-    color: white;
-    padding: 8px 12px;
-    cursor: move;
-    user-select: none;
-  }
-
-  .window-body {
-    flex: 1;
-    padding: 10px;
-    color: black;
-  }
-
-  .close-btn {
-    float: right;
-    cursor: pointer;
-  }
-
-</style>
+    /* small responsive */
+    @media (max-width:480px){
+      .lock-card{ padding:28px 18px; min-width:300px; }
+      .fingerprint{ width:46px; height:46px; }
+      #start-menu { width:92vw; height:72vh; }
+    }
+  </style>
 </head>
 <body>
+  <!-- ========== LOCKSCREEN ========== -->
+  <canvas id="glcanvas"></canvas>
 
-<!-- Video Background -->
-<video id="video-background" autoplay muted loop playsinline>
-  <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4" />
-  Your browser does not support the video tag.
-</video>
+  <div class="overlay" aria-hidden="false">
+    <div class="lock-card" id="lockCard" role="dialog" aria-label="Lock screen">
+      <div class="clock" id="clock">00:00</div>
+      <div class="date" id="date">Loading...</div>
 
-<!-- Desktop Icon -->
-<div class="icon" onclick="openWindow()">
-  <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png" alt="File Icon" />
-  <div>File</div>
-</div>
+      <div class="hint" id="hint">
+        <div class="key">Press any key</div>
+        <div style="opacity:.6">or click to unlock</div>
+      </div>
 
-<!-- Window -->
-<div class="window" id="appWindow">
-  <div class="window-header" id="dragZone">
-    File Explorer
-    <span class="close-btn" onclick="closeWindow()">✖</span>
+      <div class="fingerprint" aria-hidden="true"></div>
+    </div>
   </div>
-  <div class="window-body">
-    <p>Halo! Ini jendela File Explorer.</p>
+
+  <div class="status" id="status">Locked • Jakarta</div>
+
+  <!-- ========== DESKTOP (initially hidden) ========== -->
+  <div id="desktop" aria-hidden="true">
+    <!-- Video background (original desktop) -->
+    <video id="video-background" autoplay muted loop playsinline>
+      <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+
+    <!-- Desktop Icon -->
+    <div class="icon" onclick="openWindow()">
+      <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png" alt="File Icon" />
+      <div>File</div>
+    </div>
+
+    <!-- Window -->
+    <div class="window" id="appWindow">
+      <div class="window-header" id="dragZone">
+        File Explorer
+        <span class="close-btn" onclick="closeWindow()">✖</span>
+      </div>
+      <div class="window-body">
+        <p>Halo! Ini jendela File Explorer.</p>
+      </div>
+    </div>
+
+    <!-- Dock + Start Button -->
+    <div class="dock">
+      <div id="start-button" title="Start"></div>
+      <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" onclick="bounceIcon(this); openWindow()" alt="App1" />
+      <img src="https://cdn-icons-png.flaticon.com/512/732/732245.png" onclick="bounceIcon(this)" alt="App2" />
+      <img src="https://cdn-icons-png.flaticon.com/512/732/732223.png" onclick="bounceIcon(this)" alt="App3" />
+    </div>
+
+    <!-- Start Menu -->
+    <div id="start-menu" aria-hidden="true">
+      <h3>Start Menu</h3>
+      <div class="tiles">
+        <div class="tile" onclick="alert('File Explorer clicked')">Explorer</div>
+        <div class="tile" onclick="alert('Settings clicked')">Settings</div>
+        <div class="tile" onclick="alert('Browser clicked')">Browser</div>
+        <div class="tile" onclick="alert('Mail clicked')">Mail</div>
+        <div class="tile" onclick="alert('Music clicked')">Music</div>
+        <div class="tile" onclick="alert('Photos clicked')">Photos</div>
+        <div class="tile" onclick="alert('Games clicked')">Games</div>
+        <div class="tile" onclick="alert('Store clicked')">Store</div>
+      </div>
+    </div>
   </div>
-</div>
 
-<!-- Dock Mac OS + Start Button -->
-<div class="dock">
-  <div id="start-button"></div>
-  <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" onclick="bounceIcon(this); openWindow()" alt="App1" />
-  <img src="https://cdn-icons-png.flaticon.com/512/732/732245.png" onclick="bounceIcon(this)" alt="App2" />
-  <img src="https://cdn-icons-png.flaticon.com/512/732/732223.png" onclick="bounceIcon(this)" alt="App3" />
-</div>
+  <!-- ========== SCRIPTS ========== -->
+  <script>
+    /*****************************************
+     * 1) CLOCK (Asia/Jakarta) for lockscreen
+     *****************************************/
+    const clockEl = document.getElementById('clock');
+    const dateEl = document.getElementById('date');
+    const statusEl = document.getElementById('status');
 
-<!-- Start Menu Windows 11 style -->
-<div id="start-menu">
-  <h3>Start Menu</h3>
-  <div class="tiles">
-    <div class="tile" onclick="alert('File Explorer clicked')">Explorer</div>
-    <div class="tile" onclick="alert('Settings clicked')">Settings</div>
-    <div class="tile" onclick="alert('Browser clicked')">Browser</div>
-    <div class="tile" onclick="alert('Mail clicked')">Mail</div>
-    <div class="tile" onclick="alert('Music clicked')">Music</div>
-    <div class="tile" onclick="alert('Photos clicked')">Photos</div>
-    <div class="tile" onclick="alert('Games clicked')">Games</div>
-    <div class="tile" onclick="alert('Store clicked')">Store</div>
-  </div>
-</div>
+    const timeFormatter = new Intl.DateTimeFormat('id-ID', {
+      hour: '2-digit', minute: '2-digit', second: undefined,
+      hour12: false, timeZone: 'Asia/Jakarta'
+    });
+    const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+      weekday: 'long', day: 'numeric', month: 'long', year: undefined,
+      timeZone: 'Asia/Jakarta'
+    });
 
-<script>
-  // Bounce effect dock
-  function bounceIcon(icon) {
-    icon.classList.add("bounce");
-    setTimeout(() => icon.classList.remove("bounce"), 400);
-  }
-
-  // Open/Close window
-  function openWindow() {
-    document.getElementById("appWindow").style.display = "flex";
-  }
-  function closeWindow() {
-    document.getElementById("appWindow").style.display = "none";
-  }
-
-  // Drag window
-  const win = document.getElementById("appWindow");
-  const dragZone = document.getElementById("dragZone");
-  let offsetX = 0, offsetY = 0, isDragging = false;
-
-  dragZone.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    offsetX = e.clientX - win.offsetLeft;
-    offsetY = e.clientY - win.offsetTop;
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (isDragging) {
-      win.style.left = (e.clientX - offsetX) + "px";
-      win.style.top = (e.clientY - offsetY) + "px";
+    function updateClock(){
+      const now = new Date();
+      clockEl.textContent = timeFormatter.format(now);
+      dateEl.textContent = dateFormatter.format(now);
     }
-  });
+    updateClock();
+    setInterval(updateClock, 1000);
 
-  document.addEventListener('mouseup', () => {
-    isDragging = false;
-  });
+    /*****************************************
+     * 2) UNLOCK logic (fade lockscreen, show desktop)
+     *****************************************/
+    const lockCard = document.getElementById('lockCard');
+    const overlay = document.querySelector('.overlay');
+    const canvas = document.getElementById('glcanvas');
+    const desktop = document.getElementById('desktop');
+    let unlocked = false;
 
-  // Start menu toggle dengan animasi
-  const startButton = document.getElementById('start-button');
-  const startMenu = document.getElementById('start-menu');
+    function unlock(){
+      if(unlocked) return;
+      unlocked = true;
 
-  startButton.addEventListener('click', (e) => {
-    if (startMenu.classList.contains('show')) {
-      startMenu.classList.remove('show');
-      setTimeout(() => startMenu.style.display = 'none', 300);
-    } else {
-      startMenu.style.display = 'flex';
-      requestAnimationFrame(() => {
-        startMenu.classList.add('show');
-      });
+      // animate lock card & overlay
+      lockCard.classList.add('locking-out');
+      overlay.style.pointerEvents = 'none';
+
+      // fade canvas background a bit (and then keep it under desktop)
+      canvas.style.opacity = '0.25';
+
+      // show desktop after a short delay to allow fade animation
+      setTimeout(() => {
+        // hide overlay entirely
+        overlay.style.display = 'none';
+        canvas.style.opacity = '1';
+        // reveal desktop (make it interactive)
+        desktop.style.display = 'block';
+        desktop.setAttribute('aria-hidden','false');
+
+        // ensure desktop elements sit above canvas
+        canvas.style.zIndex = 500;
+        desktop.style.zIndex = 600;
+      }, 680);
     }
-  });
 
-  // Tutup Start menu jika klik di luar
-  document.addEventListener('click', (e) => {
-    if (!startMenu.contains(e.target) && e.target !== startButton) {
+    // Unlock on any key, click or touch
+    window.addEventListener('keydown', unlock);
+    window.addEventListener('click', (e) => { unlock(); });
+    window.addEventListener('touchstart', unlock, {passive:true});
+
+    /*****************************************
+     * 3) WebGL Neon Shader (adapted)
+     *****************************************/
+    (function initWebGL(){
+      const canvas = document.getElementById('glcanvas');
+      const gl = canvas.getContext('webgl', {antialias:true});
+      if(!gl) {
+        console.warn('WebGL not supported — background falling back to solid black.');
+        return;
+      }
+
+      const vsSource = `
+        attribute vec2 position;
+        void main(){ gl_Position = vec4(position, 0.0, 1.0); }
+      `;
+      const fsSource = `
+        precision highp float;
+        uniform vec2 u_resolution;
+        uniform float u_time;
+        void main(){
+          vec2 uv = gl_FragCoord.xy;
+          vec2 r = u_resolution;
+          vec2 p = (uv*2.0 - r)/r.y;
+          float t = u_time * 0.7;
+          float a = atan(p.y, p.x);
+          float d = length(p);
+          vec3 col = vec3(0.0);
+          for(float i=0.0;i<6.0;i++){
+            float fi = i/6.0;
+            float speed = 1.0 + fi*1.6;
+            float wave = sin((d*12.0) - (t*speed) + a*2.0 + fi*3.0);
+            float ring = smoothstep(0.02, 0.0, abs(wave - 0.2 - fi*0.05));
+            vec3 tone = mix(vec3(0.0,0.9,1.0), vec3(1.0,0.3,0.7), fi);
+            col += tone * ring * (0.6 - fi*0.08);
+          }
+          col *= 1.0 - smoothstep(0.6, 1.6, d);
+          col = pow(col, vec3(0.8));
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `;
+
+      function createShader(type, src){
+        const sh = gl.createShader(type);
+        gl.shaderSource(sh, src);
+        gl.compileShader(sh);
+        if(!gl.getShaderParameter(sh, gl.COMPILE_STATUS)){
+          console.error('Shader error:', gl.getShaderInfoLog(sh));
+          return null;
+        }
+        return sh;
+      }
+
+      const vs = createShader(gl.VERTEX_SHADER, vsSource);
+      const fs = createShader(gl.FRAGMENT_SHADER, fsSource);
+      const prog = gl.createProgram();
+      gl.attachShader(prog, vs);
+      gl.attachShader(prog, fs);
+      gl.linkProgram(prog);
+      if(!gl.getProgramParameter(prog, gl.LINK_STATUS)){
+        console.error('Program link error', gl.getProgramInfoLog(prog));
+        return;
+      }
+      gl.useProgram(prog);
+
+      const quad = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        -1,-1, 1,-1, -1,1, 1,-1, 1,1, -1,1
+      ]), gl.STATIC_DRAW);
+
+      const posLoc = gl.getAttribLocation(prog, 'position');
+      gl.enableVertexAttribArray(posLoc);
+      gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+      const resLoc = gl.getUniformLocation(prog, 'u_resolution');
+      const timeLoc = gl.getUniformLocation(prog, 'u_time');
+
+      function resize(){
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.floor(window.innerWidth * dpr);
+        canvas.height = Math.floor(window.innerHeight * dpr);
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+        gl.viewport(0,0,canvas.width, canvas.height);
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      let start = performance.now();
+      function render(){
+        const now = performance.now();
+        const t = (now - start) * 0.001;
+        gl.uniform2f(resLoc, canvas.width, canvas.height);
+        gl.uniform1f(timeLoc, t);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        if(!unlocked) requestAnimationFrame(render);
+        else {
+          // draw a few more frames to ensure smooth fade then stop
+          if (parseFloat(canvas.style.opacity || 1) > 0.25) requestAnimationFrame(render);
+        }
+      }
+      render();
+    })();
+
+    /*****************************************
+     * 4) Desktop interactions (from original)
+     *****************************************/
+    // Bounce effect dock
+    function bounceIcon(icon) {
+      icon.classList.add("bounce");
+      setTimeout(() => icon.classList.remove("bounce"), 400);
+    }
+
+    // Open/Close window
+    function openWindow() {
+      document.getElementById("appWindow").style.display = "flex";
+    }
+    function closeWindow() {
+      document.getElementById("appWindow").style.display = "none";
+    }
+
+    // Drag window
+    const win = document.getElementById("appWindow");
+    const dragZone = document.getElementById("dragZone");
+    let offsetX = 0, offsetY = 0, isDragging = false;
+
+    dragZone.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      offsetX = e.clientX - win.offsetLeft;
+      offsetY = e.clientY - win.offsetTop;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        win.style.left = (e.clientX - offsetX) + "px";
+        win.style.top = (e.clientY - offsetY) + "px";
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    // Start menu toggle with animation
+    const startButton = document.getElementById('start-button');
+    const startMenu = document.getElementById('start-menu');
+
+    startButton.addEventListener('click', (e) => {
+      e.stopPropagation();
       if (startMenu.classList.contains('show')) {
         startMenu.classList.remove('show');
         setTimeout(() => startMenu.style.display = 'none', 300);
+      } else {
+        startMenu.style.display = 'flex';
+        requestAnimationFrame(() => {
+          startMenu.classList.add('show');
+        });
       }
-    }
-  });
-</script>
+    });
+
+    // Tutup Start menu jika klik di luar
+    document.addEventListener('click', (e) => {
+      if (!startMenu.contains(e.target) && e.target !== startButton) {
+        if (startMenu.classList.contains('show')) {
+          startMenu.classList.remove('show');
+          setTimeout(() => startMenu.style.display = 'none', 300);
+        }
+      }
+    });
+
+    // prevent accidental unlock when interacting with desktop once unlocked:
+    // (we already hide overlay on unlock, so this is mainly precaution)
+    document.addEventListener('click', (e) => {
+      // if unlocked and clicked on desktop, don't re-run unlock
+      if (unlocked) return;
+    });
+  </script>
 </body>
 </html>
