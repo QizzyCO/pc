@@ -14,7 +14,7 @@
   }
 
   /* -------------------------------------------
-     LOCKSCREEN SHADER BACKGROUND
+     LOCKSCREEN
   --------------------------------------------*/
   #lockscreen{
     position:fixed;
@@ -32,20 +32,16 @@
     height:100%;
   }
 
-  /* -------------------------------------------
-     LOCKSCREEN CLOCK (no box)
-  --------------------------------------------*/
   #lock-ui{
     position:absolute;
     top:50%;
     left:10%;
     transform:translateY(-50%);
     background:none !important;
-    backdrop-filter:none !important;
-    padding:0 !important;
     text-align:left;
     color:white;
     z-index:20;
+    pointer-events:none;
   }
 
   #clock{
@@ -77,7 +73,7 @@
   }
 
   /* -------------------------------------------
-     DESKTOP AREA
+     DESKTOP
   --------------------------------------------*/
   #desktop{
     position:fixed;
@@ -86,7 +82,7 @@
     z-index:100;
   }
 
-  #video-background {
+  #video-background{
     position:fixed;
     right:0;
     bottom:0;
@@ -95,8 +91,7 @@
     object-fit:cover;
   }
 
-  /* ICON DESKTOP */
-  .icon {
+  .icon{
     position:absolute;
     top:40px;
     left:40px;
@@ -107,12 +102,9 @@
     color:white;
     z-index:200;
   }
-  .icon img { width:60px; }
+  .icon img{ width:60px; }
 
-  /* -------------------------------------------
-     DOCK MAC
-  --------------------------------------------*/
-  .dock {
+  .dock{
     position:fixed;
     bottom:20px;
     left:50%;
@@ -126,26 +118,24 @@
     z-index:300;
   }
 
-  #start-button {
-    width:50px; height:50px;
+  #start-button{
+    width:50px;height:50px;
     background:rgba(30,144,255,0.95);
     border-radius:12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    display:flex;align-items:center;justify-content:center;
     cursor:pointer;
   }
-  #start-button::before {
+  #start-button::before{
     content:"";
-    width:22px; height:22px;
+    width:22px;height:22px;
     background:url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Windows_logo_-_2012.svg') no-repeat center/contain;
     display:block;
   }
 
   .dock img{
-    width:60px; height:60px;
-    cursor:pointer;
+    width:60px;height:60px;
     transition:0.2s;
+    cursor:pointer;
   }
   .dock img:hover{ transform:scale(1.5); }
 
@@ -157,13 +147,11 @@
   }
   .bounce{ animation:bounce .4s; }
 
-  /* -------------------------------------------
-     START MENU
-  --------------------------------------------*/
+  /* START MENU */
   #start-menu{
     position:fixed;
-    top:50%; left:50%;
-    width:600px; height:400px;
+    top:50%;left:50%;
+    width:600px;height:400px;
     background:white;
     border-radius:15px;
     transform:translate(-50%,-50%) scale(0.7);
@@ -191,55 +179,46 @@
     gap:15px;
   }
   .tile{
-    width:100px; height:100px;
+    width:100px;height:100px;
     background:#0078ff;
     border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
     color:white;
-    display:flex; align-items:center; justify-content:center;
-    cursor:pointer;
     font-weight:bold;
-    transition:0.2s;
+    cursor:pointer;
+    transition:.2s;
   }
-  .tile:hover{ transform:scale(1.1); background:#005bb5; }
+  .tile:hover{
+    transform:scale(1.1);
+    background:#005bb5;
+  }
 
-  /* -------------------------------------------
-     WINDOW DESKTOP
-  --------------------------------------------*/
+  /* WINDOWS */
   .window{
-    width:350px; height:250px;
+    width:350px;height:250px;
     background:white;
     position:absolute;
-    top:120px; left:120px;
-    border-radius:8px;
+    top:120px;left:120px;
     display:none;
     flex-direction:column;
-    z-index:500;
+    border-radius:8px;
     box-shadow:0 0 12px rgba(0,0,0,.5);
+    z-index:500;
   }
-
   .window-header{
     background:#0078ff;
-    padding:8px;
-    color:white;
+    padding:8px;color:white;
     cursor:move;
   }
-
   .window-body{
-    padding:10px;
-    color:black;
-    flex:1;
+    padding:10px;color:black;flex:1;
   }
-  .close-btn{
-    float:right;
-    cursor:pointer;
-  }
+  .close-btn{ float:right;cursor:pointer; }
 </style>
 </head>
 <body>
 
-<!-- ========================================================= -->
-<!--  LOCKSCREEN: SHADER + CLOCK                              -->
-<!-- ========================================================= -->
+<!-- LOCKSCREEN -->
 <div id="lockscreen">
   <canvas id="shaderCanvas"></canvas>
 
@@ -250,18 +229,14 @@
   </div>
 </div>
 
-
-<!-- ========================================================= -->
-<!--  DESKTOP                                                  -->
-<!-- ========================================================= -->
+<!-- DESKTOP -->
 <div id="desktop">
-
   <video id="video-background" autoplay muted loop playsinline>
     <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4"/>
   </video>
 
   <div class="icon" onclick="openWindow()">
-    <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png">
+    <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png"/>
     <div>File</div>
   </div>
 
@@ -295,31 +270,28 @@
       <div class="tile">Store</div>
     </div>
   </div>
-
 </div>
 
-<!-- ========================================================= -->
-<!--  SCRIPTS: SHADER, CLOCK, UNLOCK, DESKTOP LOGIC           -->
-<!-- ========================================================= -->
 <script>
 /* =====================================================
-   1) CLOCK & DATE
+   CLOCK UPDATE
 ===================================================== */
 function updateClock(){
   const now = new Date();
-  let h = now.getHours().toString().padStart(2,"0");
-  let m = now.getMinutes().toString().padStart(2,"0");
-  document.getElementById("clock").textContent = `${h}:${m}`;
+  let h = String(now.getHours()).padStart(2,"0");
+  let m = String(now.getMinutes()).padStart(2,"0");
+  document.getElementById("clock").textContent = h+":"+m;
 
-  const options = { weekday:"long", year:"numeric", month:"long", day:"numeric" };
-  document.getElementById("date").textContent = now.toLocaleDateString("en-US", options);
+  document.getElementById("date").textContent =
+    now.toLocaleDateString("en-US", {
+      weekday:"long", year:"numeric", month:"long", day:"numeric"
+    });
 }
-setInterval(updateClock, 1000);
+setInterval(updateClock,1000);
 updateClock();
 
-
 /* =====================================================
-   2) UNLOCK LOGIC
+   UNLOCK
 ===================================================== */
 function unlock(){
   const lock = document.getElementById("lockscreen");
@@ -327,144 +299,144 @@ function unlock(){
 
   lock.classList.add("fadeOut");
   setTimeout(()=>{
-    lock.style.display = "none";
-    desk.style.display = "block";
+    lock.style.display="none";
+    desk.style.display="block";
   },800);
 }
-
 document.addEventListener("keydown", unlock);
 document.addEventListener("click", unlock);
 
-
 /* =====================================================
-   3) DESKTOP SCRIPTS
+   DESKTOP LOGIC
 ===================================================== */
-function bounceIcon(el){
-  el.classList.add("bounce");
-  setTimeout(()=> el.classList.remove("bounce"),400);
+function bounceIcon(i){
+  i.classList.add("bounce");
+  setTimeout(()=>i.classList.remove("bounce"),400);
 }
-
 function openWindow(){
-  document.getElementById("appWindow").style.display = "flex";
+  document.getElementById("appWindow").style.display="flex";
 }
 function closeWindow(){
-  document.getElementById("appWindow").style.display = "none";
+  document.getElementById("appWindow").style.display="none";
 }
 
 /* Drag window */
-(function drag(){
+(function(){
   const win = document.getElementById("appWindow");
-  const dragZone = document.getElementById("dragZone");
-  let offsetX, offsetY, dragging=false;
+  const drag = document.getElementById("dragZone");
+  let dragX,dragY,isDown=false;
 
-  dragZone.onmousedown = e=>{
-    dragging=true;
-    offsetX = e.clientX - win.offsetLeft;
-    offsetY = e.clientY - win.offsetTop;
+  drag.onmousedown = e=>{
+    isDown=true;
+    dragX=e.clientX-win.offsetLeft;
+    dragY=e.clientY-win.offsetTop;
   };
-
   document.onmousemove = e=>{
-    if(dragging){
-      win.style.left = (e.clientX-offsetX)+"px";
-      win.style.top = (e.clientY-offsetY)+"px";
+    if(isDown){
+      win.style.left=(e.clientX-dragX)+"px";
+      win.style.top=(e.clientY-dragY)+"px";
     }
   };
-
-  document.onmouseup = ()=> dragging=false;
+  document.onmouseup=()=>isDown=false;
 })();
 
 /* Start Menu */
 (function(){
-  const btn = document.getElementById("start-button");
-  const menu = document.getElementById("start-menu");
+  const btn=document.getElementById("start-button");
+  const menu=document.getElementById("start-menu");
 
-  btn.onclick = e=>{
+  btn.onclick=e=>{
     e.stopPropagation();
     if(menu.classList.contains("show")){
       menu.classList.remove("show");
-      setTimeout(()=> menu.style.display="none",300);
-    } else {
+      setTimeout(()=>menu.style.display="none",300);
+    }else{
       menu.style.display="flex";
-      requestAnimationFrame(()=> menu.classList.add("show"));
+      requestAnimationFrame(()=>menu.classList.add("show"));
     }
   };
 
-  document.addEventListener("click", e=>{
-    if(menu.classList.contains("show") &&
-      !menu.contains(e.target) &&
-      e.target!==btn){
+  document.onclick=e=>{
+    if(menu.classList.contains("show") && !menu.contains(e.target) && e.target!==btn){
       menu.classList.remove("show");
-      setTimeout(()=> menu.style.display="none",300);
+      setTimeout(()=>menu.style.display="none",300);
     }
-  });
+  };
 })();
 
-
 /* =====================================================
-   4) SHADER ANIMATION (from neon-loader.html)
+   SHADER FIX (WebGL2 → fallback WebGL1, resolution uniform)
 ===================================================== */
 const canvas = document.getElementById("shaderCanvas");
-const gl = canvas.getContext("webgl2", { alpha:false });
+let gl = canvas.getContext("webgl2");
+if(!gl) gl = canvas.getContext("webgl");
+if(!gl){
+  console.warn("WebGL not supported.");
+}
 
-canvas.width = innerWidth;
-canvas.height = innerHeight;
-
-addEventListener("resize", ()=>{
+function resizeCanvas(){
   canvas.width = innerWidth;
   canvas.height = innerHeight;
-});
+}
+resizeCanvas();
+addEventListener("resize", resizeCanvas);
 
-const vert = `#version 300 es
-in vec2 position;
-void main(){ gl_Position = vec4(position, 0.0, 1.0); }
-`;
+const vert = `
+attribute vec2 position;
+void main(){
+  gl_Position = vec4(position, 0.0, 1.0);
+}`;
 
-const frag = `#version 300 es
-precision highp float;
+/* Neon shader – always works */
+const frag = `
+precision mediump float;
 uniform float time;
-out vec4 outColor;
+uniform vec2 resolution;
 
 void main(){
-    vec2 uv = gl_FragCoord.xy / vec2(${innerWidth}.0, ${innerHeight}.0);
-    float c = 0.5 + 0.5*sin(time + uv.x*6.28 + uv.y*6.28);
-    outColor = vec4(0.0, c*0.8, c, 1.0);
-}
-`;
+  vec2 uv = gl_FragCoord.xy / resolution.xy;
+  float wave = 0.5 + 0.5 * sin(time + uv.x*10.0 + uv.y*10.0);
+  gl_FragColor = vec4(0.0, wave*0.8, wave, 1.0);
+}`;
 
-function compile(type,src){
+function compileShader(type,source){
   let s = gl.createShader(type);
-  gl.shaderSource(s,src);
+  gl.shaderSource(s,source);
   gl.compileShader(s);
   return s;
 }
 
-let vs = compile(gl.VERTEX_SHADER, vert);
-let fs = compile(gl.FRAGMENT_SHADER, frag);
+const vs = compileShader(gl.VERTEX_SHADER, vert);
+const fs = compileShader(gl.FRAGMENT_SHADER, frag);
 
-let prog = gl.createProgram();
-gl.attachShader(prog, vs);
-gl.attachShader(prog, fs);
+const prog = gl.createProgram();
+gl.attachShader(prog,vs);
+gl.attachShader(prog,fs);
 gl.linkProgram(prog);
 gl.useProgram(prog);
 
-let pos = gl.getAttribLocation(prog, "position");
-let tLoc = gl.getUniformLocation(prog, "time");
-
-let buf = gl.createBuffer();
+const vertices = new Float32Array([
+   -1,-1, 1,-1, -1,1,
+   -1,1,  1,-1, 1,1
+]);
+const buf = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-  -1,-1, 1,-1, -1,1,  -1,1, 1,-1, 1,1
-]), gl.STATIC_DRAW);
+gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
 
+const pos = gl.getAttribLocation(prog,"position");
 gl.enableVertexAttribArray(pos);
 gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
 
-function render(ms){
-  gl.uniform1f(tLoc, ms*0.001);
-  gl.drawArrays(gl.TRIANGLES,0,6);
-  requestAnimationFrame(render);
+const timeLoc = gl.getUniformLocation(prog,"time");
+const resLoc = gl.getUniformLocation(prog,"resolution");
+
+function draw(t){
+  gl.uniform1f(timeLoc, t*0.001);
+  gl.uniform2f(resLoc, canvas.width, canvas.height);
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+  requestAnimationFrame(draw);
 }
-requestAnimationFrame(render);
+requestAnimationFrame(draw);
 </script>
 
 </body>
