@@ -1,44 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Web OS Simple</title>
 <style>
-    body {
-        margin: 0;
-        overflow: hidden;
-        font-family: Arial, sans-serif;
-        background: url('https://wallpaperaccess.com/full/317501.jpg') center/cover no-repeat;
-    }
+body {
+    margin: 0;
+    background: #1a1a1a; /* wallpaper diganti warna dulu biar kelihatan */
+    font-family: Arial;
+}
 
-    /* ===== DOCK ala macOS (panjang + solid + bounce) ===== */
-    .dock {
-        position: fixed;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        height: 75px;
-        background: rgba(230,230,235,0.95);
-        padding: 10px 40px;
-        border-radius: 30px;
-        display: flex;
-        gap: 22px;
-        box-shadow: 0px 6px 20px rgba(0,0,0,0.45);
-        border: 1px solid rgba(255,255,255,0.6);
-        z-index: 9999;
-    }
+/* ICON TEST */
+.icon {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    width: 80px;
+    text-align: center;
+    color: white;
+    font-size: 18px;
+    z-index: 1000;
+}
 
-    .dock img {
-        width: 60px;
-        transition: transform 0.2s;
-        cursor: pointer;
-    }
+.icon img {
+    width: 60px;
+}
 
-    .dock img:hover {
-        transform: scale(1.28);
-    }
+/* DOCK TEST */
+.dock {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 15px 30px;
+    border-radius: 20px;
+    display: flex;
+    gap: 20px;
+    z-index: 9999;
+}
 
-    /* ===== Bounce Effect ===== */
-    @keyframes bounce {
-        0%   { transform: translateY(0) scale(1); }
-        30%  { transform
+.dock img {
+    width: 60px;
+}
+</style>
+</head>
+<body>
+
+<!-- ICON -->
+<div class="icon">
+    <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png">
+    <div>File</div>
+</div>
+
+<!-- DOCK -->
+<div class="dock">
+    <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png">
+    <img src="https://cdn-icons-png.flaticon.com/512/732/732245.png">
+    <img src="https://cdn-icons-png.flaticon.com/512/732/732223.png">
+</div>
+
+</body>
+</html>
