@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Web OS dengan Wallpaper Video</title>
+<title>Web OS dengan Menu Start</title>
 <style>
   /* Video background fullscreen di belakang */
   #video-background {
@@ -22,6 +22,76 @@
     font-family: Arial, sans-serif;
     color: white;
     overflow: hidden;
+  }
+
+  /* Start Button */
+  #start-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(30, 144, 255, 0.9);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+
+  /* Icon Windows style for Start */
+  #start-button::before {
+    content: "";
+    width: 22px;
+    height: 22px;
+    background: url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Windows_logo_-_2012.svg') no-repeat center/contain;
+    display: block;
+  }
+
+  /* Start Menu panel */
+  #start-menu {
+    position: fixed;
+    bottom: 80px;
+    left: 20px;
+    width: 280px;
+    background: rgba(255,255,255,0.95);
+    color: black;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    display: none;
+    flex-direction: column;
+    padding: 15px;
+    z-index: 2999;
+  }
+
+  #start-menu h3 {
+    margin: 0 0 10px 0;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+  }
+
+  /* Start menu items */
+  .start-item {
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background-color 0.2s;
+  }
+
+  .start-item:hover {
+    background-color: #0078ff;
+    color: white;
+  }
+
+  .start-item img {
+    width: 28px;
+    height: 28px;
   }
 
   /* Desktop Icon */
@@ -147,8 +217,28 @@
   <img src="https://cdn-icons-png.flaticon.com/512/732/732223.png" onclick="bounceIcon(this)" alt="App3" />
 </div>
 
+<!-- Start Button -->
+<div id="start-button" title="Start Menu"></div>
+
+<!-- Start Menu -->
+<div id="start-menu">
+  <h3>Start Menu</h3>
+  <div class="start-item" onclick="alert('You clicked File Explorer')">
+    <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png" alt="File Explorer" />
+    File Explorer
+  </div>
+  <div class="start-item" onclick="alert('You clicked Settings')">
+    <img src="https://cdn-icons-png.flaticon.com/512/2099/2099058.png" alt="Settings" />
+    Settings
+  </div>
+  <div class="start-item" onclick="alert('You clicked About')">
+    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828961.png" alt="About" />
+    About
+  </div>
+</div>
+
 <script>
-  // Bounce effect
+  // Bounce effect for dock icons
   function bounceIcon(icon) {
     icon.classList.add("bounce");
     setTimeout(() => icon.classList.remove("bounce"), 400);
@@ -182,6 +272,26 @@
 
   document.addEventListener('mouseup', () => {
     isDragging = false;
+  });
+
+  // Start menu toggle
+  const startButton = document.getElementById('start-button');
+  const startMenu = document.getElementById('start-menu');
+
+  startButton.addEventListener('click', () => {
+    if (startMenu.style.display === 'flex') {
+      startMenu.style.display = 'none';
+    } else {
+      startMenu.style.display = 'flex';
+      startMenu.style.flexDirection = 'column';
+    }
+  });
+
+  // Tutup Start menu kalau klik di luar
+  document.addEventListener('click', (e) => {
+    if (!startMenu.contains(e.target) && e.target !== startButton) {
+      startMenu.style.display = 'none';
+    }
   });
 </script>
 
