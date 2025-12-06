@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Mac Dock + Windows Start</title>
+<title>Mac Dock + Windows 11 Start</title>
 <style>
   /* Video background fullscreen */
   #video-background {
@@ -24,7 +24,7 @@
     color: white;
   }
 
-  /* DOCK seperti Mac OS */
+  /* DOCK Mac OS */
   .dock {
     position: fixed;
     bottom: 20px;
@@ -41,7 +41,7 @@
     box-shadow: 0px 6px 20px rgba(0,0,0,0.4);
   }
 
-  /* Tombol Start Windows di dock */
+  /* Tombol Start Windows */
   #start-button {
     width: 50px;
     height: 50px;
@@ -86,47 +86,55 @@
     animation: bounce 0.4s ease;
   }
 
-  /* Start Menu */
+  /* Start Menu Windows 11 style */
   #start-menu {
     position: fixed;
-    bottom: 90px; /* sedikit di atas dock */
-    left: 20px;
-    width: 250px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 400px;
     background: rgba(255,255,255,0.95);
     color: black;
-    border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
     display: none;
     flex-direction: column;
-    padding: 10px;
-    z-index: 2999;
+    padding: 20px;
+    z-index: 4000;
+    overflow: hidden;
   }
 
   #start-menu h3 {
-    margin: 0 0 10px 0;
+    margin: 0 0 15px 0;
     font-weight: bold;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 5px;
   }
 
-  .start-item {
-    padding: 6px 8px;
-    border-radius: 5px;
-    cursor: pointer;
+  .tiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .tile {
+    width: 100px;
+    height: 100px;
+    background: #0078ff;
+    color: white;
     display: flex;
     align-items: center;
-    gap: 10px;
-    transition: background-color 0.2s;
+    justify-content: center;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    transition: transform 0.2s, background 0.2s;
   }
 
-  .start-item:hover {
-    background-color: #0078ff;
-    color: white;
-  }
-
-  .start-item img {
-    width: 28px;
-    height: 28px;
+  .tile:hover {
+    transform: scale(1.1);
+    background: #005bb5;
   }
 
   /* Desktop Icon */
@@ -208,7 +216,7 @@
   </div>
 </div>
 
-<!-- Dock Mac OS -->
+<!-- Dock Mac OS + Start Button -->
 <div class="dock">
   <div id="start-button"></div>
   <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" onclick="bounceIcon(this); openWindow()" alt="App1" />
@@ -216,31 +224,29 @@
   <img src="https://cdn-icons-png.flaticon.com/512/732/732223.png" onclick="bounceIcon(this)" alt="App3" />
 </div>
 
-<!-- Start Menu -->
+<!-- Start Menu Windows 11 style -->
 <div id="start-menu">
   <h3>Start Menu</h3>
-  <div class="start-item" onclick="alert('You clicked File Explorer')">
-    <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png" alt="File Explorer" />
-    File Explorer
-  </div>
-  <div class="start-item" onclick="alert('You clicked Settings')">
-    <img src="https://cdn-icons-png.flaticon.com/512/2099/2099058.png" alt="Settings" />
-    Settings
-  </div>
-  <div class="start-item" onclick="alert('You clicked About')">
-    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828961.png" alt="About" />
-    About
+  <div class="tiles">
+    <div class="tile" onclick="alert('File Explorer clicked')">Explorer</div>
+    <div class="tile" onclick="alert('Settings clicked')">Settings</div>
+    <div class="tile" onclick="alert('Browser clicked')">Browser</div>
+    <div class="tile" onclick="alert('Mail clicked')">Mail</div>
+    <div class="tile" onclick="alert('Music clicked')">Music</div>
+    <div class="tile" onclick="alert('Photos clicked')">Photos</div>
+    <div class="tile" onclick="alert('Games clicked')">Games</div>
+    <div class="tile" onclick="alert('Store clicked')">Store</div>
   </div>
 </div>
 
 <script>
-  // Bounce effect
+  // Bounce effect dock
   function bounceIcon(icon) {
     icon.classList.add("bounce");
     setTimeout(() => icon.classList.remove("bounce"), 400);
   }
 
-  // Open / Close window
+  // Open/Close window
   function openWindow() {
     document.getElementById("appWindow").style.display = "flex";
   }
@@ -274,12 +280,11 @@
   const startButton = document.getElementById('start-button');
   const startMenu = document.getElementById('start-menu');
 
-  startButton.addEventListener('click', () => {
+  startButton.addEventListener('click', (e) => {
     startMenu.style.display = (startMenu.style.display === 'flex') ? 'none' : 'flex';
-    startMenu.style.flexDirection = 'column';
   });
 
-  // Tutup Start menu kalau klik di luar
+  // Tutup Start menu jika klik di luar
   document.addEventListener('click', (e) => {
     if (!startMenu.contains(e.target) && e.target !== startButton) {
       startMenu.style.display = 'none';
