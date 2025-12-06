@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>Web OS</title>
 <style>
 body {
     margin: 0;
-    background: #1a1a1a; /* wallpaper diganti warna dulu biar kelihatan */
+    background: url('https://wallpaperaccess.com/full/317501.jpg') center/cover no-repeat;
     font-family: Arial;
 }
 
-/* ICON TEST */
+/* ICON */
 .icon {
     position: absolute;
     top: 40px;
@@ -24,39 +25,139 @@ body {
     width: 60px;
 }
 
-/* DOCK TEST */
+/* DOCK */
 .dock {
     position: fixed;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: white;
-    padding: 15px 30px;
-    border-radius: 20px;
+    background: rgba(230,230,235,0.95);
+    padding: 15px 40px;
+    border-radius: 25px;
     display: flex;
-    gap: 20px;
-    z-index: 9999;
+    gap: 25px;
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.4);
+    z-index: 2000;
 }
 
 .dock img {
     width: 60px;
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.dock img:hover {
+    transform: scale(1.25);
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+    0% { transform: translateY(0) scale(1); }
+    30% { transform: translateY(-15px) scale(1.05); }
+    60% { transform: translateY(5px) scale(0.95); }
+    100% { transform: translateY(0) scale(1); }
+}
+
+.bounce {
+    animation: bounce 0.4s ease;
+}
+
+/* WINDOW */
+.window {
+    width: 350px;
+    height: 250px;
+    background: white;
+    position: absolute;
+    top: 120px;
+    left: 120px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 12px rgba(0,0,0,0.6);
+    display: none;
+    flex-direction: column;
+    z-index: 1500;
+}
+
+.window-header {
+    background: #0078ff;
+    color: white;
+    padding: 8px 12px;
+    cursor: move;
+}
+
+.window-body {
+    flex: 1;
+    padding: 10px;
+}
+
+.close-btn {
+    float: right;
+    cursor: pointer;
 }
 </style>
 </head>
 <body>
 
-<!-- ICON -->
-<div class="icon">
+<!-- Desktop Icon -->
+<div class="icon" onclick="openWindow()">
     <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png">
     <div>File</div>
 </div>
 
+<!-- Window -->
+<div class="window" id="appWindow">
+    <div class="window-header" id="dragZone">
+        File Explorer
+        <span class="close-btn" onclick="closeWindow()">✖</span>
+    </div>
+    <div class="window-body">
+        <p>Halo! Ini jendela File Explorer.</p>
+    </div>
+</div>
+
 <!-- DOCK -->
 <div class="dock">
-    <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png">
-    <img src="https://cdn-icons-png.flaticon.com/512/732/732245.png">
-    <img src="https://cdn-icons-png.flaticon.com/512/732/732223.png">
+    <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" onclick="bounceIcon(this); openWindow()">
+    <img src="https://cdn-icons-png.flaticon.com/512/732/732245.png" onclick="bounceIcon(this)">
+    <img src="https://cdn-icons-png.flaticon.com/512/732/732223.png" onclick="bounceIcon(this)">
 </div>
+
+<script>
+// Bounce effect
+function bounceIcon(icon) {
+    icon.classList.add("bounce");
+    setTimeout(() => icon.classList.remove("bounce"), 400);
+}
+
+// Open / Close window
+function openWindow() {
+    document.getElementById("appWindow").style.display = "flex";
+}
+function closeWindow() {
+    document.getElementById("appWindow").style.display = "none";
+}
+
+// Drag window
+const win = document.getElementById("appWindow");
+const dragZone = document.getElementById("dragZone");
+let offsetX = 0, offsetY = 0, isDragging = false;
+
+dragZone.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    offsetX = e.clientX - win.offsetLeft;
+    offsetY = e.clientY - win.offsetTop;
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+        win.style.left = (e.clientX - offsetX) + "px";
+        win.style.top = (e.clientY - offsetY) + "px";
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+</script>
 
 </body>
 </html>
