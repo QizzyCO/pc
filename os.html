@@ -4,379 +4,421 @@
 <meta charset="UTF-8">
 <title>Neon Lockscreen + Desktop OS</title>
 <style>
-  html,body{
-    margin:0;
-    padding:0;
-    overflow:hidden;
-    height:100%;
-    background:black;
-    font-family:Arial, sans-serif;
-  }
+    html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        height: 100%;
+        background: black;
+        font-family: Arial, sans-serif;
+    }
 
-  /* -------------------------------------------
-     LOCKSCREEN
-  --------------------------------------------*/
-  #lockscreen{
-    position:fixed;
-    inset:0;
-    z-index:9999;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
+    /* ----------------- LOCKSCREEN ----------------- */
+    #lockscreen {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-  #shaderCanvas{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-  }
+    #shaderCanvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;    /* FIX: jangan trigger click */
+    }
 
-  #lock-ui{
-    position:absolute;
-    top:50%;
-    left:10%;
-    transform:translateY(-50%);
-    background:none !important;
-    text-align:left;
-    color:white;
-    z-index:20;
-    pointer-events:none;
-  }
+    /* Clock – no background box */
+    #lock-ui {
+        position: absolute;
+        top: 50%;
+        left: 10%;
+        transform: translateY(-50%);
+        text-align: left;
+        color: white;
+        z-index: 20;
+        pointer-events: none;
+    }
 
-  #clock{
-    font-size:90px;
-    font-weight:700;
-    color:#00eaff;
-    text-shadow:0 0 20px #00eaff;
-    margin-bottom:-8px;
-  }
+    #clock {
+        font-size: 90px;
+        font-weight: 700;
+        color: #00eaff;
+        text-shadow: 0 0 20px #00eaff;
+        margin-bottom: -8px;
+    }
 
-  #date{
-    font-size:24px;
-    opacity:0.9;
-  }
+    #date {
+        font-size: 24px;
+        opacity: 0.9;
+    }
 
-  #hint{
-    font-size:14px;
-    opacity:0.7;
-    margin-top:10px;
-  }
+    #unlock-btn {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #ffffffbb;
+        cursor: pointer;
+        text-decoration: underline;
+        pointer-events: auto;   /* FIX */
+    }
 
-  /* Fade unlock */
-  .fadeOut{
-    animation: fadeOutAnim .8s forwards;
-  }
+    /* Fade unlock */
+    .fadeOut {
+        animation: fadeOutAnim .8s forwards;
+    }
 
-  @keyframes fadeOutAnim{
-    to { opacity:0; pointer-events:none; }
-  }
+    @keyframes fadeOutAnim {
+        to { opacity: 0; pointer-events: none; }
+    }
 
-  /* -------------------------------------------
-     DESKTOP
-  --------------------------------------------*/
-  #desktop{
-    position:fixed;
-    inset:0;
-    display:none;
-    z-index:100;
-  }
+    /* ----------------- DESKTOP ----------------- */
+    #desktop {
+        position: fixed;
+        inset: 0;
+        display: none;
+        z-index: 100;
+    }
 
-  #video-background{
-    position:fixed;
-    right:0;
-    bottom:0;
-    min-width:100%;
-    min-height:100%;
-    object-fit:cover;
-  }
+    #video-background {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        min-width: 100%;
+        min-height: 100%;
+        object-fit: cover;
+    }
 
-  .icon{
-    position:absolute;
-    top:40px;
-    left:40px;
-    width:80px;
-    text-align:center;
-    font-size:18px;
-    cursor:pointer;
-    color:white;
-    z-index:200;
-  }
-  .icon img{ width:60px; }
+    .icon {
+        position: absolute;
+        top: 40px;
+        left: 40px;
+        width: 80px;
+        text-align: center;
+        font-size: 18px;
+        cursor: pointer;
+        color: white;
+        z-index: 200;
+    }
 
-  .dock{
-    position:fixed;
-    bottom:20px;
-    left:50%;
-    transform:translateX(-50%);
-    background:rgba(255,255,255,0.08);
-    padding:10px 20px;
-    border-radius:20px;
-    display:flex;
-    gap:15px;
-    backdrop-filter:blur(10px);
-    z-index:300;
-  }
+    .icon img { width: 60px; }
 
-  #start-button{
-    width:50px;height:50px;
-    background:rgba(30,144,255,0.95);
-    border-radius:12px;
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;
-  }
-  #start-button::before{
-    content:"";
-    width:22px;height:22px;
-    background:url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Windows_logo_-_2012.svg') no-repeat center/contain;
-    display:block;
-  }
+    .dock {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255,255,255,0.08);
+        padding: 10px 20px;
+        border-radius: 20px;
+        display: flex;
+        gap: 15px;
+        backdrop-filter: blur(10px);
+        z-index: 300;
+    }
 
-  .dock img{
-    width:60px;height:60px;
-    transition:0.2s;
-    cursor:pointer;
-  }
-  .dock img:hover{ transform:scale(1.5); }
+    #start-button {
+        width: 50px;
+        height: 50px;
+        background: rgba(30,144,255,0.95);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    #start-button::before {
+        content: "";
+        width: 22px;
+        height: 22px;
+        background: url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Windows_logo_-_2012.svg') no-repeat center/contain;
+        display: block;
+    }
 
-  @keyframes bounce{
-    0%{ transform:translateY(0) scale(1); }
-    30%{ transform:translateY(-12px) scale(1.05); }
-    60%{ transform:translateY(5px) scale(0.95); }
-    100%{ transform:translateY(0) scale(1); }
-  }
-  .bounce{ animation:bounce .4s; }
+    .dock img {
+        width: 60px;
+        height: 60px;
+        transition: 0.2s;
+        cursor: pointer;
+    }
+    .dock img:hover {
+        transform: scale(1.5);
+    }
 
-  /* START MENU */
-  #start-menu{
-    position:fixed;
-    top:50%;left:50%;
-    width:600px;height:400px;
-    background:white;
-    border-radius:15px;
-    transform:translate(-50%,-50%) scale(0.7);
-    display:none;
-    opacity:0;
-    padding:20px;
-    flex-direction:column;
-    z-index:400;
-  }
+    @keyframes bounce {
+        0% { transform: translateY(0) scale(1); }
+        30% { transform: translateY(-12px) scale(1.05); }
+        60% { transform: translateY(5px) scale(0.95); }
+        100% { transform: translateY(0) scale(1); }
+    }
+    .bounce { animation: bounce .4s; }
 
-  #start-menu.show{
-    display:flex;
-    animation: menuShow .3s forwards;
-  }
+    /* START MENU */
+    #start-menu {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 600px;
+        height: 400px;
+        background: white;
+        border-radius: 15px;
+        transform: translate(-50%, -50%) scale(0.7);
+        display: none;
+        opacity: 0;
+        padding: 20px;
+        flex-direction: column;
+        z-index: 400;
+    }
 
-  @keyframes menuShow{
-    0%{ transform:translate(-50%,-50%) scale(0.7); opacity:0; }
-    80%{ transform:translate(-50%,-50%) scale(1.05); opacity:1; }
-    100%{ transform:translate(-50%,-50%) scale(1); opacity:1; }
-  }
+    #start-menu.show {
+        display: flex;
+        animation: startMenuShow .3s forwards;
+    }
 
-  .tiles{
-    display:flex;
-    flex-wrap:wrap;
-    gap:15px;
-  }
-  .tile{
-    width:100px;height:100px;
-    background:#0078ff;
-    border-radius:10px;
-    display:flex;align-items:center;justify-content:center;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-    transition:.2s;
-  }
-  .tile:hover{
-    transform:scale(1.1);
-    background:#005bb5;
-  }
+    @keyframes startMenuShow {
+        0% { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
+        80% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
 
-  /* WINDOWS */
-  .window{
-    width:350px;height:250px;
-    background:white;
-    position:absolute;
-    top:120px;left:120px;
-    display:none;
-    flex-direction:column;
-    border-radius:8px;
-    box-shadow:0 0 12px rgba(0,0,0,.5);
-    z-index:500;
-  }
-  .window-header{
-    background:#0078ff;
-    padding:8px;color:white;
-    cursor:move;
-  }
-  .window-body{
-    padding:10px;color:black;flex:1;
-  }
-  .close-btn{ float:right;cursor:pointer; }
+    .tiles {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .tile {
+        width: 100px;
+        height: 100px;
+        background: #0078ff;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+    .tile:hover {
+        transform: scale(1.1);
+        background: #005bb5;
+    }
+
+    /* WINDOWS */
+    .window {
+        width: 350px;
+        height: 250px;
+        background: white;
+        position: absolute;
+        top: 120px;
+        left: 120px;
+        display: none;
+        flex-direction: column;
+        border-radius: 8px;
+        box-shadow: 0 0 12px rgba(0,0,0,.5);
+        z-index: 500;
+    }
+
+    .window-header {
+        background: #0078ff;
+        padding: 8px;
+        color: white;
+        cursor: move;
+    }
+
+    .window-body {
+        padding: 10px;
+        color: black;
+        flex: 1;
+    }
+
+    .close-btn {
+        float: right;
+        cursor: pointer;
+    }
 </style>
 </head>
 <body>
 
-<!-- LOCKSCREEN -->
+<!-- -------------------------------------------------- -->
+<!--                      LOCKSCREEN                    -->
+<!-- -------------------------------------------------- -->
 <div id="lockscreen">
-  <canvas id="shaderCanvas"></canvas>
+    <canvas id="shaderCanvas"></canvas>
 
-  <div id="lock-ui">
-    <div id="clock">00:00</div>
-    <div id="date">Loading...</div>
-    <div id="hint">Press any key or click to unlock</div>
-  </div>
+    <div id="lock-ui">
+        <div id="clock">00:00</div>
+        <div id="date">Loading...</div>
+
+        <!-- FIX = unlock hanya lewat tombol -->
+        <div id="unlock-btn" onclick="unlock()">Click to unlock</div>
+    </div>
 </div>
 
-<!-- DESKTOP -->
+<!-- -------------------------------------------------- -->
+<!--                       DESKTOP                      -->
+<!-- -------------------------------------------------- -->
 <div id="desktop">
-  <video id="video-background" autoplay muted loop playsinline>
-    <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4"/>
-  </video>
+    <video id="video-background" autoplay muted loop playsinline>
+        <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4"/>
+    </video>
 
-  <div class="icon" onclick="openWindow()">
-    <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png"/>
-    <div>File</div>
-  </div>
-
-  <div class="window" id="appWindow">
-    <div class="window-header" id="dragZone">
-      File Explorer
-      <span class="close-btn" onclick="closeWindow()">✖</span>
+    <div class="icon" onclick="openWindow()">
+        <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png"/>
+        <div>File</div>
     </div>
-    <div class="window-body">
-      Ini jendela File Explorer.
-    </div>
-  </div>
 
-  <div class="dock">
-    <div id="start-button"></div>
-    <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" onclick="bounceIcon(this);openWindow()">
-    <img src="https://cdn-icons-png.flaticon.com/512/732/732245.png" onclick="bounceIcon(this)">
-    <img src="https://cdn-icons-png.flaticon.com/512/732/732223.png" onclick="bounceIcon(this)">
-  </div>
-
-  <div id="start-menu">
-    <h3>Start Menu</h3>
-    <div class="tiles">
-      <div class="tile">Explorer</div>
-      <div class="tile">Settings</div>
-      <div class="tile">Browser</div>
-      <div class="tile">Mail</div>
-      <div class="tile">Music</div>
-      <div class="tile">Photos</div>
-      <div class="tile">Games</div>
-      <div class="tile">Store</div>
+    <div class="window" id="appWindow">
+        <div class="window-header" id="dragZone">
+            File Explorer
+            <span class="close-btn" onclick="closeWindow()">✖</span>
+        </div>
+        <div class="window-body">
+            Ini jendela File Explorer.
+        </div>
     </div>
-  </div>
+
+    <div class="dock">
+        <div id="start-button"></div>
+        <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" onclick="bounceIcon(this);openWindow()">
+        <img src="https://cdn-icons-png.flaticon.com/512/732/732245.png" onclick="bounceIcon(this)">
+        <img src="https://cdn-icons-png.flaticon.com/512/732/732223.png" onclick="bounceIcon(this)">
+    </div>
+
+    <div id="start-menu">
+        <h3>Start Menu</h3>
+        <div class="tiles">
+            <div class="tile">Explorer</div>
+            <div class="tile">Settings</div>
+            <div class="tile">Browser</div>
+            <div class="tile">Mail</div>
+            <div class="tile">Music</div>
+            <div class="tile">Photos</div>
+            <div class="tile">Games</div>
+            <div class="tile">Store</div>
+        </div>
+    </div>
 </div>
 
 <script>
-/* =====================================================
+/* =======================================
    CLOCK UPDATE
-===================================================== */
+======================================= */
 function updateClock(){
-  const now = new Date();
-  let h = String(now.getHours()).padStart(2,"0");
-  let m = String(now.getMinutes()).padStart(2,"0");
-  document.getElementById("clock").textContent = h+":"+m;
+    const now = new Date();
+    let h = String(now.getHours()).padStart(2,"0");
+    let m = String(now.getMinutes()).padStart(2,"0");
 
-  document.getElementById("date").textContent =
-    now.toLocaleDateString("en-US", {
-      weekday:"long", year:"numeric", month:"long", day:"numeric"
-    });
+    document.getElementById("clock").textContent = h+":"+m;
+
+    document.getElementById("date").textContent =
+        now.toLocaleDateString("en-US", {
+            weekday:"long", year:"numeric", month:"long", day:"numeric"
+        });
 }
 setInterval(updateClock,1000);
 updateClock();
 
-/* =====================================================
-   UNLOCK
-===================================================== */
+/* =======================================
+   UNLOCK FIX
+======================================= */
 function unlock(){
-  const lock = document.getElementById("lockscreen");
-  const desk = document.getElementById("desktop");
+    const lock = document.getElementById("lockscreen");
+    const desk = document.getElementById("desktop");
 
-  lock.classList.add("fadeOut");
-  setTimeout(()=>{
-    lock.style.display="none";
-    desk.style.display="block";
-  },800);
+    lock.classList.add("fadeOut");
+
+    setTimeout(()=>{
+        lock.style.display="none";
+        desk.style.display="block";
+    },800);
 }
-document.addEventListener("keydown", unlock);
-document.addEventListener("click", unlock);
 
-/* =====================================================
-   DESKTOP LOGIC
-===================================================== */
+// ❗ FIX: jangan auto unlock
+// (hapus event click & keydown global)
+
+/* =======================================
+   DESKTOP FUNCTIONS
+======================================= */
 function bounceIcon(i){
-  i.classList.add("bounce");
-  setTimeout(()=>i.classList.remove("bounce"),400);
+    i.classList.add("bounce");
+    setTimeout(()=>i.classList.remove("bounce"),400);
 }
+
 function openWindow(){
-  document.getElementById("appWindow").style.display="flex";
+    document.getElementById("appWindow").style.display="flex";
 }
 function closeWindow(){
-  document.getElementById("appWindow").style.display="none";
+    document.getElementById("appWindow").style.display="none";
 }
 
-/* Drag window */
+/* Drag */
 (function(){
-  const win = document.getElementById("appWindow");
-  const drag = document.getElementById("dragZone");
-  let dragX,dragY,isDown=false;
+    const win=document.getElementById("appWindow");
+    const drag=document.getElementById("dragZone");
 
-  drag.onmousedown = e=>{
-    isDown=true;
-    dragX=e.clientX-win.offsetLeft;
-    dragY=e.clientY-win.offsetTop;
-  };
-  document.onmousemove = e=>{
-    if(isDown){
-      win.style.left=(e.clientX-dragX)+"px";
-      win.style.top=(e.clientY-dragY)+"px";
-    }
-  };
-  document.onmouseup=()=>isDown=false;
+    let isDown=false, offX, offY;
+
+    drag.onmousedown=e=>{
+        isDown=true;
+        offX=e.clientX-win.offsetLeft;
+        offY=e.clientY-win.offsetTop;
+    };
+
+    document.onmousemove=e=>{
+        if(isDown){
+            win.style.left=(e.clientX-offX)+"px";
+            win.style.top=(e.clientY-offY)+"px";
+        }
+    };
+
+    document.onmouseup=()=>isDown=false;
 })();
 
 /* Start Menu */
 (function(){
-  const btn=document.getElementById("start-button");
-  const menu=document.getElementById("start-menu");
+    const btn=document.getElementById("start-button");
+    const menu=document.getElementById("start-menu");
 
-  btn.onclick=e=>{
-    e.stopPropagation();
-    if(menu.classList.contains("show")){
-      menu.classList.remove("show");
-      setTimeout(()=>menu.style.display="none",300);
-    }else{
-      menu.style.display="flex";
-      requestAnimationFrame(()=>menu.classList.add("show"));
-    }
-  };
+    btn.onclick=e=>{
+        e.stopPropagation();
 
-  document.onclick=e=>{
-    if(menu.classList.contains("show") && !menu.contains(e.target) && e.target!==btn){
-      menu.classList.remove("show");
-      setTimeout(()=>menu.style.display="none",300);
-    }
-  };
+        if(menu.classList.contains("show")){
+            menu.classList.remove("show");
+            setTimeout(()=>menu.style.display="none",300);
+        }else{
+            menu.style.display="flex";
+            requestAnimationFrame(()=>menu.classList.add("show"));
+        }
+    };
+
+    document.onclick=e=>{
+        if(menu.classList.contains("show") &&
+           !menu.contains(e.target) &&
+           e.target!==btn){
+
+            menu.classList.remove("show");
+            setTimeout(()=>menu.style.display="none",300);
+        }
+    };
 })();
 
-/* =====================================================
-   SHADER FIX (WebGL2 → fallback WebGL1, resolution uniform)
-===================================================== */
+/* =======================================
+   SHADER FIX (Guaranteed Works)
+======================================= */
 const canvas = document.getElementById("shaderCanvas");
-let gl = canvas.getContext("webgl2");
-if(!gl) gl = canvas.getContext("webgl");
+let gl = canvas.getContext("webgl");
 if(!gl){
-  console.warn("WebGL not supported.");
+    alert("WebGL unsupported");
 }
 
 function resizeCanvas(){
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
 }
 resizeCanvas();
 addEventListener("resize", resizeCanvas);
@@ -384,59 +426,56 @@ addEventListener("resize", resizeCanvas);
 const vert = `
 attribute vec2 position;
 void main(){
-  gl_Position = vec4(position, 0.0, 1.0);
+    gl_Position = vec4(position, 0.0, 1.0);
 }`;
 
-/* Neon shader – always works */
 const frag = `
 precision mediump float;
 uniform float time;
 uniform vec2 resolution;
 
 void main(){
-  vec2 uv = gl_FragCoord.xy / resolution.xy;
-  float wave = 0.5 + 0.5 * sin(time + uv.x*10.0 + uv.y*10.0);
-  gl_FragColor = vec4(0.0, wave*0.8, wave, 1.0);
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    float neon = 0.5 + 0.5 * sin(time + uv.x*10.0 + uv.y*10.0);
+    gl_FragColor = vec4(0.0, neon*0.8, neon, 1.0);
 }`;
 
-function compileShader(type,source){
-  let s = gl.createShader(type);
-  gl.shaderSource(s,source);
-  gl.compileShader(s);
-  return s;
+function makeShader(type, src){
+    let s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
 }
 
-const vs = compileShader(gl.VERTEX_SHADER, vert);
-const fs = compileShader(gl.FRAGMENT_SHADER, frag);
+let vs = makeShader(gl.VERTEX_SHADER, vert);
+let fs = makeShader(gl.FRAGMENT_SHADER, frag);
 
-const prog = gl.createProgram();
-gl.attachShader(prog,vs);
-gl.attachShader(prog,fs);
+let prog = gl.createProgram();
+gl.attachShader(prog, vs);
+gl.attachShader(prog, fs);
 gl.linkProgram(prog);
 gl.useProgram(prog);
 
-const vertices = new Float32Array([
-   -1,-1, 1,-1, -1,1,
-   -1,1,  1,-1, 1,1
-]);
-const buf = gl.createBuffer();
+let buf = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    -1,-1, 1,-1, -1,1,
+    -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
 
-const pos = gl.getAttribLocation(prog,"position");
+let pos = gl.getAttribLocation(prog, "position");
 gl.enableVertexAttribArray(pos);
-gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
 
-const timeLoc = gl.getUniformLocation(prog,"time");
-const resLoc = gl.getUniformLocation(prog,"resolution");
+let timeLoc = gl.getUniformLocation(prog, "time");
+let resLoc = gl.getUniformLocation(prog, "resolution");
 
-function draw(t){
-  gl.uniform1f(timeLoc, t*0.001);
-  gl.uniform2f(resLoc, canvas.width, canvas.height);
-  gl.drawArrays(gl.TRIANGLES, 0, 6);
-  requestAnimationFrame(draw);
+function render(t){
+    gl.uniform1f(timeLoc, t*0.001);
+    gl.uniform2f(resLoc, canvas.width, canvas.height);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    requestAnimationFrame(render);
 }
-requestAnimationFrame(draw);
+requestAnimationFrame(render);
 </script>
 
 </body>
