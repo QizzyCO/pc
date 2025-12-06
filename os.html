@@ -1,482 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Neon Lockscreen + Desktop OS</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Neon Lockscreen (original shader) + Desktop</title>
 <style>
-    html, body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        height: 100%;
-        background: black;
-        font-family: Arial, sans-serif;
-    }
+  html,body{height:100%;margin:0;padding:0;background:#000;font-family:Arial,Helvetica,sans-serif;overflow:hidden;color:#fff;}
+  /* LOCKSCREEN */
+  #lockscreen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;}
+  canvas#shaderCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;}
+  #lock-ui{position:absolute;top:50%;left:10%;transform:translateY(-50%);text-align:left;color:white;z-index:20;pointer-events:none;}
+  #clock{font-size:90px;font-weight:700;color:#00eaff;text-shadow:0 0 20px #00eaff;margin-bottom:-8px;}
+  #date{font-size:24px;opacity:.95;}
+  #hint{font-size:14px;opacity:.75;margin-top:8px;}
+  .fadeOut{animation:fadeOutAnim .8s forwards;}
+  @keyframes fadeOutAnim{to{opacity:0;pointer-events:none;filter:blur(4px);} }
 
-    /* ----------------- LOCKSCREEN ----------------- */
-    #lockscreen {
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+  /* DESKTOP */
+  #desktop{position:fixed;inset:0;display:none;z-index:10;background:#0b0b0b;overflow:hidden;}
+  #video-background{position:fixed;right:0;bottom:0;min-width:100%;min-height:100%;object-fit:cover;z-index:0}
+  .icon{position:absolute;top:40px;left:40px;width:80px;text-align:center;z-index:20;cursor:pointer}
+  .icon img{width:60px}
+  .dock{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.06);padding:10px 20px;border-radius:20px;display:flex;gap:15px;backdrop-filter:blur(10px);z-index:30;box-shadow:0 6px 20px rgba(0,0,0,0.4)}
+  #start-button{width:50px;height:50px;background:rgba(30,144,255,0.95);border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+  #start-button::before{content:"";width:22px;height:22px;background:url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Windows_logo_-_2012.svg') no-repeat center/contain;display:block}
+  .dock img{width:60px;height:60px;cursor:pointer;transition:transform .18s}
+  .dock img:hover{transform:scale(1.5)}
+  @keyframes bounce{0%{transform:translateY(0) scale(1)}30%{transform:translateY(-12px) scale(1.05)}60%{transform:translateY(5px) scale(0.95)}100%{transform:translateY(0) scale(1)}}
+  .bounce{animation:bounce .4s}
 
-    #shaderCanvas {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;    /* FIX: jangan trigger click */
-    }
+  #start-menu{position:fixed;top:50%;left:50%;width:600px;height:400px;background:#fff;border-radius:15px;transform:translate(-50%,-50%) scale(.7);display:none;opacity:0;padding:20px;flex-direction:column;z-index:40}
+  #start-menu.show{display:flex;animation:startMenuShow .28s forwards}
+  @keyframes startMenuShow{0%{transform:translate(-50%,-50%) scale(.7);opacity:0}80%{transform:translate(-50%,-50%) scale(1.05);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+  .tiles{display:flex;flex-wrap:wrap;gap:15px}
+  .tile{width:100px;height:100px;background:#0078ff;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;cursor:pointer;transition:.18s}
+  .tile:hover{transform:scale(1.08);background:#005bb5}
 
-    /* Clock – no background box */
-    #lock-ui {
-        position: absolute;
-        top: 50%;
-        left: 10%;
-        transform: translateY(-50%);
-        text-align: left;
-        color: white;
-        z-index: 20;
-        pointer-events: none;
-    }
+  .window{width:350px;height:250px;background:#fff;border-radius:8px;position:absolute;top:120px;left:120px;display:none;z-index:50;box-shadow:0 0 12px rgba(0,0,0,.6)}
+  .window-header{background:#0078ff;color:#fff;padding:8px;cursor:move}
+  .window-body{padding:10px;color:#000;flex:1}
+  .close-btn{float:right;cursor:pointer}
 
-    #clock {
-        font-size: 90px;
-        font-weight: 700;
-        color: #00eaff;
-        text-shadow: 0 0 20px #00eaff;
-        margin-bottom: -8px;
-    }
-
-    #date {
-        font-size: 24px;
-        opacity: 0.9;
-    }
-
-    #unlock-btn {
-        margin-top: 20px;
-        font-size: 18px;
-        color: #ffffffbb;
-        cursor: pointer;
-        text-decoration: underline;
-        pointer-events: auto;   /* FIX */
-    }
-
-    /* Fade unlock */
-    .fadeOut {
-        animation: fadeOutAnim .8s forwards;
-    }
-
-    @keyframes fadeOutAnim {
-        to { opacity: 0; pointer-events: none; }
-    }
-
-    /* ----------------- DESKTOP ----------------- */
-    #desktop {
-        position: fixed;
-        inset: 0;
-        display: none;
-        z-index: 100;
-    }
-
-    #video-background {
-        position: fixed;
-        right: 0;
-        bottom: 0;
-        min-width: 100%;
-        min-height: 100%;
-        object-fit: cover;
-    }
-
-    .icon {
-        position: absolute;
-        top: 40px;
-        left: 40px;
-        width: 80px;
-        text-align: center;
-        font-size: 18px;
-        cursor: pointer;
-        color: white;
-        z-index: 200;
-    }
-
-    .icon img { width: 60px; }
-
-    .dock {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(255,255,255,0.08);
-        padding: 10px 20px;
-        border-radius: 20px;
-        display: flex;
-        gap: 15px;
-        backdrop-filter: blur(10px);
-        z-index: 300;
-    }
-
-    #start-button {
-        width: 50px;
-        height: 50px;
-        background: rgba(30,144,255,0.95);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-    }
-    #start-button::before {
-        content: "";
-        width: 22px;
-        height: 22px;
-        background: url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Windows_logo_-_2012.svg') no-repeat center/contain;
-        display: block;
-    }
-
-    .dock img {
-        width: 60px;
-        height: 60px;
-        transition: 0.2s;
-        cursor: pointer;
-    }
-    .dock img:hover {
-        transform: scale(1.5);
-    }
-
-    @keyframes bounce {
-        0% { transform: translateY(0) scale(1); }
-        30% { transform: translateY(-12px) scale(1.05); }
-        60% { transform: translateY(5px) scale(0.95); }
-        100% { transform: translateY(0) scale(1); }
-    }
-    .bounce { animation: bounce .4s; }
-
-    /* START MENU */
-    #start-menu {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        width: 600px;
-        height: 400px;
-        background: white;
-        border-radius: 15px;
-        transform: translate(-50%, -50%) scale(0.7);
-        display: none;
-        opacity: 0;
-        padding: 20px;
-        flex-direction: column;
-        z-index: 400;
-    }
-
-    #start-menu.show {
-        display: flex;
-        animation: startMenuShow .3s forwards;
-    }
-
-    @keyframes startMenuShow {
-        0% { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
-        80% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
-        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    }
-
-    .tiles {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-
-    .tile {
-        width: 100px;
-        height: 100px;
-        background: #0078ff;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-        transition: .2s;
-    }
-
-    .tile:hover {
-        transform: scale(1.1);
-        background: #005bb5;
-    }
-
-    /* WINDOWS */
-    .window {
-        width: 350px;
-        height: 250px;
-        background: white;
-        position: absolute;
-        top: 120px;
-        left: 120px;
-        display: none;
-        flex-direction: column;
-        border-radius: 8px;
-        box-shadow: 0 0 12px rgba(0,0,0,.5);
-        z-index: 500;
-    }
-
-    .window-header {
-        background: #0078ff;
-        padding: 8px;
-        color: white;
-        cursor: move;
-    }
-
-    .window-body {
-        padding: 10px;
-        color: black;
-        flex: 1;
-    }
-
-    .close-btn {
-        float: right;
-        cursor: pointer;
-    }
+  /* small screens */
+  @media (max-width:480px){
+    #clock{font-size:54px}
+    #date{font-size:16px}
+  }
 </style>
 </head>
 <body>
 
-<!-- -------------------------------------------------- -->
-<!--                      LOCKSCREEN                    -->
-<!-- -------------------------------------------------- -->
-<div id="lockscreen">
-    <canvas id="shaderCanvas"></canvas>
+<!-- LOCKSCREEN -->
+<div id="lockscreen" aria-hidden="false">
+  <canvas id="shaderCanvas" aria-hidden="true"></canvas>
 
-    <div id="lock-ui">
-        <div id="clock">00:00</div>
-        <div id="date">Loading...</div>
-
-        <!-- FIX = unlock hanya lewat tombol -->
-        <div id="unlock-btn" onclick="unlock()">Click to unlock</div>
-    </div>
+  <div id="lock-ui" aria-hidden="false">
+    <div id="clock">00:00</div>
+    <div id="date">Loading...</div>
+    <div id="hint">Press any key or click to unlock</div>
+  </div>
 </div>
 
-<!-- -------------------------------------------------- -->
-<!--                       DESKTOP                      -->
-<!-- -------------------------------------------------- -->
-<div id="desktop">
-    <video id="video-background" autoplay muted loop playsinline>
-        <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4"/>
-    </video>
+<!-- DESKTOP -->
+<div id="desktop" aria-hidden="true">
+  <video id="video-background" autoplay muted loop playsinline>
+    <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4"/>
+  </video>
 
-    <div class="icon" onclick="openWindow()">
-        <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png"/>
-        <div>File</div>
-    </div>
+  <div class="icon" onclick="openWindow()">
+    <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png" alt="file icon"/>
+    <div>File</div>
+  </div>
 
-    <div class="window" id="appWindow">
-        <div class="window-header" id="dragZone">
-            File Explorer
-            <span class="close-btn" onclick="closeWindow()">✖</span>
-        </div>
-        <div class="window-body">
-            Ini jendela File Explorer.
-        </div>
-    </div>
+  <div class="window" id="appWindow" role="dialog" aria-label="File Explorer">
+    <div class="window-header" id="dragZone">File Explorer <span class="close-btn" onclick="closeWindow()">✖</span></div>
+    <div class="window-body">Halo! Ini jendela File Explorer.</div>
+  </div>
 
-    <div class="dock">
-        <div id="start-button"></div>
-        <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" onclick="bounceIcon(this);openWindow()">
-        <img src="https://cdn-icons-png.flaticon.com/512/732/732245.png" onclick="bounceIcon(this)">
-        <img src="https://cdn-icons-png.flaticon.com/512/732/732223.png" onclick="bounceIcon(this)">
-    </div>
+  <div class="dock" role="toolbar" aria-label="Dock">
+    <div id="start-button" title="Start" tabindex="0" aria-controls="start-menu"></div>
+    <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png" onclick="bounceIcon(this);openWindow()" alt="app1"/>
+    <img src="https://cdn-icons-png.flaticon.com/512/732/732245.png" onclick="bounceIcon(this)" alt="app2"/>
+    <img src="https://cdn-icons-png.flaticon.com/512/732/732223.png" onclick="bounceIcon(this)" alt="app3"/>
+  </div>
 
-    <div id="start-menu">
-        <h3>Start Menu</h3>
-        <div class="tiles">
-            <div class="tile">Explorer</div>
-            <div class="tile">Settings</div>
-            <div class="tile">Browser</div>
-            <div class="tile">Mail</div>
-            <div class="tile">Music</div>
-            <div class="tile">Photos</div>
-            <div class="tile">Games</div>
-            <div class="tile">Store</div>
-        </div>
+  <div id="start-menu" aria-hidden="true">
+    <h3>Start Menu</h3>
+    <div class="tiles">
+      <div class="tile" onclick="alert('Explorer')">Explorer</div>
+      <div class="tile" onclick="alert('Settings')">Settings</div>
+      <div class="tile" onclick="alert('Browser')">Browser</div>
+      <div class="tile" onclick="alert('Mail')">Mail</div>
+      <div class="tile" onclick="alert('Music')">Music</div>
+      <div class="tile" onclick="alert('Photos')">Photos</div>
+      <div class="tile" onclick="alert('Games')">Games</div>
+      <div class="tile" onclick="alert('Store')">Store</div>
     </div>
+  </div>
 </div>
 
 <script>
-/* =======================================
-   CLOCK UPDATE
-======================================= */
+/* -------------------- CLOCK -------------------- */
+const clockEl = document.getElementById('clock');
+const dateEl = document.getElementById('date');
 function updateClock(){
-    const now = new Date();
-    let h = String(now.getHours()).padStart(2,"0");
-    let m = String(now.getMinutes()).padStart(2,"0");
-
-    document.getElementById("clock").textContent = h+":"+m;
-
-    document.getElementById("date").textContent =
-        now.toLocaleDateString("en-US", {
-            weekday:"long", year:"numeric", month:"long", day:"numeric"
-        });
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  clockEl.textContent = `${h}:${m}`;
+  dateEl.textContent = now.toLocaleDateString('en-US',{weekday:'long', year:'numeric', month:'long', day:'numeric'});
 }
-setInterval(updateClock,1000);
 updateClock();
+setInterval(updateClock,1000);
 
-/* =======================================
-   UNLOCK FIX
-======================================= */
+/* -------------------- UNLOCK (only real user events) -------------------- */
+let unlocked = false;
 function unlock(){
-    const lock = document.getElementById("lockscreen");
-    const desk = document.getElementById("desktop");
+  if(unlocked) return;
+  unlocked = true;
+  const lock = document.getElementById('lockscreen');
+  const canvas = document.getElementById('shaderCanvas');
+  const desktop = document.getElementById('desktop');
 
-    lock.classList.add("fadeOut");
-
-    setTimeout(()=>{
-        lock.style.display="none";
-        desk.style.display="block";
-    },800);
+  lock.classList.add('fadeOut');
+  setTimeout(()=>{
+    lock.style.display = 'none';
+    canvas.style.display = 'none';
+    desktop.style.display = 'block';
+    desktop.setAttribute('aria-hidden','false');
+  },780);
 }
 
-// ❗ FIX: jangan auto unlock
-// (hapus event click & keydown global)
-
-/* =======================================
-   DESKTOP FUNCTIONS
-======================================= */
-function bounceIcon(i){
-    i.classList.add("bounce");
-    setTimeout(()=>i.classList.remove("bounce"),400);
+// Only react to trusted user events (prevents auto/unwanted unlock):
+function userEventHandler(e){
+  if(e && e.isTrusted){
+    // allow both click and keydown from user
+    unlock();
+  }
 }
 
-function openWindow(){
-    document.getElementById("appWindow").style.display="flex";
-}
-function closeWindow(){
-    document.getElementById("appWindow").style.display="none";
-}
+// attach listeners for real interactions
+document.addEventListener('click', userEventHandler);
+document.addEventListener('keydown', userEventHandler);
+document.addEventListener('touchstart', userEventHandler, {passive:true});
 
-/* Drag */
+/* -------------------- DESKTOP SCRIPTS -------------------- */
+function bounceIcon(el){ el.classList.add('bounce'); setTimeout(()=>el.classList.remove('bounce'),400); }
+function openWindow(){ document.getElementById('appWindow').style.display='flex'; }
+function closeWindow(){ document.getElementById('appWindow').style.display='none'; }
+
+/* Drag window */
 (function(){
-    const win=document.getElementById("appWindow");
-    const drag=document.getElementById("dragZone");
-
-    let isDown=false, offX, offY;
-
-    drag.onmousedown=e=>{
-        isDown=true;
-        offX=e.clientX-win.offsetLeft;
-        offY=e.clientY-win.offsetTop;
-    };
-
-    document.onmousemove=e=>{
-        if(isDown){
-            win.style.left=(e.clientX-offX)+"px";
-            win.style.top=(e.clientY-offY)+"px";
-        }
-    };
-
-    document.onmouseup=()=>isDown=false;
+  const win = document.getElementById('appWindow');
+  const header = document.getElementById('dragZone');
+  let isDown=false, offsetX=0, offsetY=0;
+  header.addEventListener('mousedown', e => { isDown=true; offsetX=e.clientX - win.offsetLeft; offsetY=e.clientY - win.offsetTop; });
+  document.addEventListener('mousemove', e => { if(isDown){ win.style.left = (e.clientX-offsetX)+'px'; win.style.top = (e.clientY-offsetY)+'px'; } });
+  document.addEventListener('mouseup', ()=> isDown=false);
+  /* touch */
+  header.addEventListener('touchstart', e=>{ const t=e.touches[0]; isDown=true; offsetX=t.clientX-win.offsetLeft; offsetY=t.clientY-win.offsetTop; }, {passive:true});
+  header.addEventListener('touchmove', e=>{ if(isDown){ const t=e.touches[0]; win.style.left=(t.clientX-offsetX)+'px'; win.style.top=(t.clientY-offsetY)+'px'; } }, {passive:true});
+  header.addEventListener('touchend', ()=> isDown=false);
 })();
 
-/* Start Menu */
+/* Start menu */
 (function(){
-    const btn=document.getElementById("start-button");
-    const menu=document.getElementById("start-menu");
-
-    btn.onclick=e=>{
-        e.stopPropagation();
-
-        if(menu.classList.contains("show")){
-            menu.classList.remove("show");
-            setTimeout(()=>menu.style.display="none",300);
-        }else{
-            menu.style.display="flex";
-            requestAnimationFrame(()=>menu.classList.add("show"));
-        }
-    };
-
-    document.onclick=e=>{
-        if(menu.classList.contains("show") &&
-           !menu.contains(e.target) &&
-           e.target!==btn){
-
-            menu.classList.remove("show");
-            setTimeout(()=>menu.style.display="none",300);
-        }
-    };
+  const btn = document.getElementById('start-button');
+  const menu = document.getElementById('start-menu');
+  btn.addEventListener('click', e=>{ e.stopPropagation(); if(menu.classList.contains('show')){ menu.classList.remove('show'); setTimeout(()=>menu.style.display='none',300); } else { menu.style.display='flex'; requestAnimationFrame(()=>menu.classList.add('show')); } });
+  document.addEventListener('click', e=>{ if(menu.classList.contains('show') && !menu.contains(e.target) && e.target!==btn){ menu.classList.remove('show'); setTimeout(()=>menu.style.display='none',300); } });
 })();
 
-/* =======================================
-   SHADER FIX (Guaranteed Works)
-======================================= */
-const canvas = document.getElementById("shaderCanvas");
-let gl = canvas.getContext("webgl");
-if(!gl){
-    alert("WebGL unsupported");
+/* -------------------- SHADER: try EXACT original (WebGL) -------------------- */
+/* fragment shader code copied 1:1 from your neon-loader.html */
+const vertexShaderSource = `
+attribute vec2 position;
+void main() {
+    gl_Position = vec4(position, 0.0, 1.0);
+}
+`;
+
+const fragmentShaderSource = `
+precision highp float;
+
+uniform vec2 r;   // resolution
+uniform float t;  // time
+
+void main() {
+    vec2 FC = gl_FragCoord.xy;
+
+    vec2 p = (FC * 2.0 - r) / r.y;
+    float a = atan(p.y, p.x);
+    float l = length(p);
+    vec3 c = vec3(0.0);
+
+    for(float i = 0.0; i < 15.0; i++) {
+        float m = sin(a * 10.0 + t * (2.0 + i * 0.5) - l * 20.0) * 0.05;
+        c += vec3(2.0, i * 0.1, 1.0) * 0.0008 / abs(l - 0.5 - m + i * 0.015);
+    }
+
+    gl_FragColor = vec4(c, 1.0);
+}
+`;
+
+/* helper to create and compile shader, return null on compile error */
+function compileShader(gl, type, src){
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)){
+    console.warn('Shader compile error:', gl.getShaderInfoLog(s));
+    return null;
+  }
+  return s;
 }
 
-function resizeCanvas(){
+/* try WebGL (1) context with original shader; if any failure -> fallbackCanvas2D() */
+(function tryWebGLOriginal(){
+  const canvas = document.getElementById('shaderCanvas');
+  // try standard WebGL first
+  let gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if(!gl){
+    console.warn('WebGL unavailable, falling back to Canvas2D neon.');
+    fallbackCanvas2D();
+    return;
+  }
+
+  // compile shaders
+  const vs = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+  const fs = compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+  if(!vs || !fs){ fallbackCanvas2D(); return; }
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, vs);
+  gl.attachShader(prog, fs);
+  gl.linkProgram(prog);
+  if(!gl.getProgramParameter(prog, gl.LINK_STATUS)){
+    console.warn('Program link failed:', gl.getProgramInfoLog(prog));
+    fallbackCanvas2D();
+    return;
+  }
+
+  // set up fullscreen quad
+  gl.useProgram(prog);
+  const quad = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,-1, 1,1, -1,1]), gl.STATIC_DRAW);
+  const posLoc = gl.getAttribLocation(prog, 'position');
+  gl.enableVertexAttribArray(posLoc);
+  gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+  const resLoc = gl.getUniformLocation(prog, 'r');
+  const timeLoc = gl.getUniformLocation(prog, 't');
+
+  function resize(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.floor(window.innerWidth * dpr);
+    canvas.height = Math.floor(window.innerHeight * dpr);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    gl.viewport(0,0,canvas.width, canvas.height);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  let start = performance.now();
+  function render(){
+    const now = performance.now();
+    const time = (now - start) * 0.001;
+    gl.uniform2f(resLoc, canvas.width, canvas.height);
+    gl.uniform1f(timeLoc, time);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    if(!unlocked) requestAnimationFrame(render);
+    else {
+      // if unlocked, draw a couple more frames for smooth fade, else stop
+      if (parseFloat(canvas.style.opacity || 1) > 0.15) requestAnimationFrame(render);
+    }
+  }
+  render();
+})();
+
+/* -------------------- Fallback: Canvas2D neon approximation -------------------- */
+function fallbackCanvas2D(){
+  const canvas = document.getElementById('shaderCanvas');
+  const ctx = canvas.getContext('2d');
+  if(!ctx){ console.error('Canvas2D not supported'); return; }
+
+  function resize(){
     canvas.width = innerWidth;
     canvas.height = innerHeight;
+    canvas.style.width = innerWidth + 'px';
+    canvas.style.height = innerHeight + 'px';
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  let start = performance.now();
+  function draw(t){
+    const now = performance.now();
+    const time = (now - start) * 0.001;
+
+    // clear
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0,0,canvas.width, canvas.height);
+
+    // draw radial neon-ish rings using additive blending
+    ctx.globalCompositeOperation = 'lighter';
+
+    const cx = canvas.width/2;
+    const cy = canvas.height/2;
+    const maxR = Math.min(canvas.width, canvas.height) * 0.7;
+
+    for(let i=0;i<12;i++){
+      const fi = i/12;
+      const hueX = 180 + fi*180; // cyan->magenta
+      const radius = maxR * (0.45 + 0.05*i) * (0.6 + 0.4*Math.sin(time*(1.0+i*0.12)));
+      const grad = ctx.createRadialGradient(cx,cy, radius*0.02, cx,cy, radius);
+      grad.addColorStop(0, `hsla(${hueX},100%,60%,${0.25 - fi*0.015})`);
+      grad.addColorStop(0.4, `hsla(${hueX},90%,50%,${0.10 - fi*0.006})`);
+      grad.addColorStop(1, `rgba(0,0,0,0)`);
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    // soft noise streaks (moving)
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'rgba(0,0,0,0.02)';
+    ctx.fillRect(0,0,canvas.width, canvas.height);
+
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
 }
-resizeCanvas();
-addEventListener("resize", resizeCanvas);
 
-const vert = `
-attribute vec2 position;
-void main(){
-    gl_Position = vec4(position, 0.0, 1.0);
-}`;
-
-const frag = `
-precision mediump float;
-uniform float time;
-uniform vec2 resolution;
-
-void main(){
-    vec2 uv = gl_FragCoord.xy / resolution.xy;
-    float neon = 0.5 + 0.5 * sin(time + uv.x*10.0 + uv.y*10.0);
-    gl_FragColor = vec4(0.0, neon*0.8, neon, 1.0);
-}`;
-
-function makeShader(type, src){
-    let s = gl.createShader(type);
-    gl.shaderSource(s, src);
-    gl.compileShader(s);
-    return s;
-}
-
-let vs = makeShader(gl.VERTEX_SHADER, vert);
-let fs = makeShader(gl.FRAGMENT_SHADER, frag);
-
-let prog = gl.createProgram();
-gl.attachShader(prog, vs);
-gl.attachShader(prog, fs);
-gl.linkProgram(prog);
-gl.useProgram(prog);
-
-let buf = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    -1,-1, 1,-1, -1,1,
-    -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
-
-let pos = gl.getAttribLocation(prog, "position");
-gl.enableVertexAttribArray(pos);
-gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
-
-let timeLoc = gl.getUniformLocation(prog, "time");
-let resLoc = gl.getUniformLocation(prog, "resolution");
-
-function render(t){
-    gl.uniform1f(timeLoc, t*0.001);
-    gl.uniform2f(resLoc, canvas.width, canvas.height);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
-    requestAnimationFrame(render);
-}
-requestAnimationFrame(render);
 </script>
-
 </body>
 </html>
