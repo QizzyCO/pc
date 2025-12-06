@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Mac Dock + Windows 11 Start</title>
+<title>Mac Dock + Windows 11 Start dengan Animasi</title>
 <style>
   /* Video background fullscreen */
   #video-background {
@@ -86,12 +86,18 @@
     animation: bounce 0.4s ease;
   }
 
-  /* Start Menu Windows 11 style */
+  /* Start Menu Windows 11 style dengan animasi muncul */
+  @keyframes startMenuShow {
+    0% { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
+    80% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+
   #start-menu {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(0.7);
     width: 600px;
     height: 400px;
     background: rgba(255,255,255,0.95);
@@ -103,6 +109,12 @@
     padding: 20px;
     z-index: 4000;
     overflow: hidden;
+    opacity: 0;
+  }
+
+  #start-menu.show {
+    display: flex;
+    animation: startMenuShow 0.3s ease forwards;
   }
 
   #start-menu h3 {
@@ -276,18 +288,29 @@
     isDragging = false;
   });
 
-  // Start menu toggle
+  // Start menu toggle dengan animasi
   const startButton = document.getElementById('start-button');
   const startMenu = document.getElementById('start-menu');
 
   startButton.addEventListener('click', (e) => {
-    startMenu.style.display = (startMenu.style.display === 'flex') ? 'none' : 'flex';
+    if (startMenu.classList.contains('show')) {
+      startMenu.classList.remove('show');
+      setTimeout(() => startMenu.style.display = 'none', 300);
+    } else {
+      startMenu.style.display = 'flex';
+      requestAnimationFrame(() => {
+        startMenu.classList.add('show');
+      });
+    }
   });
 
   // Tutup Start menu jika klik di luar
   document.addEventListener('click', (e) => {
     if (!startMenu.contains(e.target) && e.target !== startButton) {
-      startMenu.style.display = 'none';
+      if (startMenu.classList.contains('show')) {
+        startMenu.classList.remove('show');
+        setTimeout(() => startMenu.style.display = 'none', 300);
+      }
     }
   });
 </script>
