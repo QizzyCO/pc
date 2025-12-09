@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dungeon Vision RPG</title>
+    
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <div class="container">
+        
+        <img class="base-image" src="images/dark_dungeon_map.jpg" alt="Dark Map">
+        <img class="final-image" src="images/detailed_map.jpg" alt="Revealed Map">
+
+        <div id="game-elements">
+            <div class="poi enemy-icon" data-name="Goblin Penjaga" style="top: 30%; left: 45%;"></div>
+            <div class="poi item-icon" data-name="Ramuan HP Kecil" style="top: 70%; left: 10%;"></div>
+            <div class="poi enemy-icon" data-name="Kelelawar Raksasa" style="top: 55%; left: 80%;"></div>
+            <div class="poi item-icon" data-name="Kunci Perak" style="top: 20%; left: 15%;"></div>
+        </div>
+
+        <div id="rpg-ui">
+            <div id="character-status">
+                <h3>Pahlawan Anda</h3>
+                <p id="hp">HP: 100</p>
+                <p id="xp">XP: 50</p>
+            </div>
+            <div id="game-messages">
+                <p>Anda memasuki Ruang Bawah Tanah yang Gelap...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+    <script src="script.js"></script> 
+</body>
+</html>
