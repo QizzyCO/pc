@@ -1,0 +1,151 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #000;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  aspect-ratio: 1 / 1;
+  /* Kursor disembunyikan agar hanya efek lingkaran yang terlihat */
+  cursor: none; 
+}
+
+.base-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  object-fit: cover;
+  /* Berikan filter gelap agar terlihat seperti ruang bawah tanah */
+  filter: brightness(0.2); 
+}
+
+.final-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  /* Awalnya tersembunyi */
+  clip-path: circle(0px at var(--x, 0px) var(--y, 0px));
+  will-change: clip-path;
+}
+
+/* Efek Senter/Vision Cone (5% dari lebar container) */
+.container:hover .final-image {
+  clip-path: circle(5% at var(--x, 0px) var(--y, 0px));
+  transition: clip-path 0.1s ease-out; 
+}
+
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* --- Gaya RPG Tambahan --- */
+
+/* Gaya untuk Elemen Point of Interest (Musuh/Item) */
+.poi {
+  position: absolute;
+  width: 50px; 
+  height: 50px;
+  z-index: 5; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 10px;
+  border-radius: 50%;
+  text-align: center;
+  cursor: pointer;
+  /* Sembunyikan elemen awalnya */
+  opacity: 0; 
+  transition: opacity 0.5s;
+}
+
+.enemy-icon {
+    background-color: rgba(255, 0, 0, 0.5);
+    border: 2px solid red;
+}
+
+.item-icon {
+    background-color: rgba(0, 255, 0, 0.5);
+    border: 2px solid lime;
+}
+
+.poi.revealed {
+    /* Saat sudah berinteraksi/ditemukan */
+    opacity: 0.2; 
+    cursor: default;
+}
+
+/* Gaya untuk UI RPG Status */
+#rpg-ui {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 250px;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 15px;
+  border: 2px solid gold;
+  z-index: 10;
+  font-family: 'Courier New', monospace;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+#rpg-ui h3 {
+    margin-top: 0;
+    color: gold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 5px;
+}
+
+#game-messages {
+    max-height: 150px;
+    overflow-y: auto;
+    margin-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 10px;
+}
+
+#game-messages p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: lightgray;
+}
+
+/* --- Media Queries --- */
+@media (max-width: 768px) {
+  .container {
+    max-width: 90%;
+  }
+
+  .container:hover .final-image {
+    clip-path: circle(8% at var(--x, 0px) var(--y, 0px));
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    max-width: 100%;
+  }
+
+  .container:hover .final-image {
+    clip-path: circle(12% at var(--x, 0px) var(--y, 0px));
+  }
+}
