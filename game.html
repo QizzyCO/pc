@@ -2,11 +2,25 @@
 <html lang="id">
 <head>
 <meta charset="utf-8" />
-<title>2.5D Adventure — FIXED</title>
+<title>2.5D Adventure — FIXED FULL</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-  body { margin:0; background:#0b1220; display:flex; justify-content:center; align-items:center; height:100vh; }
-  canvas { width:1200px; height:700px; background:#1c3557; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,.6); }
+  body { 
+    margin:0; 
+    background:#0b1220; 
+    display:flex; 
+    justify-content:center; 
+    align-items:center; 
+    height:100vh; 
+    user-select:none;
+  }
+  canvas {
+    width:1200px;
+    height:700px;
+    background:#1b3b5e;
+    border-radius:12px;
+    box-shadow: 0 10px 50px rgba(0,0,0,.6);
+  }
 </style>
 </head>
 <body>
@@ -14,46 +28,49 @@
 <canvas id="game" width="1200" height="700"></canvas>
 
 <script>
-/* =============== CANVAS =============== */
+/* ======================================================
+    2.5D SIDE-SCROLLING ADVENTURE — FULL FIXED VERSION
+   ====================================================== */
+
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 const W = canvas.width;
 const H = canvas.height;
 
-/* =============== WORLD =============== */
+/* ============================== WORLD ============================= */
 
 const world = {
   groundY: 560,
-  length: 3400,
+  length: 3600,
   platforms: [
-    {x:0, y:560, w:3400, h:20},        // big ground
-    {x:400, y:460, w:260, h:20},
-    {x:800, y:400, w:260, h:20},
-    {x:1260, y:340, w:200, h:20},
-    {x:1680, y:410, w:260, h:20},
-    {x:2200, y:360, w:200, h:20},
-    {x:2600, y:450, w:300, h:20}
+    {x:0,    y:560, w:3600, h:40},
+    {x:420,  y:460, w:260,  h:40},
+    {x:880,  y:400, w:260,  h:40},
+    {x:1320, y:340, w:220,  h:40},
+    {x:1760, y:420, w:260,  h:40},
+    {x:2260, y:360, w:200,  h:40},
+    {x:2680, y:450, w:320,  h:40}
   ]
 };
 
-/* =============== OBJECTS =============== */
+/* ============================== OBJECTS ============================ */
 
 let items = [
-  {id:"bucket", name:"Ember", x:2260, y:world.groundY - 40, taken:false}
+  {id:"bucket", name:"Ember", x:2300, y:world.groundY-40, taken:false}
 ];
 
 let npcs = [
-  {id:"farmer", name:"Petani", x:3100, y:world.groundY - 80, talked:false}
+  {id:"farmer", name:"Petani", x:3150, y:world.groundY-80, talked:false}
 ];
 
-/* =============== PLAYER =============== */
+/* ============================== PLAYER ============================= */
 
 const player = {
-  x: 100,
-  y: world.groundY - 80,
+  x: 120,
+  y: world.groundY - 100,
   w: 48,
-  h: 64,
+  h: 70,
   vx: 0,
   vy: 0,
   speed: 380,
@@ -63,13 +80,13 @@ const player = {
   inventory: []
 };
 
-/* =============== CONTROLS =============== */
+/* ============================== INPUT ============================== */
 
 let keys = {};
 window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
-window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
+window.addEventListener("keyup",   e => keys[e.key.toLowerCase()] = false);
 
-/* =============== PHYSICS FIX =============== */
+/* ============================ COLLISION ============================ */
 
 function findPlatformUnder(px, py){
   let best = null;
@@ -92,36 +109,38 @@ function findPlatformUnder(px, py){
 
 const GRAVITY = 2200;
 
+/* ============================ PHYSICS ============================== */
+
 function updatePhysics(dt){
-  /* Horizontal movement */
-  let move = 0;
-  if (keys["a"] || keys["arrowleft"]) move -= 1;
-  if (keys["d"] || keys["arrowright"]) move += 1;
+  // Horizontal move
+  let mv = 0;
+  if (keys["a"] || keys["arrowleft"])  mv -= 1;
+  if (keys["d"] || keys["arrowright"]) mv += 1;
 
-  player.vx = move * player.speed;
-  if (move !== 0) player.facing = move > 0 ? 1 : -1;
+  player.vx = mv * player.speed;
+  if (mv) player.facing = mv > 0 ? 1 : -1;
 
-  /* Jump */
+  // Jump
   if ((keys["w"] || keys[" "]) && player.grounded){
     player.vy = player.jumpPower;
     player.grounded = false;
   }
 
-  /* Apply gravity */
+  // Gravity
   player.vy += GRAVITY * dt;
 
-  /* Integrate */
+  // Move
   player.x += player.vx * dt;
   player.y += player.vy * dt;
 
-  /* Check ground/platforms */
+  // Collision
   let footX = player.x + player.w/2;
   let footY = player.y + player.h;
 
   let platform = findPlatformUnder(footX, footY);
 
   if (platform){
-    if (footY > platform.y - 40 && player.vy >= 0){
+    if (footY > platform.y - 50 && player.vy > 0){
       player.y = platform.y - player.h;
       player.vy = 0;
       player.grounded = true;
@@ -134,34 +153,45 @@ function updatePhysics(dt){
     }
   }
 
-  /* World bounds */
+  // bounds
   if (player.x < 0) player.x = 0;
   if (player.x > world.length - player.w) player.x = world.length - player.w;
 }
 
-/* =============== INTERACTION =============== */
+/* ============================== CAMERA ============================= */
+
+let camX = 0;
+
+function updateCamera(dt){
+  let target = player.x - W*0.4;
+  camX += (target - camX) * dt * 8;
+
+  camX = Math.max(0, Math.min(camX, world.length - W));
+}
+
+/* ============================ INTERACTION =========================== */
+
+let consume = {};
 
 function tryInteract(){
-  /* ITEM PICKUP */
+  // PICKUP
   for (let it of items){
     if (it.taken) continue;
 
-    let dx = Math.abs(it.x - player.x);
-    if (dx < 70){
+    if (Math.abs(it.x - player.x) < 70){
       it.taken = true;
       player.inventory.push(it);
-      console.log("Ambil item:", it.name);
+      console.log("Kamu mengambil:", it.name);
       return;
     }
   }
 
-  /* NPC TALK */
+  // NPC TALK
   for (let n of npcs){
-    let dx = Math.abs(n.x - player.x);
-    if (dx < 90){
+    if (Math.abs(n.x - player.x) < 90){
       if (!n.talked){
-        console.log(`${n.name}: "Terima kasih sudah datang!"`);
         n.talked = true;
+        console.log(`${n.name}: "Terima kasih telah datang!"`);
       } else {
         console.log(`${n.name}: "Halo lagi!"`);
       }
@@ -172,82 +202,100 @@ function tryInteract(){
   console.log("Tidak ada yang bisa diinteraksi.");
 }
 
-/* =============== CAMERA =============== */
-let cameraX = 0;
+/* ============================ RENDERING ============================= */
 
-function updateCamera(dt){
-  let target = player.x - W*0.4;
-  cameraX += (target - cameraX) * dt * 10;
-
-  if (cameraX < 0) cameraX = 0;
-  if (cameraX > world.length - W) cameraX = world.length - W;
+function drawBackground(){
+  let g = ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0, "#76c6ff");
+  g.addColorStop(1, "#1d4f8a");
+  ctx.fillStyle = g;
+  ctx.fillRect(0,0,W,H);
 }
 
-/* =============== RENDER =============== */
-
 function drawPlatform(p){
-  ctx.fillStyle = "#6aa84f";
-  ctx.fillRect(p.x - cameraX, p.y, p.w, p.h);
+  let x = p.x - camX;
 
-  ctx.fillStyle = "#3f6540";
-  ctx.fillRect(p.x - cameraX, p.y, p.w, 8);
+  // top
+  ctx.fillStyle = "#6fbf4a";
+  ctx.fillRect(x, p.y - 12, p.w, 12);
+
+  // front side
+  ctx.fillStyle = "#3f7b2e";
+  ctx.fillRect(x, p.y, p.w, p.h);
+
+  // shadow edge
+  ctx.fillStyle = "rgba(0,0,0,0.15)";
+  ctx.fillRect(x, p.y - 12, p.w, 3);
 }
 
 function drawPlayer(){
-  ctx.fillStyle = "#ffd85a";
-  ctx.fillRect(player.x - cameraX, player.y, player.w, player.h);
+  let x = player.x - camX;
 
-  ctx.fillStyle = "#ffefbf";
+  // shadow
+  ctx.fillStyle = "rgba(0,0,0,0.35)";
   ctx.beginPath();
-  ctx.arc(player.x - cameraX + player.w/2, player.y, 18, 0, Math.PI*2);
+  ctx.ellipse(x + player.w/2, player.y + player.h, 24, 10, 0,0,Math.PI*2);
   ctx.fill();
+
+  // body
+  ctx.fillStyle = "#ffd85a";
+  ctx.fillRect(x, player.y, player.w, player.h);
+
+  // head
+  ctx.fillStyle = "#fff0c0";
+  ctx.beginPath();
+  ctx.arc(x + player.w/2, player.y - 10, 22, 0, Math.PI*2);
+  ctx.fill();
+
+  // eye
+  ctx.fillStyle = "#222";
+  ctx.fillRect(
+    x + player.w/2 + player.facing * 10,
+    player.y - 14,
+    5,5
+  );
 }
 
 function drawItems(){
   for (let it of items){
     if (it.taken) continue;
-
+    let x = it.x - camX;
     ctx.fillStyle = "#e8a03a";
-    ctx.fillRect(it.x - cameraX - 20, it.y - 40, 40, 40);
+    ctx.fillRect(x - 20, it.y - 40, 40, 40);
   }
 }
 
 function drawNPCs(){
+  ctx.font = "14px Arial";
+  ctx.fillStyle = "#fff";
+
   for (let n of npcs){
-    ctx.fillStyle = "#88b4ff";
-    ctx.fillRect(n.x - cameraX - 20, n.y - 60, 40, 60);
+    let x = n.x - camX;
+
+    ctx.fillStyle = "#7eb3ff";
+    ctx.fillRect(x - 20, n.y - 60, 40, 60);
 
     ctx.fillStyle = "#fff";
-    ctx.fillText(n.name, n.x - cameraX - 20, n.y - 70);
+    ctx.fillText(n.name, x - 20, n.y - 70);
   }
 }
 
 function render(){
   ctx.clearRect(0,0,W,H);
 
-  /* sky */
-  let g = ctx.createLinearGradient(0,0,0,H);
-  g.addColorStop(0, "#7ecfff");
-  g.addColorStop(1, "#2b6ea9");
-  ctx.fillStyle = g;
-  ctx.fillRect(0,0,W,H);
+  drawBackground();
 
-  /* platforms */
   for (let p of world.platforms) drawPlatform(p);
 
-  /* items */
   drawItems();
-
-  /* NPC */
   drawNPCs();
-
-  /* player */
   drawPlayer();
 }
 
-/* =============== MAIN LOOP =============== */
+/* ============================== LOOP =============================== */
 
 let last = performance.now();
+
 function loop(t){
   let dt = (t - last) / 1000;
   last = t;
@@ -263,9 +311,8 @@ function loop(t){
   render();
   requestAnimationFrame(loop);
 }
-let consume = {};
 
-/* Prevent arrow key scroll */
+/* Prevent arrow keys from scrolling page */
 window.addEventListener("keydown", e=>{
   if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key))
     e.preventDefault();
