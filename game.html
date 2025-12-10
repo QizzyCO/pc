@@ -1,149 +1,516 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<title>2.5D Adventure</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>2.5D Side-Scrolling Adventure (Demo)</title>
 <style>
-body { margin:0; background:#111; overflow:hidden; }
-canvas { background:#222; display:block; margin:auto; }
+  :root { --bg:#0b1220; --panel: rgba(255,255,255,0.05); --accent:#7ee0b8; }
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;}
+  body{background:var(--bg); color:#e8f0f2; display:flex; align-items:center; justify-content:center;}
+  #wrap{width:1200px; max-width:98vw; height:700px; max-height:98vh; display:flex; gap:12px;}
+  canvas { display:block; width:940px; height:100%; background:linear-gradient(#87c3ff 0%, #305b90 70%); border-radius:12px; box-shadow:0 8px 40px rgba(0,0,0,.6); }
+  #ui { width:240px; display:flex; flex-direction:column; gap:12px; }
+  .panel { background:var(--panel); padding:10px; border-radius:10px; box-shadow:inset 0 -1px 0 rgba(255,255,255,0.02); }
+  h3{margin:0 0 8px 0;font-size:15px;color:#fff;}
+  .hint{font-size:13px;color:#cfe;}
+  .inventory{display:flex;flex-wrap:wrap;gap:6px}
+  .slot{width:56px;height:56px;border-radius:8px;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;font-size:12px;color:#cde;}
+  button{border:none;padding:8px 10px;border-radius:8px;background:var(--accent);color:#033;margin-right:6px;cursor:pointer}
+  #log{font-size:13px;max-height:160px;overflow:auto;color:#dff;}
+  footer{font-size:11px;color:#98a}
 </style>
 </head>
 <body>
+<div id="wrap">
+  <canvas id="game" width="940" height="700"></canvas>
+  <div id="ui">
+    <div class="panel">
+      <h3>2.5D Side Adventure</h3>
+      <div class="hint">Kontrol: <strong>A/D</strong> atau <strong>←/→</strong> jalan, <strong>W</strong> / <strong>Spasi</strong> lompat, <strong>E</strong> interaksi.</div>
+      <div style="margin-top:8px">Status: <span id="status">Sehat</span></div>
+      <div>Pos: <span id="pos">0.0</span></div>
+    </div>
 
-<canvas id="game" width="1280" height="720"></canvas>
+    <div class="panel">
+      <h3>Quest</h3>
+      <div id="quest">Cari Ember untuk Petani (di platform kanan).</div>
+      <div style="margin-top:8px"><button id="btn-reset">Reset Player</button></div>
+    </div>
+
+    <div class="panel">
+      <h3>Inventory</h3>
+      <div id="inv" class="inventory"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Log</h3>
+      <div id="log"></div>
+      <div style="margin-top:8px"><button id="save">Simpan</button><button id="load">Muat</button></div>
+    </div>
+
+    <div class="panel" style="text-align:center">
+      <footer>Demo 2.5D — ChatGPT · Bisa dikembangkan</footer>
+    </div>
+  </div>
+</div>
 
 <script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+/* ===========================
+   2.5D Side-scrolling Adventure
+   Single-file demo, no external assets.
+   =========================== */
 
-// WORLD SETTINGS
-const TILE = 60;
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
 
-// Simple height-map world (tiles punya ketinggian)
-let world = [
-  [0,0,0,1,1,0,0],
-  [0,0,1,1,1,0,0],
-  [0,1,1,2,1,1,0],
-  [0,1,2,2,2,1,0],
-  [0,1,1,2,1,1,0],
-  [0,0,1,1,1,0,0],
-  [0,0,0,1,0,0,0],
-];
-
-let player = {
-  x: 3.5,
-  y: 3.5,
-  z: 0,
-  speed: 3,
+const UI = {
+  status: document.getElementById('status'),
+  pos: document.getElementById('pos'),
+  quest: document.getElementById('quest'),
+  inv: document.getElementById('inv'),
+  log: document.getElementById('log'),
+  btnReset: document.getElementById('btn-reset'),
+  btnSave: document.getElementById('save'),
+  btnLoad: document.getElementById('load')
 };
 
-// --- DRAW TILE AS 2.5D BLOCK ---
-function drawTile(x, y, h, camX, camY) {
-  const sx = (x * TILE) - camX;
-  const sy = (y * TILE) - camY;
+// Responsive canvas scaling (keeps internal resolution constant)
+const INTERNAL_W = 940, INTERNAL_H = 700;
+canvas.width = INTERNAL_W; canvas.height = INTERNAL_H;
 
-  let top = sy - h * 20;
+// ===== WORLD LAYOUT (side-scrolling platforms with depth) =====
+// Each platform: {x, y, w, h, depth}  where x in world coords
+// depth: 0 = foreground (closer), larger = further (smaller scale)
+let world = {
+  length: 3200, // world width in px
+  groundY: 540,
+  platforms: []
+};
 
-  // top face
-  ctx.fillStyle = "#5a8";
-  ctx.fillRect(sx, top, TILE, TILE);
+// create layered platforms to mimic Drive Mad style depth
+function makeWorld(){
+  world.platforms = [];
+  // ground across
+  world.platforms.push({x:0, y:world.groundY, w:world.length, h:160, depth:0});
+  // raised platforms / islands (various depths)
+  world.platforms.push({x:520,y:440,w:260,h:20, depth:0});
+  world.platforms.push({x:920,y:380,w:200,h:20, depth:0});
+  world.platforms.push({x:1400,y:460,w:320,h:20, depth:1});
+  world.platforms.push({x:1920,y:420,w:180,h:20, depth:0});
+  world.platforms.push({x:2300,y:340,w:220,h:20, depth:2});
+  world.platforms.push({x:2700,y:460,w:300,h:20, depth:0});
+}
+makeWorld();
 
-  // right face
-  ctx.fillStyle = "#487";
-  ctx.beginPath();
-  ctx.moveTo(sx + TILE, top);
-  ctx.lineTo(sx + TILE + 20, top + 20);
-  ctx.lineTo(sx + TILE + 20, top + TILE + 20);
-  ctx.lineTo(sx + TILE, top + TILE);
-  ctx.fill();
+// ===== OBJECTS: NPCs, items, obstacles =====
+let npcs = [
+  {id:'farmer', x:3000, y:world.groundY - 80, name:'Petani', dialog: ["Terima kasih telah datang!", "Aku kehilangan ember di platform biru."] , talked:false}
+];
 
-  // left face
-  ctx.fillStyle = "#3a6";
-  ctx.beginPath();
-  ctx.moveTo(sx, top);
-  ctx.lineTo(sx - 20, top + 20);
-  ctx.lineTo(sx - 20, top + TILE + 20);
-  ctx.lineTo(sx, top + TILE);
-  ctx.fill();
+let items = [
+  {id:'bucket', x:2330, y:world.groundY - 40, name:'Ember', taken:false}
+];
+
+// ===== PARALLAX LAYERS =====
+const layers = [
+  {speed:0.15, colorTop:'#0a1320', colorBottom:'#18304a'}, // far sky
+  {speed:0.35, mountains:true}, // far mountains
+  {speed:0.6, colorTop:'#406b9a', colorBottom:'#2b5b8a'}, // mid bg
+  {speed:1.0, colorTop:'#85c5ff', colorBottom:'#3a83c6'} // foreground clouds/near
+];
+
+// ===== PLAYER (simple physics) =====
+const player = {
+  x: 200,       // world coordinate (px)
+  y: world.groundY - 80,
+  vx: 0,
+  vy: 0,
+  w: 48, h: 64,
+  speed: 380,   // px/s
+  jumpSpeed: -720,
+  grounded: false,
+  facing: 1,    // 1 right, -1 left
+  scale: 1,
+  color: '#ffd85a',
+  inventory: []
+};
+
+// camera
+const camera = {x: 0, y:0, w: INTERNAL_W, h: INTERNAL_H};
+
+// controls
+const keys = {};
+window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
+window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+
+// helper: world -> screen transform with depth scaling
+function worldToScreen(wx, wy, depth){
+  // depth scales objects: closer (depth=0) = scale 1; more depth -> smaller
+  const depthScale = 1 - (depth * 0.12);
+  const sx = (wx - camera.x) * depthScale + (1-depthScale) * (INTERNAL_W*0.5);
+  const sy = (wy - camera.y) * depthScale + (1-depthScale) * 80; // vertical offset for depth
+  return {sx, sy, depthScale};
 }
 
-// --- DRAW PLAYER ---
-function drawPlayer(camX, camY) {
-  let px = player.x * TILE - camX;
-  let py = player.y * TILE - camY - player.z * 20;
-
-  // shadow
-  ctx.fillStyle = "rgba(0,0,0,0.4)";
-  ctx.beginPath();
-  ctx.ellipse(px + 20, py + 40, 22, 10, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // body
-  ctx.fillStyle = "#ffd35a";
-  ctx.fillRect(px, py - 40, 40, 40);
-
-  // head
-  ctx.fillStyle = "#ffeb8a";
-  ctx.beginPath();
-  ctx.arc(px + 20, py - 50, 18, 0, Math.PI * 2);
-  ctx.fill();
+// ===== LOG / UI helpers =====
+function log(msg){
+  const node = document.createElement('div');
+  node.textContent = msg;
+  UI.log.prepend(node);
+}
+function updateUI(){
+  UI.status.textContent = 'HP 100';
+  UI.pos.textContent = Math.round(player.x) + ' px';
+  UI.quest.textContent = items.find(i=>i.id==='bucket' && !i.taken) ? 'Cari Ember di platform tinggi.' : (npcs[0].talked ? 'Quest selesai.' : 'Kembalikan ember ke Petani.');
+  // inventory
+  UI.inv.innerHTML = '';
+  if (player.inventory.length === 0){
+    UI.inv.innerHTML = '<div style="color:#789">Kosong</div>';
+  } else {
+    for (let it of player.inventory){
+      const d = document.createElement('div'); d.className='slot'; d.textContent = it.name; UI.inv.appendChild(d);
+    }
+  }
 }
 
-function update(dt) {
-  let dx = 0, dy = 0;
-  if (keys["w"]) dy -= 1;
-  if (keys["s"]) dy += 1;
-  if (keys["a"]) dx -= 1;
-  if (keys["d"]) dx += 1;
+// ===== PHYSICS & COLLISION =====
+const GRAVITY = 2200; // px/s^2
+function findPlatformUnder(x, y){
+  // return highest platform that intersects x and is below y
+  let candidates = world.platforms.filter(p => x >= p.x && x <= p.x + p.w);
+  if (candidates.length === 0) return null;
+  // choose the one with smallest y >= candidate (top)
+  candidates.sort((a,b)=>a.y - b.y);
+  return candidates[0];
+}
 
-  if (dx !== 0 && dy !== 0) {
-    dx *= 0.7;
-    dy *= 0.7;
+function updatePhysics(dt){
+  // horizontal input
+  let move = 0;
+  if (keys['a'] || keys['arrowleft']) move -= 1;
+  if (keys['d'] || keys['arrowright']) move += 1;
+  player.vx = move * player.speed;
+  if (move !== 0) player.facing = move > 0 ? 1 : -1;
+
+  // jump
+  if ((keys['w'] || keys[' ']) && player.grounded){
+    player.vy = player.jumpSpeed;
+    player.grounded = false;
   }
 
-  player.x += dx * player.speed * dt;
-  player.y += dy * player.speed * dt;
+  // apply gravity
+  player.vy += GRAVITY * dt;
 
-  // tile height follow
-  player.z = world[Math.floor(player.y)]?.[Math.floor(player.x)] || 0;
-}
+  // integrate
+  player.x += player.vx * dt;
+  player.y += player.vy * dt;
 
-function render() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  const camX = player.x * TILE - canvas.width/2;
-  const camY = player.y * TILE - canvas.height/2 + player.z * 20;
-
-  // draw world
-  for (let y=0; y<world.length; y++) {
-    for (let x=0; x<world[0].length; x++) {
-      drawTile(x, y, world[y][x], camX, camY);
+  // simple collision: check platform under player center
+  let footX = player.x + player.w/2;
+  let platform = findPlatformUnder(footX, player.y + player.h);
+  if (platform){
+    let platformTop = platform.y - platform.h;
+    if (player.y + player.h > platformTop && player.y + player.h < platformTop + 50 && player.vy >= 0){
+      // snap to top
+      player.y = platformTop - player.h;
+      player.vy = 0;
+      player.grounded = true;
+    }
+  } else {
+    // no platform underneath - fall; ground as fallback
+    if (player.y + player.h > world.groundY + 0){
+      player.y = world.groundY - player.h;
+      player.vy = 0;
+      player.grounded = true;
     }
   }
 
-  // draw player
-  drawPlayer(camX, camY);
+  // world bounds clamp
+  if (player.x < 0) player.x = 0;
+  if (player.x > world.length - 40) player.x = world.length - 40;
+
+  // update depth scale based on y (objects higher = further away)
+  const depthFactor = Math.max(0, Math.min(1, (player.y - 200) / 500));
+  player.scale = 1 - depthFactor * 0.2;
 }
 
-let last = 0;
-function loop(t) {
-  let dt = (t - last) / 1000;
-  last = t;
+// ===== INTERACTION =====
+function tryInteract(){
+  // check NPC proximity (simple distance)
+  for (let n of npcs){
+    const dx = (n.x - player.x);
+    const dy = (n.y - player.y);
+    const dist = Math.hypot(dx, dy);
+    if (dist < 90){
+      // dialog
+      if (!n.talked){
+        log(`${n.name}: "${n.dialog[0]}"`);
+        n.talked = true;
+      } else {
+        log(`${n.name}: "Terima kasih sudah membantuku."`);
+      }
+      // if player has bucket and npc is farmer, finish quest
+      const hasBucket = player.inventory.find(i=>i.id==='bucket');
+      if (n.id === 'farmer' && hasBucket){
+        player.inventory = player.inventory.filter(i=>i.id!=='bucket');
+        log('Kamu memberikan Ember kepada Petani. Quest selesai!');
+        n.talked = true;
+      }
+      updateUI();
+      return;
+    }
+  }
+  // check item pickup near player
+  for (let it of items){
+    if (!it.taken){
+      const dx = (it.x - player.x);
+      const dy = (it.y - player.y);
+      const dist = Math.hypot(dx, dy);
+      if (dist < 60){
+        it.taken = true;
+        player.inventory.push(it);
+        log(`Kamu mengambil: ${it.name}`);
+        updateUI();
+        return;
+      }
+    }
+  }
+  log('Tidak ada yang bisa diinteraksi.');
+}
 
-  update(dt);
+// ===== RENDERING =====
+function drawBackground(camX){
+  // layered parallax sky/ground
+  // layer 0 - gradient sky
+  const g = ctx.createLinearGradient(0,0,0,INTERNAL_H);
+  g.addColorStop(0,'#7ecfff'); g.addColorStop(1,'#2b6fa9');
+  ctx.fillStyle = g; ctx.fillRect(0,0,INTERNAL_W,INTERNAL_H);
+
+  // parallax mountains
+  ctx.fillStyle = '#10314a';
+  let mX = - (camX * layers[1].speed % 800);
+  for (let i=-1;i<4;i++){
+    ctx.beginPath();
+    const base = 320;
+    ctx.moveTo(mX + i*800, base+120);
+    ctx.lineTo(mX + i*800 + 200, base - 60);
+    ctx.lineTo(mX + i*800 + 400, base+120);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // foreground color wash
+  ctx.fillStyle = 'rgba(255,255,255,0.02)';
+  ctx.fillRect(0,INTERNAL_H-200,INTERNAL_W,200);
+}
+
+function drawPlatform(p){
+  // draw as 2.5D extruded block (top face + side)
+  const depth = p.depth || 0;
+  const {sx, sy, depthScale} = worldToScreen(p.x, p.y, depth);
+  const w = p.w * depthScale;
+  const hTop = 18 * (1 - depth * 0.08); // platform thickness illusion
+  // top face
+  ctx.fillStyle = depth===0 ? '#6aa84f' : '#5a8740';
+  roundRect(ctx, sx, sy - hTop, w, hTop, 6, true);
+  // front vertical face (slightly darker)
+  ctx.fillStyle = '#3f5f32';
+  ctx.fillRect(sx, sy - hTop + hTop, w, p.h);
+  // subtle edge
+  ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+  ctx.strokeRect(sx, sy - hTop, w, hTop + p.h);
+}
+
+function drawBox(x,y,w,h, depth, color){
+  const {sx, sy, depthScale} = worldToScreen(x, y, depth);
+  const sw = w * depthScale, sh = h * depthScale;
+  // draw a slightly 3D box (front + top)
+  ctx.fillStyle = color;
+  ctx.fillRect(sx, sy - sh, sw, sh);
+  ctx.fillStyle = shade(color, -18);
+  ctx.fillRect(sx + sw*0.06, sy - sh + sh*0.6, sw*0.88, sh*0.4);
+  ctx.strokeStyle = 'rgba(0,0,0,0.18)';
+  ctx.strokeRect(sx, sy - sh, sw, sh);
+}
+
+function drawPlayer(){
+  const {sx, sy, depthScale} = worldToScreen(player.x, player.y, 0);
+  const sw = player.w * player.scale * depthScale;
+  const sh = player.h * player.scale * depthScale;
+  // shadow ellipse (depend on depth)
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.beginPath();
+  ctx.ellipse(sx + sw/2, sy + 6, sw*0.6, 10, 0, 0, Math.PI*2);
+  ctx.fill();
+  // body (simple rectangle + head)
+  ctx.fillStyle = player.color;
+  const bx = sx, by = sy - sh;
+  roundRect(ctx, bx, by + sh*0.2, sw, sh*0.8, 8, true);
+  // head
+  ctx.fillStyle = '#fff3c4';
+  ctx.beginPath();
+  ctx.arc(bx + sw*0.5, by + sh*0.08, Math.max(6, sw*0.18), 0, Math.PI*2);
+  ctx.fill();
+  // eye (direction)
+  ctx.fillStyle = '#222';
+  const eyeX = bx + sw*0.5 + (player.facing*sw*0.12);
+  ctx.fillRect(eyeX - 3, by + sh*0.05, 3, 3);
+}
+
+function shade(hex, percent){
+  // tiny hex shade helper
+  const c = hex.replace('#','');
+  const num = parseInt(c,16);
+  let r = (num >> 16) + percent;
+  let g = ((num >> 8) & 0x00FF) + percent;
+  let b = (num & 0x0000FF) + percent;
+  r = Math.max(0, Math.min(255,r));
+  g = Math.max(0, Math.min(255,g));
+  b = Math.max(0, Math.min(255,b));
+  return '#' + ( (1<<24) + (r<<16) + (g<<8) + b ).toString(16).slice(1);
+}
+
+function roundRect(ctx, x, y, w, h, r, fill){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+  if (fill) ctx.fill();
+}
+
+/* DRAW WORLD (order: far -> near) */
+function render(){
+  // clear
+  ctx.clearRect(0,0,INTERNAL_W,INTERNAL_H);
+
+  // background / parallax
+  drawBackground(camera.x);
+
+  // draw platforms sorted by depth (far to near)
+  const sorted = world.platforms.slice().sort((a,b)=> (a.depth||0) - (b.depth||0));
+  for (let p of sorted) drawPlatform(p);
+
+  // draw items (with their depth)
+  for (let it of items){
+    if (it.taken) continue;
+    drawBox(it.x, it.y - 20, 40, 40, 1, '#e8a03a'); // item elevated a bit
+    // small label
+    const s = worldToScreen(it.x, it.y - 40, 1);
+    ctx.fillStyle = '#fff';
+    ctx.font = '12px sans-serif';
+    ctx.fillText(it.name, s.sx - 12, s.sy - 10);
+  }
+
+  // draw NPCs
+  for (let n of npcs){
+    // NPC as simple small character
+    const {sx, sy, depthScale} = worldToScreen(n.x, n.y, 0);
+    drawBox(n.x, n.y - 40, 36, 60, 0, '#7fb3ff');
+    ctx.fillStyle = '#fff';
+    ctx.font = '12px sans-serif';
+    ctx.fillText(n.name, sx - 16, sy - 48);
+  }
+
+  // draw player on top of world
+  drawPlayer();
+
+  // HUD mini-map (very small)
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  roundRect(ctx, INTERNAL_W - 200, 12, 188, 88, 8, true);
+  ctx.fillStyle = '#fff';
+  ctx.font = '12px monospace';
+  ctx.fillText('Minimap', INTERNAL_W - 180, 30);
+  // draw player pos bar
+  ctx.fillStyle = '#8de';
+  const px = (player.x / world.length) * 160;
+  ctx.fillRect(INTERNAL_W - 180, 44, px, 12);
+}
+
+/* ===== CAMERA FOLLOW (with smoothing) ===== */
+function updateCamera(dt){
+  const targetX = player.x - INTERNAL_W * 0.36;
+  camera.x += (targetX - camera.x) * Math.min(1, 12 * dt); // smoothing
+  if (camera.x < 0) camera.x = 0;
+  if (camera.x > world.length - INTERNAL_W) camera.x = world.length - INTERNAL_W;
+}
+
+/* ===== MAIN LOOP ===== */
+let last = performance.now();
+function loop(now){
+  const dt = Math.min(0.05, (now - last)/1000);
+  last = now;
+
+  updatePhysics(dt);
+  updateCamera(dt);
+
+  // interaction key
+  if (keys['e'] && !keyConsumed['e']){ tryInteract(); keyConsumed['e'] = true; }
+  if (!keys['e']) keyConsumed['e'] = false;
+
   render();
+  updateUI();
 
   requestAnimationFrame(loop);
 }
+const keyConsumed = {};
 
-// KEYS
-let keys = {};
-window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
-window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
-
-// START
+// ===== START =====
+updateUI();
+log('Selamat datang — jelajahi dunia 2.5D! Tekan E untuk interaksi.');
 requestAnimationFrame(loop);
-</script>
 
+// UI buttons
+UI.btnReset.addEventListener('click', ()=>{ player.x=200; player.y=world.groundY-80; player.vx=0; player.vy=0; log('Player direset.'); updateUI(); });
+UI.btnSave.addEventListener('click', saveState);
+UI.btnLoad.addEventListener('click', loadState);
+
+// ===== SAVE / LOAD =====
+function saveState(){
+  const st = {
+    playerX: player.x,
+    playerY: player.y,
+    inventory: player.inventory,
+    items
+  };
+  localStorage.setItem('adventure25_save', JSON.stringify(st));
+  log('State disimpan ke localStorage.');
+}
+function loadState(){
+  const raw = localStorage.getItem('adventure25_save');
+  if (!raw){ log('Tidak ada save.'); return; }
+  try {
+    const s = JSON.parse(raw);
+    player.x = s.playerX; player.y = s.playerY;
+    player.inventory = s.inventory || [];
+    if (s.items){ items = s.items; }
+    log('State dimuat.');
+    updateUI();
+  } catch(e){
+    log('Gagal muat: '+e);
+  }
+}
+
+// ===== pointer/tap support: simple jump on tap (mobile fallback) =====
+canvas.addEventListener('pointerdown', (e)=>{
+  // relative to canvas: if click on right half => go right briefly; left half => left; double-tap jump
+  const rect = canvas.getBoundingClientRect();
+  const cx = e.clientX - rect.left;
+  if (cx > rect.width*0.66) keys['d'] = true, setTimeout(()=>keys['d']=false,150);
+  else if (cx < rect.width*0.34) keys['a'] = true, setTimeout(()=>keys['a']=false,150);
+  else { if (player.grounded){ player.vy = player.jumpSpeed; player.grounded=false; } }
+});
+
+// Prevent arrow keys from scrolling page
+window.addEventListener("keydown", function(e){
+  if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) > -1) {
+    e.preventDefault();
+  }
+}, false);
+
+</script>
 </body>
 </html>
