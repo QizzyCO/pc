@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8" />
-<title>2.5D Adventure — FIXED FULL</title>
+<title>2.5D Adventure — FIXED ROBUST COLLISION</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
   body { 
@@ -29,7 +29,7 @@
 
 <script>
 /* ======================================================
-    2.5D SIDE-SCROLLING ADVENTURE — FULL FIXED VERSION
+    2.5D SIDE-SCROLLING ADVENTURE — ROBUST COLLISION FIX
    ====================================================== */
 
 const canvas = document.getElementById("game");
@@ -86,32 +86,21 @@ let keys = {};
 window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
 window.addEventListener("keyup",   e => keys[e.key.toLowerCase()] = false);
 
-/* ============================ COLLISION ============================ */
+/* ============================ COLLISION HELPERS ============================ */
 
-function findPlatformUnder(px, py){
-  let best = null;
-  let bestDist = Infinity;
-
-  for (let p of world.platforms){
-    if (px >= p.x && px <= p.x + p.w){
-      let top = p.y;
-      if (top >= py){
-        let dist = top - py;
-        if (dist < bestDist){
-          bestDist = dist;
-          best = p;
-        }
-      }
-    }
-  }
-  return best;
+/* Return all platforms horizontally under a given x (footX) */
+function platformsUnderX(footX){
+  return world.platforms.filter(p => footX >= p.x && footX <= p.x + p.w);
 }
+
+/* ============================ PHYSICS (ROBUST) ============================== */
 
 const GRAVITY = 2200;
 
-/* ============================ PHYSICS ============================== */
-
 function updatePhysics(dt){
+  // store previous footY for robust crossing detection
+  const prevFootY = player.y + player.h;
+
   // Horizontal move
   let mv = 0;
   if (keys["a"] || keys["arrowleft"])  mv -= 1;
@@ -129,33 +118,50 @@ function updatePhysics(dt){
   // Gravity
   player.vy += GRAVITY * dt;
 
-  // Move
+  // Integrate movement
   player.x += player.vx * dt;
   player.y += player.vy * dt;
 
-  // Collision
-  let footX = player.x + player.w/2;
-  let footY = player.y + player.h;
+  // clamp X within world
+  if (player.x < 0) player.x = 0;
+  if (player.x > world.length - player.w) player.x = world.length - player.w;
 
-  let platform = findPlatformUnder(footX, footY);
+  // compute new footY after move
+  const footX = player.x + player.w/2;
+  const footY = player.y + player.h;
 
-  if (platform){
-    if (footY > platform.y - 50 && player.vy > 0){
-      player.y = platform.y - player.h;
-      player.vy = 0;
-      player.grounded = true;
-    }
-  } else {
-    if (footY > world.groundY){
-      player.y = world.groundY - player.h;
-      player.vy = 0;
-      player.grounded = true;
+  // check collision with platforms under footX using crossing detection
+  const candidates = platformsUnderX(footX);
+
+  // find the platform we landed on (if any) by checking if we crossed its top from above
+  let landed = null;
+  for (let p of candidates){
+    const top = p.y; // top surface (y increasing downwards)
+    // if previously above or exactly at top, and now at or below top -> we landed
+    if (prevFootY <= top && footY >= top && player.vy >= 0){
+      // choose the smallest positive penetration (closest platform we intersected)
+      if (!landed || top < landed.y) landed = p;
     }
   }
 
-  // bounds
-  if (player.x < 0) player.x = 0;
-  if (player.x > world.length - player.w) player.x = world.length - player.w;
+  if (landed){
+    // snap player to platform top
+    player.y = landed.y - player.h;
+    player.vy = 0;
+    player.grounded = true;
+    return;
+  }
+
+  // if didn't land on any platform, check ground fallback (in case we started above and fell past)
+  if (prevFootY <= world.groundY && footY >= world.groundY && player.vy >= 0){
+    player.y = world.groundY - player.h;
+    player.vy = 0;
+    player.grounded = true;
+    return;
+  }
+
+  // otherwise, still mid-air
+  player.grounded = false;
 }
 
 /* ============================== CAMERA ============================= */
@@ -165,19 +171,15 @@ let camX = 0;
 function updateCamera(dt){
   let target = player.x - W*0.4;
   camX += (target - camX) * dt * 8;
-
   camX = Math.max(0, Math.min(camX, world.length - W));
 }
 
 /* ============================ INTERACTION =========================== */
 
-let consume = {};
-
 function tryInteract(){
   // PICKUP
   for (let it of items){
     if (it.taken) continue;
-
     if (Math.abs(it.x - player.x) < 70){
       it.taken = true;
       player.inventory.push(it);
@@ -282,11 +284,8 @@ function drawNPCs(){
 
 function render(){
   ctx.clearRect(0,0,W,H);
-
   drawBackground();
-
   for (let p of world.platforms) drawPlatform(p);
-
   drawItems();
   drawNPCs();
   drawPlayer();
@@ -295,11 +294,11 @@ function render(){
 /* ============================== LOOP =============================== */
 
 let last = performance.now();
+let consume = {};
 
 function loop(t){
   let dt = (t - last) / 1000;
   last = t;
-
   if (dt > 0.05) dt = 0.05;
 
   updatePhysics(dt);
