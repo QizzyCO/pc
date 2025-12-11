@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Organisasi</title>
 
   <!-- Google Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet">
 
   <style>
-    /* =============== VARIABEL =============== */
+    /* ===================== ROOT ===================== */
     :root {
       --bg: #dde8f3;
-      --menu-bg: rgba(255, 255, 255, 0.7);
-      --border: rgba(0, 0, 0, 0.08);
+      --menu-bg: rgba(255,255,255,0.7);
+      --border: rgba(0,0,0,0.08);
       --accent: #2563eb;
       --accent-dark: #1d4ed8;
       --text: #1f2937;
@@ -22,16 +22,17 @@
       --transition: 0.3s ease;
     }
 
+    /* ===================== BODY ===================== */
     body {
       font-family: "Outfit", sans-serif;
       background: var(--bg);
       margin: 0;
-      display: flex;
       height: 100vh;
+      display: flex;
       overflow: hidden;
     }
 
-    /* =============== SIDEBAR MENU =============== */
+    /* ===================== SIDEBAR ===================== */
     nav.menu {
       padding: 1rem;
       background: var(--menu-bg);
@@ -58,7 +59,6 @@
       color: var(--muted);
       text-decoration: none;
       font-weight: 500;
-      position: relative;
       overflow: hidden;
       transition: all var(--transition);
     }
@@ -67,14 +67,13 @@
       width: 170px;
       color: #fff;
       background: var(--accent);
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+      box-shadow: 0 4px 12px rgba(37,99,235,0.4);
     }
 
     .link-icon {
       font-family: "Material Symbols Rounded";
       font-size: 26px;
       margin-left: 16px;
-      flex-shrink: 0;
       transition: transform var(--transition);
     }
 
@@ -82,9 +81,8 @@
       margin-left: 12px;
       opacity: 0;
       transform: translateX(10px);
-      transition: opacity var(--transition), transform var(--transition);
+      transition: var(--transition);
       white-space: nowrap;
-      font-size: 15px;
     }
 
     .link:hover .link-title {
@@ -92,7 +90,7 @@
       transform: translateX(0);
     }
 
-    /* =============== CONTENT AREA =============== */
+    /* ===================== CONTENT ===================== */
     .content {
       flex: 1;
       padding: 40px;
@@ -113,7 +111,7 @@
       color: var(--text);
     }
 
-    /* HERO */
+    /* ===================== HERO ===================== */
     .hero {
       background: linear-gradient(135deg, var(--accent), var(--accent-dark));
       color: white;
@@ -122,18 +120,20 @@
       margin-bottom: 30px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     }
+
     .hero h1 {
       margin: 0;
       font-size: 32px;
       font-weight: 700;
     }
+
     .hero p {
       margin-top: 10px;
       opacity: 0.9;
-      font-size: 17px;
+      font-size: 16px;
     }
 
-    /* KARTU FITUR */
+    /* ===================== FITUR CARDS ===================== */
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -156,88 +156,141 @@
       margin-top: 0;
       font-size: 20px;
       font-weight: 600;
-      color: var(--text);
     }
 
     .card p {
       color: var(--muted);
       font-size: 15px;
-      margin-bottom: 0;
+    }
+
+    /* ===================== COUNT-UP ===================== */
+    .count-wrapper {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 20px;
+    }
+
+    .count-card {
+      background: white;
+      padding: 28px;
+      border-radius: var(--radius);
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: var(--transition);
+    }
+
+    .count-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .count-icon {
+      font-size: 48px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .count-number {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 8px 0 0 0;
     }
 
     footer {
       margin-top: 40px;
-      padding: 20px;
       text-align: center;
-      opacity: 0.6;
+      opacity: 0.7;
       font-size: 14px;
+      padding-bottom: 20px;
     }
   </style>
 </head>
 
 <body>
-  <!-- =============== SIDEBAR MENU =============== -->
-  <nav class="menu" role="navigation">
-    <a href="#" class="link">
-      <span class="link-icon">dashboard</span>
-      <span class="link-title">Dashboard</span>
-    </a>
-    <a href="#" class="link">
-      <span class="link-icon">groups</span>
-      <span class="link-title">Tentang Kami</span>
-    </a>
-    <a href="#" class="link">
-      <span class="link-icon">folder</span>
-      <span class="link-title">Program</span>
-    </a>
-    <a href="#" class="link">
-      <span class="link-icon">bar_chart</span>
-      <span class="link-title">Laporan</span>
-    </a>
-    <a href="#" class="link">
-      <span class="link-icon">settings</span>
-      <span class="link-title">Pengaturan</span>
-    </a>
-    <a href="#" class="link">
-      <span class="link-icon">logout</span>
-      <span class="link-title">Keluar</span>
-    </a>
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <nav class="menu">
+    <a class="link"><span class="link-icon">dashboard</span><span class="link-title">Dashboard</span></a>
+    <a class="link"><span class="link-icon">groups</span><span class="link-title">Anggota</span></a>
+    <a class="link"><span class="link-icon">folder</span><span class="link-title">Program</span></a>
+    <a class="link"><span class="link-icon">bar_chart</span><span class="link-title">Laporan</span></a>
+    <a class="link"><span class="link-icon">settings</span><span class="link-title">Pengaturan</span></a>
+    <a class="link"><span class="link-icon">logout</span><span class="link-title">Keluar</span></a>
   </nav>
 
-  <!-- =============== CONTENT AREA =============== -->
+  <!-- ===================== CONTENT ===================== -->
   <div class="content">
-    <header>
-      <div class="title">Dashboard Organisasi</div>
-    </header>
+
+    <header><div class="title">Dashboard Organisasi</div></header>
 
     <section class="hero">
-      <h1>Selamat Datang di Sistem Organisasi</h1>
-      <p>Kelola data, program, laporan, dan informasi organisasi dengan mudah menggunakan panel modern ini.</p>
+      <h1>Selamat Datang!</h1>
+      <p>Kelola data, program kerja, laporan, dan dokumentasi organisasi dengan sistem modern ini.</p>
     </section>
 
     <section class="cards">
-      <div class="card">
-        <h3>Data Anggota</h3>
-        <p>Kelola informasi anggota organisasi dengan cepat dan ringkas.</p>
+      <div class="card"><h3>Data Anggota</h3><p>Kelola informasi anggota dengan mudah.</p></div>
+      <div class="card"><h3>Program Kerja</h3><p>Pantau kegiatan yang berjalan.</p></div>
+      <div class="card"><h3>Laporan Keuangan</h3><p>Tekan laporan pemasukan & pengeluaran.</p></div>
+      <div class="card"><h3>Dokumentasi</h3><p>Upload arsip & foto kegiatan.</p></div>
+    </section>
+
+    <!-- ===================== COUNT-UP SECTION ===================== -->
+    <section class="count-wrapper">
+      <div class="count-card">
+        <span class="material-symbols-rounded count-icon">groups</span>
+        <h3>Total Anggota</h3>
+        <p id="countAnggota" class="count-number">0</p>
       </div>
-      <div class="card">
-        <h3>Program Kerja</h3>
-        <p>Pantau kegiatan yang sedang berjalan maupun yang sudah selesai.</p>
+
+      <div class="count-card">
+        <span class="material-symbols-rounded count-icon">event</span>
+        <h3>Event Terlaksana</h3>
+        <p id="countEvent" class="count-number">0</p>
       </div>
-      <div class="card">
-        <h3>Laporan Keuangan</h3>
-        <p>Lihat pemasukan, pengeluaran, dan grafik keuangan.</p>
-      </div>
-      <div class="card">
-        <h3>Dokumentasi</h3>
-        <p>Upload foto kegiatan, arsip, dan file penting lainnya.</p>
+
+      <div class="count-card">
+        <span class="material-symbols-rounded count-icon">folder</span>
+        <h3>Program Aktif</h3>
+        <p id="countProgram" class="count-number">0</p>
       </div>
     </section>
 
-    <footer>
-      © 2025 Organisasi Anda — Semua hak dilindungi.
-    </footer>
+    <footer>© 2025 Organisasi Anda — Semua Hak Dilindungi.</footer>
   </div>
+
+  <!-- ===================== SCRIPT COUNT-UP ===================== -->
+  <script>
+    function animateCountUp(elementId, target, duration = 1500) {
+      const el = document.getElementById(elementId);
+      let start = 0;
+      let step = target / (duration / 16);
+
+      let counter = setInterval(() => {
+        start += step;
+        if (start >= target) {
+          start = target;
+          clearInterval(counter);
+        }
+        el.textContent = Math.floor(start).toLocaleString("id-ID");
+      }, 16);
+    }
+
+    let hasRun = false;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !hasRun) {
+        hasRun = true;
+
+        animateCountUp("countAnggota", 1500);
+        animateCountUp("countEvent", 82);
+        animateCountUp("countProgram", 14);
+      }
+    }, { threshold: 0.4 });
+
+    observer.observe(document.querySelector(".count-wrapper"));
+  </script>
 
 </body>
 </html>
