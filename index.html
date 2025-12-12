@@ -2,200 +2,136 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard Organisasi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard + Landing Page</title>
 
 <style>
-:root{
-  --bg:#f1f5f9;
-  --card:#ffffff;
-  --text:#0f172a;
-  --sub:#475569;
-  --accent:#2563eb;
+/* ==== RESET ==== */
+*{
+  margin:0; padding:0; box-sizing:border-box;
+  font-family:Arial, sans-serif;
 }
 
+/* ==== LAYOUT ==== */
 body{
-  margin:0;
-  font-family:"Poppins",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  overflow-x:hidden;
+  display:flex;
+  height:100vh;
+  overflow:hidden;
+  background:#f0f2f5;
 }
 
-/* ===== LANDING PAGE ===== */
-#landing{
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:#fff;
-  z-index:999;
+/* ==== SIDEBAR ==== */
+.sidebar{
+  width:230px;
+  background:#0f172a;
+  color:white;
+  padding:20px;
   display:flex;
   flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  padding:20px;
+  gap:15px;
 }
 
-#landing button{
-  padding:12px 28px;
-  font-size:16px;
-  background:var(--accent);
-  border:0;
-  border-radius:10px;
+.sidebar h2{
+  font-size:20px;
+  margin-bottom:10px;
+}
+
+.sidebar button{
+  background:#1e293b;
+  border:none;
+  padding:12px;
   color:white;
   cursor:pointer;
-  margin-top:25px;
-  font-weight:600;
-  box-shadow:0 4px 14px rgba(37,99,235,0.3);
+  border-radius:6px;
+  text-align:left;
+}
+.sidebar button:hover{
+  background:#334155;
 }
 
-/* ===== SIDEBAR PC ===== */
-.sidebar{
-  width:240px;
-  height:100vh;
-  background:#fff;
+/* ==== CONTENT WRAPPER ==== */
+.content{
+  flex:1;
   padding:20px;
-  position:fixed;
-  left:0; top:0;
-  border-right:1px solid #e2e8f0;
-}
-.sidebar h2{
-  margin-top:0;
+  overflow-y:auto;
 }
 
-/* ===== MAIN CONTENT ===== */
-main{
-  margin-left:240px;
-  padding:25px;
-}
-
-/* ===== CARD ===== */
+/* ==== DASHBOARD HOMEPAGE ==== */
 .card{
-  background:var(--card);
-  padding:20px;
-  border-radius:14px;
-  box-shadow:0 4px 15px rgba(0,0,0,0.06);
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
   margin-bottom:20px;
 }
 
-/* ===== BOTTOM NAV HP ===== */
-.bottom-nav{
-  position:fixed;
-  bottom:0; left:0;
-  width:100%;
-  height:60px;
-  background:#fff;
-  border-top:1px solid #e2e8f0;
+/* ==== LANDING PAGE ==== */
+.landing-page{
   display:none;
-  justify-content:space-around;
-  align-items:center;
+  background:white;
+  padding:30px;
+  border-radius:15px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  animation:fadeIn 0.3s ease;
 }
 
-/* RESPONSIVE */
-@media (max-width:768px){
-  .sidebar{display:none;}
-  main{margin-left:0; padding-bottom:80px;}
-  .bottom-nav{display:flex;}
+.landing-page img{
+  width:100%;
+  border-radius:10px;
+  margin-top:15px;
 }
 
-/* FLOAT HERO IMAGE */
-@keyframes float{
-  0%{ transform:translateY(0); }
-  50%{ transform:translateY(-8px); }
-  100%{ transform:translateY(0); }
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
 }
 </style>
+
 </head>
 <body>
 
-<!-- ===================== LANDING PAGE ===================== -->
-<div id="landing">
-  <h1 style="font-size:30px; margin-bottom:10px;">Selamat Datang</h1>
-  <p style="color:var(--sub); max-width:340px;">
-    Dashboard Organisasi — Kelola seluruh data, program kerja, dan kegiatan.
-  </p>
-  <button onclick="startDashboard()">Masuk Dashboard</button>
-</div>
-
-<!-- ===================== SIDEBAR PC ===================== -->
+<!-- SIDEBAR -->
 <div class="sidebar">
-  <h2>Organisasi</h2>
-  <p>Dashboard</p>
-  <p>Data Anggota</p>
-  <p>Kegiatan</p>
+  <h2>Menu</h2>
+  <button onclick="showHome()">🏠 Dashboard</button>
+  <button onclick="showLanding()">🚀 Landing Page</button>
 </div>
 
-<!-- ===================== MAIN ===================== -->
-<main id="main" style="display:none;">
+<!-- CONTENT AREA -->
+<div class="content">
 
-<!-- ===================== HERO ===================== -->
-<section class="card" style="display:flex; align-items:center; gap:30px; flex-wrap:wrap;">
-  <div style="flex:1; min-width:260px;">
-    <h1 style="margin:0; font-size:28px; font-weight:800;">
-      Selamat Datang di Dashboard Organisasi
-    </h1>
-    <p style="margin:10px 0 14px; font-size:15px; color:var(--sub);">
-      Kelola data anggota, kegiatan, program kerja, dan statistik.
-    </p>
+  <!-- HOMEPAGE CONTENT -->
+  <div id="home">
+    <div class="card">
+      <h1>Dashboard Utama</h1>
+      <p>Ini adalah halaman utama dashboard milikmu.</p>
+    </div>
+
+    <div class="card">
+      <h3>Informasi lainnya</h3>
+      <p>Isi card lain seperti sebelumnya.</p>
+    </div>
   </div>
 
-  <img src="https://img.freepik.com/free-vector/3d-dynamic-fluid-shapes_23-2149094074.jpg"
-    style="width:220px; border-radius:12px; animation:float 4s infinite;">
-</section>
+  <!-- LANDING PAGE (BARU) -->
+  <div id="landing" class="landing-page">
+    <h1>Selamat Datang!</h1>
+    <p>Ini adalah landing page khusus di samping sidebar.</p>
+    <img src="https://picsum.photos/800/300" alt="Landing Image">
+  </div>
 
-<!-- ===================== CARDS ===================== -->
-<div class="card">
-  <h3>Total Anggota</h3>
-  <div id="count1" style="font-size:40px; font-weight:700;">0</div>
 </div>
 
-<div class="card">
-  <h3>Kegiatan Terlaksana</h3>
-  <div id="count2" style="font-size:40px; font-weight:700;">0</div>
-</div>
-
-</main>
-
-<!-- ===================== BOTTOM NAV HP ===================== -->
-<div class="bottom-nav">
-  <div>🏠</div>
-  <div>📊</div>
-  <div>👤</div>
-</div>
-
-<!-- ===================== JAVASCRIPT ===================== -->
 <script>
-function startDashboard(){
-  document.getElementById("landing").style.display="none";
-  document.getElementById("main").style.display="block";
+function showHome(){
+  document.getElementById("home").style.display = "block";
+  document.getElementById("landing").style.display = "none";
 }
 
-/* ========= COUNTER ========= */
-function countUp(id, target){
-  let x = 0;
-  let speed = target / 40;
-  let el = document.getElementById(id);
-
-  let run = setInterval(()=>{
-    x += speed;
-    if(x >= target){
-      x = target;
-      clearInterval(run);
-    }
-    el.textContent = Math.floor(x);
-  },30);
+function showLanding(){
+  document.getElementById("home").style.display = "none";
+  document.getElementById("landing").style.display = "block";
 }
-
-let started = false;
-window.addEventListener("scroll", ()=>{
-  let top = document.getElementById("count1").getBoundingClientRect().top;
-  if(top < window.innerHeight && !started){
-    started = true;
-    countUp("count1", 250);
-    countUp("count2", 48);
-  }
-});
 </script>
 
 </body>
