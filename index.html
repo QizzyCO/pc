@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
 
 <style>
+/* ================= VARIABLES ================= */
 :root{
   --bg:#dde8f3;
   --menu-bg: rgba(255,255,255,0.75);
@@ -16,29 +17,30 @@
   --accent: #2563eb;
   --accent-dark: #1d4ed8;
   --text: #111827;
-  --muted: #6b7280;
-  --radius: 16px;
-  --transition: 0.28s cubic-bezier(.2,.9,.2,1);
-  --wa-green: #25D366;
+  --muted:#6b7280;
+  --radius:16px;
+  --transition:.28s cubic-bezier(.2,.9,.2,1);
+  --wa-green:#25D366;
 }
 
-/* ===== DARK MODE ===== */
+/* DARK MODE */
 .dark{
   --bg:#0f172a;
-  --menu-bg: rgba(30,41,59,0.7);
-  --border: rgba(255,255,255,0.1);
+  --menu-bg:rgba(30,41,59,0.7);
+  --border:rgba(255,255,255,0.1);
   --text:#e2e8f0;
   --muted:#94a3b8;
   --card-bg:#1e293b;
 }
 
-*{box-sizing:border-box; margin:0; padding:0}
+*{margin:0;padding:0;box-sizing:border-box}
 body{
   font-family:sans-serif;
   background:var(--bg);
   color:var(--text);
   display:flex;
   min-height:100vh;
+  overflow:hidden;
 }
 
 /* ================= SIDEBAR ================= */
@@ -51,34 +53,35 @@ nav.menu{
   align-items:center;
   background:var(--menu-bg);
   border-right:1px solid var(--border);
-  backdrop-filter: blur(10px);
+  backdrop-filter:blur(10px);
   transition:width var(--transition);
 }
 nav.menu:hover{ width:205px }
 
 .link{
-  display:flex;
-  align-items:center;
   width:60px;
   height:50px;
   border-radius:12px;
+  display:flex;
+  align-items:center;
+  cursor:pointer;
   text-decoration:none;
   color:var(--muted);
   overflow:hidden;
-  transition: all var(--transition);
   position:relative;
   padding-left:8px;
-  cursor:pointer;
-  border:none;
+  transition:all var(--transition);
   background:transparent;
+  border:none;
 }
-nav.menu:hover .link{ width:170px; }
+nav.menu:hover .link{ width:170px }
 
 .link:hover{
   color:#fff;
   background:var(--accent);
   box-shadow:0 6px 18px rgba(37,99,235,0.18);
 }
+
 .link-icon{
   font-family:"Material Symbols Rounded";
   font-size:26px;
@@ -90,119 +93,116 @@ nav.menu:hover .link{ width:170px; }
   white-space:nowrap;
   opacity:0;
   transform:translateX(8px);
-  transition:opacity var(--transition), transform var(--transition);
+  transition:var(--transition);
   font-weight:600;
   font-size:15px;
 }
-nav.menu:hover .link-title{ opacity:1; transform:translateX(0); }
+nav.menu:hover .link-title{
+  opacity:1;
+  transform:translateX(0);
+}
 
-/* ================= LAYOUT ================= */
+/* ================= MAIN WRAPPER ================= */
 .wrapper{
-  display:flex;
   flex:1;
+  display:flex;
   flex-direction:column;
   width:100%;
   overflow:hidden;
 }
-.content{
+
+.page{
   flex:1;
   overflow-y:auto;
   padding:32px;
-  padding-bottom:70px;
+  padding-bottom:100px;
+  display:none;
+  opacity:0;
+  transition:opacity .3s;
+}
+.page.active{
+  display:block;
+  opacity:1;
 }
 
-/* ================= HERO ================= */
+/* ================= HERO CARD ================= */
 .welcome-card-hero{
   width:100%;
-  min-height:200px;
-  background-image: url('https://media.istockphoto.com/id/1482432255/id/vektor/warna-latar-belakang-gradien-buram-abstrak-dengan-efek-dinamis.jpg?s=612x612&w=0&k=20&c=jDoDy8H7fDJgrGgc8D2X4SyT2wjtvzcmbPLFzA4x7dE=');
-  background-size: cover;
-  background-position: center;
+  min-height:180px;
+  background-image:url('https://media.istockphoto.com/id/1482432255/id/vektor/warna-latar-belakang-gradien-buram-abstrak-dengan-efek-dinamis.jpg?s=612x612&w=0&k=20&c=jDoDy8H7fDJgrGgc8D2X4SyT2wjtvzcmbPLFzA4x7dE=');
+  background-size:cover;
+  background-position:center;
   border-radius:16px;
-  margin-bottom:28px;
   display:flex;
   align-items:center;
   justify-content:center;
+  margin-bottom:22px;
   box-shadow:0 10px 30px rgba(0,0,0,0.08);
-  position:relative;
 }
 
-.welcome-card-hero .welcome-text{
-  padding:20px 28px;
-  text-align:center;
-  color:#fff;
-}
-
-.welcome-card-hero h1{
-  font-size:30px;
-  margin-bottom:8px;
-}
-.welcome-card-hero p{
-  font-size:16px;
-}
+.welcome-text{ text-align:center; padding:20px 28px; color:#fff }
+.welcome-text h1{ font-size:28px; margin-bottom:8px }
+.welcome-text p{ font-size:16px }
 
 /* ================= CARDS ================= */
 .cards{
   display:grid;
-  gap:22px;
-  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+  gap:18px;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 }
 .card{
-  background:var(--card-bg, #fff);
-  padding:20px;
+  background:var(--card-bg,#fff);
+  padding:18px;
   border-radius:12px;
-  min-height:120px;
   box-shadow:0 6px 18px rgba(0,0,0,0.06);
 }
-.card h3{
-  margin-bottom:10px;
-  font-size:17px;
-}
-.card p{
-  color:var(--muted);
-  font-size:14px;
-}
+.card h3{ margin-bottom:8px; font-size:16px }
+.card p{ font-size:14px; color:var(--muted) }
 
-/* ================= COUNT ================= */
+/* ================= COUNT-UP CARDS ================= */
 .count-wrapper{
-  margin-top:26px;
+  margin-top:20px;
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  gap:22px;
+  gap:16px;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
 }
 .count-card{
-  background:var(--card-bg, #fff);
+  background:var(--card-bg,#fff);
+  padding:18px;
   border-radius:12px;
-  padding:22px;
   text-align:center;
   box-shadow:0 6px 18px rgba(0,0,0,0.06);
-  transition: transform var(--transition);
+  transition:transform var(--transition);
 }
-.count-card:hover{ transform:translateY(-6px); }
+.count-card:hover{ transform:translateY(-6px) }
 .count-icon{
-  font-size:42px;
+  font-size:40px;
   color:var(--accent);
 }
 .count-number{
-  font-size:30px;
-  margin-top:6px;
+  font-size:28px;
   font-weight:700;
+  margin-top:6px;
   color:var(--accent);
+}
+
+/* ================= PAGES (ANGGOTA, PROGRAM, DLL) ================= */
+.page h1{
+  font-size:26px;
+  margin-bottom:14px;
 }
 
 /* ================= SETTINGS ================= */
 #settingsPanel{
-  margin-top:34px;
-  background:var(--card-bg, #fff);
-  padding:20px;
+  background:var(--card-bg,#fff);
+  padding:18px;
   border-radius:12px;
-  display:none;
+  margin-top:20px;
 }
 .toggle-row{
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  margin-top:12px;
+  margin-top:10px;
 }
 .switch{
   width:50px;
@@ -211,7 +211,6 @@ nav.menu:hover .link-title{ opacity:1; transform:translateX(0); }
   border-radius:20px;
   position:relative;
   cursor:pointer;
-  transition:0.3s;
 }
 .switch::after{
   content:"";
@@ -220,29 +219,25 @@ nav.menu:hover .link-title{ opacity:1; transform:translateX(0); }
   background:white;
   border-radius:50%;
   position:absolute;
-  top:2px;
   left:2px;
-  transition:0.3s;
+  top:2px;
+  transition:.3s;
 }
-.switch.active{ background:#2563eb; }
-.switch.active::after{ left:26px; }
-
-/* ================= FOOTER ================= */
-footer{
-  margin-top:40px;
-  text-align:center;
-  color:var(--muted);
-  padding-bottom:40px;
+.switch.active{
+  background:#2563eb;
+}
+.switch.active::after{
+  left:26px;
 }
 
-/* ================= BOTTOM NAV ================= */
+/* ================= BOTTOM NAVIGATION ================= */
 .bottom-nav{
   position:fixed;
   left:12px;
   right:12px;
   bottom:12px;
   height:66px;
-  background:var(--card-bg, #fff);
+  background:var(--card-bg,#fff);
   border-radius:16px;
   display:flex;
   align-items:center;
@@ -250,7 +245,6 @@ footer{
   box-shadow:0 10px 30px rgba(0,0,0,0.12);
   border:1px solid var(--border);
   z-index:50;
-  padding:6px 0;
 }
 .bottom-item{
   flex:1;
@@ -261,127 +255,157 @@ footer{
   color:var(--accent);
 }
 
-@media (max-width:768px){
+button{ background:none; border:none; cursor:pointer }
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
   nav.menu{ display:none }
-  .content{ padding:18px 14px; padding-bottom:70px; }
+  .page{ padding:18px 14px; padding-bottom:100px }
 }
-@media (min-width:769px){
+@media(min-width:769px){
   .bottom-nav{ display:none }
 }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<!-- ============= SIDEBAR ============= -->
 <nav class="menu">
-  <button class="link" data-key="dashboard"><span class="link-icon material-symbols-rounded">dashboard</span><span class="link-title">Dashboard</span></button>
-  <button class="link" data-key="anggota"><span class="link-icon material-symbols-rounded">groups</span><span class="link-title">Anggota</span></button>
-  <button class="link" data-key="program"><span class="link-icon material-symbols-rounded">folder</span><span class="link-title">Program</span></button>
-  <button class="link" data-key="laporan"><span class="link-icon material-symbols-rounded">bar_chart</span><span class="link-title">Laporan</span></button>
-  <button class="link" data-key="settings"><span class="link-icon material-symbols-rounded">settings</span><span class="link-title">Pengaturan</span></button>
+  <button class="link" data-page="dashboard"><span class="link-icon material-symbols-rounded">dashboard</span><span class="link-title">Dashboard</span></button>
+  <button class="link" data-page="anggota"><span class="link-icon material-symbols-rounded">groups</span><span class="link-title">Anggota</span></button>
+  <button class="link" data-page="program"><span class="link-icon material-symbols-rounded">folder</span><span class="link-title">Program</span></button>
+  <button class="link" data-page="laporan"><span class="link-icon material-symbols-rounded">bar_chart</span><span class="link-title">Laporan</span></button>
+  <button class="link" data-page="settings"><span class="link-icon material-symbols-rounded">settings</span><span class="link-title">Pengaturan</span></button>
 </nav>
 
 <div class="wrapper">
-<main class="content">
 
-  <!-- HERO -->
-  <section class="welcome-card-hero">
-    <div class="welcome-text">
-      <h1>Selamat Datang di Dashboard!</h1>
-      <p>Kelola data anggota, program kerja, laporan kegiatan, dan statistik dalam satu tempat.</p>
-    </div>
-  </section>
+  <!-- ============= PAGE: DASHBOARD ============= -->
+  <main id="dashboard" class="page active">
 
-  <!-- CARDS -->
-  <section class="cards">
-    <div class="card"><h3>Data Anggota</h3><p>Kelola profil anggota, jabatan, dan status.</p></div>
-    <div class="card"><h3>Program Kerja</h3><p>Atur program, timeline, dan penanggung jawab.</p></div>
-    <div class="card"><h3>Laporan</h3><p>Catat pemasukan dan pengeluaran organisasi.</p></div>
-    <div class="card"><h3>Dokumentasi</h3><p>Arsip foto, file, dan notulen kegiatan.</p></div>
-  </section>
+    <section class="welcome-card-hero">
+      <div class="welcome-text">
+        <h1>Selamat Datang di Dashboard!</h1>
+        <p>Kelola data organisasi dalam satu tempat.</p>
+      </div>
+    </section>
 
-  <!-- COUNT -->
-  <section class="count-wrapper">
-    <div class="count-card"><span class="material-symbols-rounded count-icon">groups</span><h3>Total Anggota</h3><div id="countAnggota" class="count-number">0</div></div>
-    <div class="count-card"><span class="material-symbols-rounded count-icon">event</span><h3>Event Terlaksana</h3><div id="countEvent" class="count-number">0</div></div>
-    <div class="count-card"><span class="material-symbols-rounded count-icon">folder</span><h3>Program Aktif</h3><div id="countProgram" class="count-number">0</div></div>
-  </section>
+    <section class="cards">
+      <div class="card"><h3>Data Anggota</h3><p>Kelola profil anggota, jabatan, status.</p></div>
+      <div class="card"><h3>Program Kerja</h3><p>Atur program, timeline, dan penanggung jawab.</p></div>
+      <div class="card"><h3>Laporan</h3><p>Catat pemasukan & pengeluaran.</p></div>
+      <div class="card"><h3>Dokumentasi</h3><p>Arsip foto, file, dan notulen kegiatan.</p></div>
+    </section>
 
-  <!-- SETTINGS -->
-  <section id="settingsPanel">
-    <h2 style="margin-bottom:10px">Pengaturan</h2>
-    <div class="toggle-row">
-      <span>Dark Mode</span>
-      <div id="darkSwitch" class="switch"></div>
-    </div>
-  </section>
+    <section class="count-wrapper">
+      <div class="count-card"><span class="material-symbols-rounded count-icon">groups</span><h3>Total Anggota</h3><div id="countAnggota" class="count-number">0</div></div>
+      <div class="count-card"><span class="material-symbols-rounded count-icon">event</span><h3>Event Terlaksana</h3><div id="countEvent" class="count-number">0</div></div>
+      <div class="count-card"><span class="material-symbols-rounded count-icon">folder</span><h3>Program Aktif</h3><div id="countProgram" class="count-number">0</div></div>
+    </section>
 
-  <footer>© <span id="year"></span> Organisasi Anda</footer>
-</main>
+  </main>
+
+  <!-- ============= PAGE: ANGGOTA ============= -->
+  <main id="anggota" class="page">
+    <h1>Data Anggota</h1>
+    <p>Halaman ini bisa kamu isi tabel anggota.</p>
+  </main>
+
+  <!-- ============= PAGE: PROGRAM ============= -->
+  <main id="program" class="page">
+    <h1>Program Kerja</h1>
+    <p>Isi daftar program kerja organisasi.</p>
+  </main>
+
+  <!-- ============= PAGE: LAPORAN ============= -->
+  <main id="laporan" class="page">
+    <h1>Laporan</h1>
+    <p>Halaman laporan keuangan.</p>
+  </main>
+
+  <!-- ============= PAGE: SETTINGS ============= -->
+  <main id="settings" class="page">
+    <h1>Pengaturan</h1>
+
+    <section id="settingsPanel">
+      <div class="toggle-row">
+        <span>Dark Mode</span>
+        <div id="darkSwitch" class="switch"></div>
+      </div>
+    </section>
+  </main>
+
 </div>
 
-<!-- BOTTOM NAV -->
+<!-- ============= BOTTOM NAV ============= -->
 <nav class="bottom-nav">
-  <div class="bottom-item active" data-key="dashboard"><button><span class="material-symbols-rounded">dashboard</span><div style="font-size:11px">Dashboard</div></button></div>
-  <div class="bottom-item" data-key="anggota"><button><span class="material-symbols-rounded">groups</span><div style="font-size:11px">Anggota</div></button></div>
-  <div class="bottom-item" data-key="program"><button><span class="material-symbols-rounded">folder</span><div style="font-size:11px">Program</div></button></div>
-  <div class="bottom-item" data-key="laporan"><button><span class="material-symbols-rounded">bar_chart</span><div style="font-size:11px">Laporan</div></button></div>
-  <div class="bottom-item" data-key="settings"><button><span class="material-symbols-rounded">settings</span><div style="font-size:11px">Pengaturan</div></button></div>
+  <div class="bottom-item active" data-page="dashboard">
+    <button><span class="material-symbols-rounded">dashboard</span><div style="font-size:11px">Dashboard</div></button>
+  </div>
+  <div class="bottom-item" data-page="anggota">
+    <button><span class="material-symbols-rounded">groups</span><div style="font-size:11px">Anggota</div></button>
+  </div>
+  <div class="bottom-item" data-page="program">
+    <button><span class="material-symbols-rounded">folder</span><div style="font-size:11px">Program</div></button>
+  </div>
+  <div class="bottom-item" data-page="laporan">
+    <button><span class="material-symbols-rounded">bar_chart</span><div style="font-size:11px">Laporan</div></button>
+  </div>
+  <div class="bottom-item" data-page="settings">
+    <button><span class="material-symbols-rounded">settings</span><div style="font-size:11px">Pengaturan</div></button>
+  </div>
 </nav>
 
 <script>
-document.getElementById("year").textContent = new Date().getFullYear();
+/* ================= PAGE SWITCH ================= */
+const pages = document.querySelectorAll(".page");
 
-// COUNT UP
-function animateCount(id, target){
+function showPage(pg){
+  pages.forEach(p=>p.classList.remove("active"));
+  document.getElementById(pg).classList.add("active");
+
+  document.querySelectorAll(".bottom-item").forEach(i=>i.classList.remove("active"));
+  let bottom = document.querySelector(`.bottom-item[data-page="${pg}"]`);
+  if(bottom) bottom.classList.add("active");
+}
+
+document.querySelectorAll(".link, .bottom-item").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    let pg = btn.getAttribute("data-page");
+    showPage(pg);
+  });
+});
+
+/* ================= DARK MODE ================= */
+document.getElementById("darkSwitch").addEventListener("click",()=>{
+  document.body.classList.toggle("dark");
+  document.getElementById("darkSwitch").classList.toggle("active");
+});
+
+/* ================= COUNT UP ================= */
+function animateCount(id,target){
   let el = document.getElementById(id);
   let num = 0;
-  let step = target / 60;
+  let step = target/60;
+
   let int = setInterval(()=>{
     num += step;
     if(num >= target){ num = target; clearInterval(int); }
     el.textContent = Math.floor(num).toLocaleString("id-ID");
-  }, 16);
+  },16);
 }
 
-let triggered = false;
-let obs = new IntersectionObserver((e)=>{
-  if(e[0].isIntersecting && !triggered){
-    triggered = true;
+let once = false;
+let observer = new IntersectionObserver((e)=>{
+  if(e[0].isIntersecting && !once){
+    once = true;
     animateCount("countAnggota",1500);
     animateCount("countEvent",80);
     animateCount("countProgram",14);
   }
-},{threshold:0.2});
-obs.observe(document.querySelector(".count-wrapper"));
+},{threshold:0.3});
 
-// NAVIGASI
-function showSettings(){
-  document.getElementById("settingsPanel").style.display = "block";
-  window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" });
-}
-
-document.querySelectorAll(".bottom-item, .link").forEach(item=>{
-  item.addEventListener("click", ()=>{
-    let key = item.getAttribute("data-key");
-
-    if(key === "settings"){ showSettings(); }
-    else{
-      document.getElementById("settingsPanel").style.display = "none";
-    }
-
-    document.querySelectorAll(".bottom-item").forEach(a=>a.classList.remove("active"));
-    let bottom = document.querySelector(`.bottom-item[data-key="${key}"]`);
-    if(bottom) bottom.classList.add("active");
-  });
-});
-
-// DARK MODE
-document.getElementById("darkSwitch").addEventListener("click", ()=>{
-  let sw = document.getElementById("darkSwitch");
-  sw.classList.toggle("active");
-  document.body.classList.toggle("dark");
-});
+observer.observe(document.querySelector(".count-wrapper"));
 </script>
 
 </body>
