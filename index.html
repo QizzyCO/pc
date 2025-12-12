@@ -3,249 +3,346 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dashboard Organisasi — Responsive (PC & HP)</title>
+  <title>Dashboard Organisasi — Responsive</title>
 
   <!-- Material Symbols -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
 
-  <style>
-    :root{
-      --bg:#dde8f3;
-      --menu-bg: rgba(255,255,255,0.75);
-      --border: rgba(0,0,0,0.06);
-      --accent: #2563eb;
-      --accent-dark: #1d4ed8;
-      --text: #111827;
-      --muted: #6b7280;
-      --radius: 16px;
-      --transition: 0.28s cubic-bezier(.2,.9,.2,1);
-      --wa-green: #25D366;
-    }
+<style>
+/* ================= ROOT ================= */
+:root{
+  --bg:#dde8f3;
+  --menu-bg: rgba(255,255,255,0.75);
+  --border: rgba(0,0,0,0.06);
+  --accent: #2563eb;
+  --accent-dark: #1d4ed8;
+  --text: #111827;
+  --muted: #6b7280;
+  --radius: 16px;
+  --transition: 0.28s cubic-bezier(.2,.9,.2,1);
+  --wa-green: #25D366;
+}
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family:Inter, system-ui;
-      background:var(--bg);
-      color:var(--text);
-      display:flex;
-      overflow:hidden;
-    }
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Inter, ui-sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  overflow:hidden;
+}
 
-    /* SIDEBAR (desktop) */
-    nav.menu{
-      width:90px;
-      padding:1rem;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      align-items:center;
-      background:var(--menu-bg);
-      border-right:1px solid var(--border);
-      backdrop-filter: blur(10px);
-      transition:width var(--transition);
-    }
-    nav.menu:hover{ width:205px; }
+/* ================= SIDEBAR (PC) ================= */
+nav.menu{
+  width:90px;
+  padding:1rem;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  align-items:center;
+  background:var(--menu-bg);
+  border-right:1px solid var(--border);
+  backdrop-filter: blur(10px);
+  transition:width var(--transition);
+}
+nav.menu:hover{ width:205px }
 
-    .link{
-      display:flex;
-      align-items:center;
-      width:60px;
-      height:50px;
-      border-radius:12px;
-      text-decoration:none;
-      color:var(--muted);
-      overflow:hidden;
-      transition: all var(--transition);
-      padding-left:8px;
-      border:none;
-      background:transparent;
-      cursor:pointer;
-    }
-    nav.menu:hover .link{ width:170px; }
+/* menu button */
+.link{
+  display:flex;
+  align-items:center;
+  width:60px;
+  height:50px;
+  border-radius:12px;
+  text-decoration:none;
+  color:var(--muted);
+  overflow:hidden;
+  transition: all var(--transition);
+  position:relative;
+  padding-left:8px;
+  cursor:pointer;
+  border:none;
+  background:transparent;
+}
+nav.menu:hover .link{ width:170px; }
 
-    .link:hover{
-      color:#fff;
-      background:var(--accent);
-      box-shadow:0 6px 18px rgba(37,99,235,0.18);
-    }
+.link:hover{
+  color:#fff;
+  background:var(--accent);
+  box-shadow:0 6px 18px rgba(37,99,235,0.18);
+}
 
-    .link-icon{
-      font-family:"Material Symbols Rounded";
-      font-size:26px;
-      margin-left:8px;
-    }
+.link-icon{
+  font-family:"Material Symbols Rounded";
+  font-size:26px;
+  margin-left:8px;
+  flex-shrink:0;
+}
+.link-title{
+  margin-left:12px;
+  white-space:nowrap;
+  opacity:0;
+  transform:translateX(8px);
+  transition:opacity var(--transition), transform var(--transition);
+  font-weight:600;
+  font-size:15px;
+}
+nav.menu:hover .link-title{ opacity:1; transform:translateX(0); }
 
-    .link-title{
-      margin-left:12px;
-      white-space:nowrap;
-      opacity:0;
-      transform:translateX(8px);
-      transition:opacity var(--transition), transform var(--transition);
-      font-weight:600;
-      font-size:15px;
-    }
+/* ================= CONTENT ================= */
+.content{
+  flex:1;
+  padding:32px;
+  overflow:auto;
+}
 
-    nav.menu:hover .link-title{
-      opacity:1; transform:translateX(0);
-    }
+header{
+  background:#fff;
+  padding:18px 22px;
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+  margin-bottom:20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.title{ font-size:20px; font-weight:700 }
 
-    /* CONTENT */
-    .content{
-      flex:1;
-      padding:32px;
-      overflow:auto;
-    }
+/* ================= HERO LANDING (GAMBAR + TEKS) ================= */
+.hero{
+  display:flex;
+  align-items:center;
+  gap:28px;
+  padding:28px;
+  background:#fff;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  margin-bottom:22px;
+}
+.hero img{
+  width:160px;
+  border-radius:14px;
+}
 
-    header{
-      background:#fff;
-      padding:18px 22px;
-      border-radius:12px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.06);
-      margin-bottom:20px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-    }
+/* ================= CARDS ================= */
+.cards{
+  display:grid;
+  gap:18px;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+}
+.card{
+  background:#fff;
+  padding:18px;
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+}
+.card h3{ margin:0 0 8px 0; font-size:16px }
+.card p{ margin:0; color:var(--muted); font-size:14px }
 
-    .title{ font-size:20px; font-weight:700; }
+/* ================= COUNT-UP ================= */
+.count-wrapper{
+  margin-top:20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:16px;
+}
+.count-card{
+  background:#fff;
+  border-radius:12px;
+  padding:18px;
+  text-align:center;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+  transition: transform var(--transition);
+}
+.count-card:hover{ transform:translateY(-6px) }
+.count-icon{
+  font-size:40px;
+  color:var(--accent);
+  display:block;
+}
+.count-number{
+  font-size:28px;
+  font-weight:700;
+  color:var(--accent);
+  margin-top:6px;
+}
 
-    .hero{
-      background: linear-gradient(135deg,var(--accent),var(--accent-dark));
-      color:#fff;
-      padding:28px;
-      border-radius:12px;
-      margin-bottom:20px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.08);
-    }
+footer{
+  margin-top:26px;
+  text-align:center;
+  color:var(--muted);
+  padding-bottom:30px;
+}
 
-    .cards{
-      display:grid;
-      gap:18px;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    }
+/* ================= BOTTOM NAV (HP) ================= */
+.bottom-nav{
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:12px;
+  height:66px;
+  background:#ffffffee;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  box-shadow:0 10px 30px rgba(0,0,0,0.12);
+  border:1px solid var(--border);
+  z-index:40;
+  padding:6px 8px;
+  backdrop-filter: blur(8px);
+}
 
-    .card{
-      background:#fff;
-      padding:18px;
-      border-radius:12px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.06);
-    }
+.bottom-item{
+  flex:1;
+  text-align:center;
+  color:var(--muted);
+  position:relative;
+}
+.bottom-item button{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  border:0;
+  background:transparent;
+  cursor:pointer;
+  width:100%;
+  padding:4px;
+}
+.bottom-item .material-symbols-rounded{
+  font-size:26px;
+}
+.bottom-item.active{
+  color:var(--wa-green);
+}
+.bottom-item.active .material-symbols-rounded{
+  transform:translateY(-6px);
+  color:var(--wa-green);
+}
 
-    .count-wrapper{
-      margin-top:18px;
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-      gap:16px;
-    }
+.badge{
+  position:absolute;
+  top:6px;
+  right:20%;
+  background:var(--wa-green);
+  color:white;
+  font-size:11px;
+  padding:2px 6px;
+  border-radius:999px;
+}
 
-    footer{
-      margin-top:26px;
-      text-align:center;
-      color:var(--muted);
-      padding-bottom:30px;
-    }
-
-    /* MOBILE NAV */
-    @media (max-width: 768px){
-      nav.menu{ display:none; }
-      .content{ padding:18px 14px 86px 14px; }
-      .cards{ grid-template-columns:1fr; }
-      .count-wrapper{ grid-template-columns:1fr; }
-      .bottom-nav{ display:flex; }
-    }
-
-    @media (min-width: 769px){
-      .bottom-nav{ display:none; }
-    }
-  </style>
+/* ================= RESPONSIVE ================= */
+@media (max-width:768px){
+  nav.menu{ display:none }
+  .content{ padding:18px 14px 86px 14px }
+  .hero{ flex-direction:column; text-align:center }
+  .cards{ grid-template-columns:1fr; }
+  .count-wrapper{ grid-template-columns:1fr; }
+}
+@media (min-width:769px){
+  .bottom-nav{ display:none }
+}
+</style>
 </head>
 
 <body>
 
-  <!-- SIDEBAR -->
-  <nav class="menu">
+<!-- ================= SIDEBAR ================= -->
+<nav class="menu">
+  <button class="link"><span class="link-icon material-symbols-rounded">dashboard</span><span class="link-title">Dashboard</span></button>
+  <button class="link"><span class="link-icon material-symbols-rounded">groups</span><span class="link-title">Anggota</span></button>
+  <button class="link"><span class="link-icon material-symbols-rounded">folder</span><span class="link-title">Program</span></button>
+  <button class="link"><span class="link-icon material-symbols-rounded">bar_chart</span><span class="link-title">Laporan</span></button>
+  <button class="link"><span class="link-icon material-symbols-rounded">settings</span><span class="link-title">Pengaturan</span></button>
+</nav>
 
-    <!-- OPEN DASHBOARD (default) -->
-    <button class="link" onclick="showDashboard()">
-      <span class="link-icon material-symbols-rounded">dashboard</span>
-      <span class="link-title">Dashboard</span>
-    </button>
 
-    <!-- NEW: LANDING PAGE BUTTON -->
-    <button class="link" onclick="showLanding()">
-      <span class="link-icon material-symbols-rounded">home</span>
-      <span class="link-title">Landing Page</span>
-    </button>
+<!-- ================= MAIN CONTENT ================= -->
+<main class="content">
 
-  </nav>
+  <!-- HEADER -->
+  <header>
+    <div class="title">Dashboard Organisasi</div>
+    <div style="color:var(--muted);font-size:13px">Hai, Admin</div>
+  </header>
 
-  <!-- CONTENT -->
-  <main class="content">
-
-    <!-- DASHBOARD CONTENT -->
-    <div id="dashboardPage">
-
-      <header>
-        <div class="title">Dashboard Organisasi</div>
-        <div style="font-size:13px;color:var(--muted)">Hai, Admin</div>
-      </header>
-
-      <section class="hero">
-        <h1>Selamat Datang!</h1>
-        <p>Kelola data organisasi, program kerja, dan laporan.</p>
-      </section>
-
-      <section class="cards">
-        <div class="card"><h3>Data Anggota</h3><p>Kelola profil dan anggota.</p></div>
-        <div class="card"><h3>Program Kerja</h3><p>Atur timeline & kegiatan.</p></div>
-        <div class="card"><h3>Laporan</h3><p>Pemasukan & pengeluaran.</p></div>
-        <div class="card"><h3>Dokumentasi</h3><p>Arsip foto & file penting.</p></div>
-      </section>
-
-      <section class="count-wrapper">
-        <div class="card"><h3>Total Anggota</h3><div>1520</div></div>
-        <div class="card"><h3>Kegiatan</h3><div>82</div></div>
-        <div class="card"><h3>Program Aktif</h3><div>14</div></div>
-      </section>
-
-      <footer>© <span id="year"></span> Organisasi</footer>
+  <!-- HERO LANDING -->
+  <section class="hero">
+    <img src="https://i.ibb.co/8xFvzmD/welcome.png" alt="Welcome">
+    <div>
+      <h1 style="margin:0 0 6px 0;font-size:26px">Selamat Datang di Dashboard!</h1>
+      <p style="margin:0;color:var(--muted)">Kelola data anggota, program kerja, laporan kegiatan, dan statistik dalam satu tempat.</p>
     </div>
+  </section>
 
-    <!-- LANDING PAGE (hidden awal) -->
-    <div id="landingPage" style="display:none;">
+  <!-- CARDS -->
+  <section class="cards">
+    <div class="card"><h3>Data Anggota</h3><p>Kelola profil anggota, jabatan, dan status.</p></div>
+    <div class="card"><h3>Program Kerja</h3><p>Atur program, timeline, dan penanggung jawab.</p></div>
+    <div class="card"><h3>Laporan</h3><p>Catat pemasukan dan pengeluaran organisasi.</p></div>
+    <div class="card"><h3>Dokumentasi</h3><p>Arsip foto, file, dan notulen kegiatan.</p></div>
+  </section>
 
-      <div class="hero" style="background:#2563eb;">
-        <h1>Landing Page</h1>
-        <p>Ini halaman khusus terpisah dari dashboard.</p>
-      </div>
+  <!-- COUNT-UP -->
+  <section class="count-wrapper">
+    <div class="count-card"><span class="material-symbols-rounded count-icon">groups</span><h3>Total Anggota</h3><div id="countAnggota" class="count-number">0</div></div>
+    <div class="count-card"><span class="material-symbols-rounded count-icon">event</span><h3>Event Terlaksana</h3><div id="countEvent" class="count-number">0</div></div>
+    <div class="count-card"><span class="material-symbols-rounded count-icon">folder</span><h3>Program Aktif</h3><div id="countProgram" class="count-number">0</div></div>
+  </section>
 
-      <div class="card">
-        <h3>Informasi</h3>
-        <p>Ini adalah landing page buatanmu yang berdiri sendiri.</p>
-      </div>
+  <footer>© <span id="year"></span> Organisasi Anda</footer>
+</main>
 
-      <img src="https://picsum.photos/900/300"
-           style="border-radius:12px;margin-top:18px;">
-    </div>
 
-  </main>
+<!-- ================= BOTTOM NAV ================= -->
+<nav class="bottom-nav">
+  <div class="bottom-item active" data-key="home"><button><span class="material-symbols-rounded">dashboard</span><span style="font-size:11px">Beranda</span></button></div>
+  <div class="bottom-item" data-key="anggota"><button><span class="material-symbols-rounded">groups</span><span style="font-size:11px">Anggota</span></button></div>
+  <div class="bottom-item" data-key="messages"><button><span class="material-symbols-rounded">chat</span><span style="font-size:11px">Pesan</span></button><div class="badge">3</div></div>
+  <div class="bottom-item" data-key="settings"><button><span class="material-symbols-rounded">settings</span><span style="font-size:11px">Pengaturan</span></button></div>
+</nav>
 
-  <!-- SCRIPT -->
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
 
-    function showDashboard(){
-      document.getElementById("dashboardPage").style.display = "block";
-      document.getElementById("landingPage").style.display = "none";
-    }
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+// YEAR
+document.getElementById("year").textContent = new Date().getFullYear();
 
-    function showLanding(){
-      document.getElementById("dashboardPage").style.display = "none";
-      document.getElementById("landingPage").style.display = "block";
-    }
-  </script>
+// COUNT UP
+function animateCount(id, target){
+  let el = document.getElementById(id);
+  let num = 0;
+  let step = target / 60;
+  let int = setInterval(()=>{
+    num += step;
+    if(num >= target){ num = target; clearInterval(int); }
+    el.textContent = Math.floor(num).toLocaleString("id-ID");
+  }, 16);
+}
+
+// SCROLL TRIGGER
+let triggered = false;
+let obs = new IntersectionObserver((e)=>{
+  if(e[0].isIntersecting && !triggered){
+    triggered = true;
+    animateCount("countAnggota",1500);
+    animateCount("countEvent",80);
+    animateCount("countProgram",14);
+  }
+},{threshold:0.2});
+obs.observe(document.querySelector(".count-wrapper"));
+
+// BOTTOM NAV ACTIVE
+document.querySelectorAll(".bottom-item").forEach(item=>{
+  item.addEventListener("click", ()=>{
+    document.querySelectorAll(".bottom-item").forEach(a=>a.classList.remove("active"));
+    item.classList.add("active");
+  });
+});
+</script>
 
 </body>
 </html>
