@@ -76,6 +76,45 @@ main{
   50%{ transform:translateY(-8px); }
   100%{ transform:translateY(0); }
 }
+
+/* ===== LANDING PAGE ===== */
+.landing{
+  width:100%;
+  background:#fff;
+  padding:50px 30px;
+  border-radius:16px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.08);
+  margin-bottom:40px;
+  text-align:center;
+}
+.landing img{
+  width:320px;
+  max-width:100%;
+  margin-top:25px;
+  border-radius:14px;
+  animation:float 4s ease-in-out infinite;
+}
+.landing h1{
+  margin:0;
+  font-size:36px;
+  font-weight:800;
+}
+.landing p{
+  font-size:15px;
+  color:#475569;
+  margin:12px 0 20px;
+}
+.landing button{
+  padding:12px 22px;
+  font-size:15px;
+  background:var(--accent);
+  color:white;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:600;
+  box-shadow:0 4px 15px rgba(37,99,235,0.26);
+}
 </style>
 </head>
 <body>
@@ -90,6 +129,20 @@ main{
 
 <!-- ===================== MAIN ===================== -->
 <main>
+
+<!-- =====================================================
+     🌟 LANDING PAGE (HALAMAN AWAL)
+====================================================== -->
+<section class="landing">
+  <h1>Selamat Datang di Website Organisasi</h1>
+  <p>Platform modern untuk mengelola data anggota, kegiatan, statistik, dan informasi organisasi Anda.</p>
+
+  <button onclick="window.scrollTo({top:600, behavior:'smooth'})">
+    Masuk Dashboard
+  </button>
+
+  <img src="https://img.freepik.com/free-vector/3d-dynamic-fluid-shapes_23-2149094074.jpg" alt="">
+</section>
 
 <!-- ===================== HERO BARU ===================== -->
 <section class="hero" aria-labelledby="hero-title" style="
