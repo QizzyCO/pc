@@ -1,545 +1,189 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dashboard Organisasi — Responsive (PC & HP)</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Responsive Dashboard</title>
 
-  <!-- Material Symbols -->
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
-
-  <style>
-    :root{
-      --bg:#dde8f3;
-      --menu-bg: rgba(255,255,255,0.75);
-      --border: rgba(0,0,0,0.06);
-      --accent: #2563eb;
-      --accent-dark: #1d4ed8;
-      --text: #111827;
-      --muted: #6b7280;
-      --radius: 16px;
-      --transition: 0.28s cubic-bezier(.2,.9,.2,1);
-      --wa-green: #25D366; /* WhatsApp-like green */
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: #0f172a;
+        font-family: Arial, sans-serif;
+        color: white;
+        overflow-x: hidden;
     }
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background:var(--bg);
-      color:var(--text);
-      display:flex;
-      overflow:hidden;
+    /* ======== DESKTOP NAV (PC) ======== */
+    .desktop-nav {
+        position: fixed;
+        top: 50%;
+        left: 20px;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        z-index: 999;
     }
 
-    /* ---------------- SIDEBAR (desktop) ---------------- */
-    nav.menu{
-      width:90px;
-      padding:1rem;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      align-items:center;
-      background:var(--menu-bg);
-      border-right:1px solid var(--border);
-      backdrop-filter: blur(10px);
-      transition:width var(--transition);
-    }
-    nav.menu:hover{ width:205px; }
-
-    .link{
-      display:flex;
-      align-items:center;
-      width:60px;
-      height:50px;
-      border-radius:12px;
-      text-decoration:none;
-      color:var(--muted);
-      overflow:hidden;
-      transition: all var(--transition);
-      position:relative;
-      padding-left:8px;
-      cursor:pointer;
-      border:none;
-      background:transparent;
-    }
-    .link:focus{ outline:2px solid rgba(37,99,235,0.12); }
-
-    nav.menu:hover .link{ width:170px; } /* allow hover expansion */
-
-    .link:hover{
-      color:#fff;
-      background:var(--accent);
-      box-shadow:0 6px 18px rgba(37,99,235,0.18);
+    .desktop-nav button {
+        width: 55px;
+        height: 55px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 15px;
+        color: white;
+        font-size: 22px;
+        backdrop-filter: blur(10px);
+        transition: 0.2s;
+        cursor: pointer;
     }
 
-    .link-icon{
-      font-family:"Material Symbols Rounded";
-      font-size:26px;
-      margin-left:8px;
-      flex-shrink:0;
-      transition: transform var(--transition);
+    .desktop-nav button:hover,
+    .desktop-nav button.active {
+        background: #4f46e5;
+        transform: scale(1.1);
     }
 
-    .link-title{
-      margin-left:12px;
-      white-space:nowrap;
-      opacity:0;
-      transform:translateX(8px);
-      transition:opacity var(--transition), transform var(--transition);
-      font-weight:600;
-      font-size:15px;
-    }
-
-    nav.menu:hover .link-title{ opacity:1; transform:translateX(0); }
-
-    /* ---------------- CONTENT ---------------- */
-    .content{
-      flex:1;
-      padding:32px;
-      overflow:auto;
-    }
-
-    header{
-      background:#fff;
-      padding:18px 22px;
-      border-radius:12px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.06);
-      margin-bottom:20px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .title{ font-size:20px; font-weight:700; }
-
-    .hero{
-      background: linear-gradient(135deg,var(--accent),var(--accent-dark));
-      color:#fff;
-      padding:28px;
-      border-radius:12px;
-      margin-bottom:20px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.08);
-    }
-    .hero h1{ margin:0 0 8px 0; font-size:22px; }
-    .hero p{ margin:0; opacity:.92 }
-
-    .cards{
-      display:grid;
-      gap:18px;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    }
-
-    .card{
-      background:#fff;
-      padding:18px;
-      border-radius:12px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.06);
-    }
-    .card h3{ margin:0 0 8px 0; font-size:16px; }
-    .card p{ margin:0; color:var(--muted); font-size:14px }
-
-    /* ---------------- COUNT-UP ---------------- */
-    .count-wrapper{
-      margin-top:18px;
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-      gap:16px;
-    }
-    .count-card{
-      background:#fff;
-      border-radius:12px;
-      padding:18px;
-      text-align:center;
-      box-shadow:0 6px 18px rgba(0,0,0,0.06);
-      transition: transform var(--transition);
-    }
-    .count-card:hover{ transform:translateY(-6px) }
-    .count-icon{
-      font-size:40px;
-      color:var(--accent);
-      display:block;
-      margin-bottom:8px;
-    }
-    .count-number{
-      font-size:28px;
-      font-weight:700;
-      color:var(--accent);
-      margin:6px 0 0 0;
-    }
-
-    footer{
-      margin-top:26px;
-      text-align:center;
-      color:var(--muted);
-      padding-bottom:30px;
-    }
-
-    /* ---------------- BOTTOM NAV (mobile) ---------------- */
+    /* ======== BOTTOM NAV (HP) ======== */
     .bottom-nav {
-      position:fixed;
-      left:12px;
-      right:12px;
-      bottom:12px;
-      height:66px;
-      background: #ffffffee;
-      border-radius:14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-around;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-      border:1px solid var(--border);
-      z-index:40;
-      padding:6px 8px;
-      backdrop-filter: blur(8px);
-      transform-origin: center bottom;
-      transition: transform .18s ease, opacity .18s ease;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(255,255,255,0.08);
+        border-top: 1px solid rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        z-index: 999;
+        display: none;
     }
 
-    .bottom-item{
-      flex:1;
-      text-align:center;
-      font-size:12px;
-      color:var(--muted);
-      position:relative;
-      user-select:none;
+    .bottom-nav button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 26px;
+        opacity: 0.5;
+        transition: 0.2s;
     }
 
-    .bottom-item button{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-      gap:4px;
-      width:100%;
-      height:100%;
-      border-radius:10px;
-      background:transparent;
-      border:0;
-      cursor:pointer;
-      padding:6px 4px;
-      color:inherit;
-      font:inherit;
+    .bottom-nav button.active {
+        opacity: 1;
+        transform: scale(1.2);
+        color: #4f46e5;
     }
 
-    .bottom-item .material-symbols-rounded{
-      font-size:26px;
-      transition: transform .22s var(--transition), color .22s var(--transition);
+    /* ======== CONTENT ======== */
+    .content {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 20px;
+        padding-bottom: 120px; /* space bawah untuk bottom nav */
     }
 
-    .bottom-item .title{ font-size:11px; }
-
-    /* ACTIVE style (WhatsApp-like green) */
-    .bottom-item.active{ color:var(--wa-green); }
-    .bottom-item.active .material-symbols-rounded{ transform:translateY(-6px); color:var(--wa-green); }
-
-    /* Ripple effect element */
-    .ripple {
-      position:absolute;
-      border-radius:50%;
-      transform:scale(0);
-      animation:ripple .5s linear;
-      background: rgba(0,0,0,0.08);
-      pointer-events:none;
-    }
-    @keyframes ripple{
-      to { transform:scale(2.5); opacity:0; }
+    .card {
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.15);
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        text-align: center;
     }
 
-    /* Badge style (for Messages) */
-    .badge{
-      position:absolute;
-      top:8px;
-      right:20%;
-      background:var(--wa-green);
-      color:white;
-      font-size:11px;
-      padding:2px 6px;
-      border-radius:999px;
-      min-width:20px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      box-shadow:0 4px 10px rgba(0,0,0,0.12);
+    .count {
+        font-size: 40px;
+        font-weight: bold;
+        margin-top: 10px;
     }
 
-    /* ---------------- RESPONSIVE rules ---------------- */
-    @media (max-width: 768px){
-      /* hide desktop sidebar */
-      nav.menu{ display:none; }
-      .content{ padding:18px 14px 86px 14px; } /* leave space for bottom nav */
-      .hero{ padding:18px; border-radius:12px; }
-      .cards{ grid-template-columns: 1fr; }
-      .count-wrapper{ grid-template-columns: 1fr; }
-      .bottom-nav{ display:flex; }
+    /* ======== RESPONSIVE ======== */
+    @media (max-width: 768px) {
+        .desktop-nav { display: none; }
+        .bottom-nav { display: flex; }
+        .content { padding: 20px; }
     }
-
-    @media (min-width: 769px){
-      /* hide bottom nav on desktop */
-      .bottom-nav{ display:none; }
-    }
-
-    /* small screens: make bottom nav full width with slight margin */
-    @media (max-width:420px){
-      .bottom-nav{ left:8px; right:8px; height:64px; }
-    }
-  </style>
+</style>
 </head>
+
 <body>
 
-  <!-- SIDEBAR (desktop) -->
-  <nav class="menu" aria-label="Menu Utama">
-    <button class="link" aria-label="Dashboard" title="Dashboard">
-      <span class="link-icon material-symbols-rounded">dashboard</span>
-      <span class="link-title">Dashboard</span>
-    </button>
+<!-- PC NAV -->
+<div class="desktop-nav">
+    <button class="nav-btn active" data-page="home">🏠</button>
+    <button class="nav-btn" data-page="stats">📊</button>
+    <button class="nav-btn" data-page="anggota">👥</button>
+</div>
 
-    <button class="link" aria-label="Anggota" title="Anggota">
-      <span class="link-icon material-symbols-rounded">groups</span>
-      <span class="link-title">Anggota</span>
-    </button>
+<!-- MOBILE NAV -->
+<div class="bottom-nav">
+    <button class="nav-btn active" data-page="home">🏠</button>
+    <button class="nav-btn" data-page="stats">📊</button>
+    <button class="nav-btn" data-page="anggota">👥</button>
+</div>
 
-    <button class="link" aria-label="Program" title="Program">
-      <span class="link-icon material-symbols-rounded">folder</span>
-      <span class="link-title">Program</span>
-    </button>
+<div class="content">
 
-    <button class="link" aria-label="Laporan" title="Laporan">
-      <span class="link-icon material-symbols-rounded">bar_chart</span>
-      <span class="link-title">Laporan</span>
-    </button>
-
-    <button class="link" aria-label="Pengaturan" title="Pengaturan">
-      <span class="link-icon material-symbols-rounded">settings</span>
-      <span class="link-title">Pengaturan</span>
-    </button>
-  </nav>
-
-  <!-- CONTENT -->
-  <main class="content" role="main">
-    <header>
-      <div class="title">Dashboard Organisasi</div>
-      <div style="display:flex;gap:12px;align-items:center">
-        <div style="font-size:13px;color:var(--muted)">Hai, Admin</div>
-      </div>
-    </header>
-
-    <section class="hero" aria-labelledby="hero-title">
-      <h1 id="hero-title">Selamat Datang!</h1>
-      <p>Kelola data organisasi, program kerja, dan laporan. Tampilan berubah otomatis sesuai perangkat (PC / HP).</p>
-    </section>
-
-    <section class="cards" aria-label="Fitur cepat">
-      <article class="card" role="article">
-        <h3>Data Anggota</h3>
-        <p>Kelola profil, jabatan, dan status keanggotaan.</p>
-      </article>
-
-      <article class="card">
-        <h3>Program Kerja</h3>
-        <p>Atur program, timeline, dan penanggung jawab.</p>
-      </article>
-
-      <article class="card">
-        <h3>Laporan Keuangan</h3>
-        <p>Catat pemasukan & pengeluaran organisasi.</p>
-      </article>
-
-      <article class="card">
-        <h3>Dokumentasi</h3>
-        <p>Arsip foto, file, dan notulen kegiatan.</p>
-      </article>
-    </section>
-
-    <!-- COUNT-UP -->
-    <section class="count-wrapper" aria-label="Statistik singkat">
-      <div class="count-card" aria-hidden="false">
-        <span class="material-symbols-rounded count-icon" aria-hidden="true">groups</span>
-        <h3>Total Anggota</h3>
-        <div id="countAnggota" class="count-number">0</div>
-      </div>
-
-      <div class="count-card">
-        <span class="material-symbols-rounded count-icon" aria-hidden="true">event</span>
-        <h3>Event Terlaksana</h3>
-        <div id="countEvent" class="count-number">0</div>
-      </div>
-
-      <div class="count-card">
-        <span class="material-symbols-rounded count-icon" aria-hidden="true">folder</span>
-        <h3>Program Aktif</h3>
-        <div id="countProgram" class="count-number">0</div>
-      </div>
-    </section>
-
-    <footer>
-      © <span id="year"></span> Organisasi Anda — Semua Hak Dilindungi.
-    </footer>
-  </main>
-
-  <!-- BOTTOM NAV (mobile) -->
-  <nav class="bottom-nav" role="navigation" aria-label="Navigasi bawah">
-    <div class="bottom-item" data-key="home" aria-hidden="false">
-      <button aria-label="Dashboard">
-        <span class="material-symbols-rounded">dashboard</span>
-        <span class="title">Beranda</span>
-      </button>
+    <div class="card">
+        <h2>Jumlah Anggota</h2>
+        <div class="count" data-target="725">0</div>
     </div>
 
-    <div class="bottom-item" data-key="anggota">
-      <button aria-label="Anggota">
-        <span class="material-symbols-rounded">groups</span>
-        <span class="title">Anggota</span>
-      </button>
+    <div class="card">
+        <h2>Anggota Aktif</h2>
+        <div class="count" data-target="513">0</div>
     </div>
 
-    <div class="bottom-item" data-key="messages" style="position:relative">
-      <button aria-label="Pesan">
-        <span class="material-symbols-rounded">chat</span>
-        <span class="title">Pesan</span>
-      </button>
-      <!-- badge example -->
-      <div class="badge" id="msgBadge" aria-hidden="false">3</div>
+    <div class="card">
+        <h2>Anggota Baru Tahun Ini</h2>
+        <div class="count" data-target="120">0</div>
     </div>
 
-    <div class="bottom-item" data-key="settings">
-      <button aria-label="Pengaturan">
-        <span class="material-symbols-rounded">settings</span>
-        <span class="title">Pengaturan</span>
-      </button>
-    </div>
-  </nav>
+</div>
 
-  <!-- ========== SCRIPTS ========== -->
-  <script>
-    // set year
-    document.getElementById('year').textContent = new Date().getFullYear();
 
-    /* ================= COUNT-UP (trigger on scroll) ================= */
-    function animateCountUp(elementId, target, duration = 1400) {
-      const el = document.getElementById(elementId);
-      if(!el) return;
-      let start = 0;
-      const stepTime = 16;
-      const steps = Math.max(1, Math.floor(duration / stepTime));
-      const increment = target / steps;
-      let current = 0;
-      const interval = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-          el.textContent = target.toLocaleString('id-ID');
-          clearInterval(interval);
-        } else {
-          el.textContent = Math.floor(current).toLocaleString('id-ID');
+<script>
+/* ========== COUNT UP ON SCROLL ========== */
+function startCountUp(el) {
+    let target = parseInt(el.getAttribute("data-target"));
+    let count = 0;
+    let speed = target / 100;
+
+    let timer = setInterval(() => {
+        count += speed;
+        if (count >= target) {
+            count = target;
+            clearInterval(timer);
         }
-      }, stepTime);
+        el.innerText = Math.floor(count);
+    }, 20);
+}
+
+let counters = document.querySelectorAll(".count");
+let started = false;
+
+window.addEventListener("scroll", () => {
+    let top = counters[0].getBoundingClientRect().top;
+    if (top < window.innerHeight && !started) {
+        counters.forEach(startCountUp);
+        started = true;
     }
+});
 
-    // intersection observer
-    (function(){
-      let ran = false;
-      const wrapper = document.querySelector('.count-wrapper');
-      if(!wrapper) return;
-      const obs = new IntersectionObserver(entries => {
-        if(entries[0].isIntersecting && !ran){
-          ran = true;
-          // set your numbers here
-          animateCountUp('countAnggota', 1520);
-          animateCountUp('countEvent', 82);
-          animateCountUp('countProgram', 14);
-          obs.disconnect();
-        }
-      }, {threshold: 0.35});
-      obs.observe(wrapper);
-    })();
+/* ========== NAV ACTIVE EFFECT (PC & HP) ========== */
+const navButtons = document.querySelectorAll(".nav-btn");
 
-    /* ================= BOTTOM NAV behavior (mobile) ================= */
-    (function(){
-      const items = document.querySelectorAll('.bottom-item');
-      const badge = document.getElementById('msgBadge');
+navButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        navButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+    });
+});
+</script>
 
-      // default active (home)
-      function setActiveByKey(key){
-        items.forEach(it=>{
-          if(it.dataset.key === key) it.classList.add('active');
-          else it.classList.remove('active');
-        });
-      }
-      setActiveByKey('home');
-
-      // ripple helper
-      function createRipple(container, x, y){
-        const r = document.createElement('span');
-        r.className = 'ripple';
-        // size relative to container
-        const rect = container.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height) * 1.2;
-        r.style.width = r.style.height = size + 'px';
-        r.style.left = (x - rect.left - size/2) + 'px';
-        r.style.top  = (y - rect.top - size/2) + 'px';
-        container.appendChild(r);
-        setTimeout(()=> r.remove(), 520);
-      }
-
-      // add click listeners
-      items.forEach(item => {
-        const btn = item.querySelector('button');
-        btn.addEventListener('click', (ev) => {
-          // active state
-          items.forEach(i=> i.classList.remove('active'));
-          item.classList.add('active');
-
-          // ripple
-          createRipple(item, ev.clientX, ev.clientY);
-
-          // demo behavior: if messages clicked, clear badge
-          if(item.dataset.key === 'messages' && badge){
-            // simulate reading messages -> clear badge
-            badge.style.display = 'none';
-          }
-
-          // optionally: swap content or navigate via router here
-        });
-
-        // tactile feedback on touchstart: small scale
-        btn.addEventListener('touchstart', () => {
-          btn.style.transform = 'scale(.98)';
-        }, {passive:true});
-        btn.addEventListener('touchend', () => {
-          btn.style.transform = '';
-        });
-      });
-    })();
-
-    /* ================= Accessibility: keyboard navigation for mobile nav ================= */
-    (function(){
-      const btns = document.querySelectorAll('.bottom-item button');
-      btns.forEach(b => {
-        b.addEventListener('keyup', (e) => {
-          if(e.key === 'Enter' || e.key === ' '){
-            b.click();
-          }
-        });
-      });
-    })();
-
-    /* ================= Optional: hide bottom nav when keyboard visible on mobile (improve UX) ================= */
-    (function(){
-      // On some mobile browsers virtual keyboard pushes viewport; hide bottom nav when input focused
-      const bottom = document.querySelector('.bottom-nav');
-      if(!bottom) return;
-      window.addEventListener('focusin', (e) => {
-        if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA'){
-          bottom.style.transform = 'translateY(14px)';
-          bottom.style.opacity = '0.9';
-        }
-      });
-      window.addEventListener('focusout', () => {
-        bottom.style.transform = '';
-        bottom.style.opacity = '';
-      });
-    })();
-  </script>
 </body>
 </html>
