@@ -110,6 +110,40 @@ header{
 }
 .title{ font-size:20px; font-weight:700 }
 
+/* ================= WELCOME HERO CARD ================= */
+.welcome-card-hero{
+  width:100%;
+  min-height:180px;
+  background-image: url('https://media.istockphoto.com/id/1482432255/id/vektor/warna-latar-belakang-gradien-buram-abstrak-dengan-efek-dinamis.jpg?s=612x612&w=0&k=20&c=jDoDy8H7fDJgrGgc8D2X4SyT2wjtvzcmbPLFzA4x7dE=');
+  background-size: cover;
+  background-position: center;
+  border-radius:16px;
+  margin-bottom:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  position:relative;
+}
+
+.welcome-card-hero .welcome-text{
+  background: rgba(0,0,0,0.4);
+  padding:20px 28px;
+  border-radius:12px;
+  color:#fff;
+  text-align:center;
+}
+
+.welcome-card-hero h1{
+  margin:0 0 8px 0;
+  font-size:28px;
+}
+
+.welcome-card-hero p{
+  margin:0;
+  font-size:16px;
+}
+
 /* ================= CARDS ================= */
 .cards{
   display:grid;
@@ -124,40 +158,6 @@ header{
 }
 .card h3{ margin:0 0 8px 0; font-size:16px }
 .card p{ margin:0; color:var(--muted); font-size:14px }
-
-/* ================= WELCOME CARD ================= */
-.welcome-card{
-  background-image: url('https://media.istockphoto.com/id/1482432255/id/vektor/warna-latar-belakang-gradien-buram-abstrak-dengan-efek-dinamis.jpg?s=612x612&w=0&k=20&c=jDoDy8H7fDJgrGgc8D2X4SyT2wjtvzcmbPLFzA4x7dE=');
-  background-size: cover;
-  background-position: center;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 180px;
-  border-radius: 12px;
-  position: relative;
-  overflow: hidden;
-  box-shadow:0 6px 18px rgba(0,0,0,0.06);
-  transition: transform var(--transition);
-}
-.welcome-card:hover{
-  transform: translateY(-4px);
-}
-.welcome-text{
-  text-align: center;
-  background: rgba(0,0,0,0.4);
-  padding: 12px;
-  border-radius: 8px;
-}
-.welcome-text h3{
-  margin:0 0 6px 0;
-  font-size:18px;
-}
-.welcome-text p{
-  margin:0;
-  font-size:14px;
-}
 
 /* ================= COUNT-UP ================= */
 .count-wrapper{
@@ -284,17 +284,16 @@ footer{
     <div style="color:var(--muted);font-size:13px">Hai, Admin</div>
   </header>
 
+  <!-- HERO CARD PANJANG -->
+  <section class="welcome-card-hero">
+    <div class="welcome-text">
+      <h1>Selamat Datang di Dashboard!</h1>
+      <p>Kelola data anggota, program kerja, laporan kegiatan, dan statistik dalam satu tempat.</p>
+    </div>
+  </section>
+
   <!-- CARDS -->
   <section class="cards">
-    <!-- Hero Card berbentuk gambar -->
-    <div class="card welcome-card">
-      <div class="welcome-text">
-        <h3>Selamat Datang di Dashboard!</h3>
-        <p>Kelola data anggota, program kerja, laporan kegiatan, dan statistik dalam satu tempat.</p>
-      </div>
-    </div>
-
-    <!-- Card lain -->
     <div class="card"><h3>Data Anggota</h3><p>Kelola profil anggota, jabatan, dan status.</p></div>
     <div class="card"><h3>Program Kerja</h3><p>Atur program, timeline, dan penanggung jawab.</p></div>
     <div class="card"><h3>Laporan</h3><p>Catat pemasukan dan pengeluaran organisasi.</p></div>
