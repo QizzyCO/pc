@@ -1,258 +1,379 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard Organisasi</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard Organisasi — Responsive (PC & HP)</title>
 
-<style>
-:root{
-  --bg:#f1f5f9;
-  --card:#ffffff;
-  --text:#0f172a;
-  --sub:#475569;
-  --accent:#2563eb;
-}
+  <!-- Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
 
-body{
-  margin:0;
-  font-family:"Poppins",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
+  <style>
+    :root{
+      --bg:#dde8f3;
+      --menu-bg: rgba(255,255,255,0.75);
+      --border: rgba(0,0,0,0.06);
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --text: #111827;
+      --muted: #6b7280;
+      --radius: 16px;
+      --transition: 0.28s cubic-bezier(.2,.9,.2,1);
+      --wa-green: #25D366;
+    }
 
-/* ===== SIDEBAR PC ===== */
-.sidebar{
-  width:240px;
-  height:100vh;
-  background:#fff;
-  padding:20px;
-  position:fixed;
-  left:0; top:0;
-  border-right:1px solid #e2e8f0;
-}
-.sidebar h2{
-  margin-top:0;
-}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto;
+      background:var(--bg);
+      color:var(--text);
+      display:flex;
+      overflow:hidden;
+    }
 
-/* ===== MAIN CONTENT ===== */
-main{
-  margin-left:240px;
-  padding:25px;
-}
+    /* ----------- SIDEBAR (PC) ----------- */
+    nav.menu{
+      width:90px;
+      padding:1rem;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      align-items:center;
+      background:var(--menu-bg);
+      border-right:1px solid var(--border);
+      backdrop-filter: blur(10px);
+      transition:width var(--transition);
+      flex-shrink:0;
+    }
+    nav.menu:hover{ width:205px; }
 
-/* ===== CARD ===== */
-.card{
-  background:var(--card);
-  padding:20px;
-  border-radius:14px;
-  box-shadow:0 4px 15px rgba(0,0,0,0.06);
-  margin-bottom:20px;
-}
+    .link{
+      display:flex;
+      align-items:center;
+      width:60px;
+      height:50px;
+      border-radius:12px;
+      text-decoration:none;
+      color:var(--muted);
+      overflow:hidden;
+      transition: all var(--transition);
+      padding-left:8px;
+      cursor:pointer;
+      border:none;
+      background:transparent;
+    }
+    nav.menu:hover .link{ width:170px; }
+    .link:hover{
+      color:#fff;
+      background:var(--accent);
+      box-shadow:0 6px 18px rgba(37,99,235,0.18);
+    }
+    .link-icon{
+      font-family:"Material Symbols Rounded";
+      font-size:26px;
+      margin-left:8px;
+      flex-shrink:0;
+    }
+    .link-title{
+      margin-left:12px;
+      white-space:nowrap;
+      opacity:0;
+      transform:translateX(8px);
+      transition:opacity var(--transition), transform var(--transition);
+      font-weight:600;
+      font-size:15px;
+    }
+    nav.menu:hover .link-title{ opacity:1; transform:translateX(0); }
 
-/* ===== BOTTOM NAV HP ===== */
-.bottom-nav{
-  position:fixed;
-  bottom:0; left:0;
-  width:100%;
-  height:60px;
-  background:#fff;
-  border-top:1px solid #e2e8f0;
-  display:none;
-  justify-content:space-around;
-  align-items:center;
-}
+    /* -------------- CONTENT -------------- */
+    .content{
+      flex:1;
+      padding:32px;
+      overflow:auto;
+    }
 
-/* RESPONSIVE */
-@media (max-width:768px){
-  .sidebar{display:none;}
-  main{margin-left:0; padding-bottom:80px;}
-  .bottom-nav{display:flex;}
-}
+    header{
+      background:#fff;
+      padding:18px 22px;
+      border-radius:12px;
+      margin-bottom:20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      box-shadow:0 6px 18px rgba(0,0,0,0.06);
+    }
+    .title{ font-size:20px; font-weight:700; }
 
-/* FLOAT HERO IMAGE */
-@keyframes float{
-  0%{ transform:translateY(0); }
-  50%{ transform:translateY(-8px); }
-  100%{ transform:translateY(0); }
-}
+    /* ------------ LANDING PAGE ------------ */
+    .landing {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: #fff;
+      padding: 38px 26px;
+      border-radius: 16px;
+      margin-bottom: 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+    }
+    .landing-text h1{
+      margin:0 0 10px 0;
+      font-size:28px;
+      font-weight:700;
+    }
+    .landing-text p{
+      margin:0;
+      font-size:15px;
+      opacity:0.95;
+    }
+    .landing img{
+      width:140px;
+      height:auto;
+      border-radius:12px;
+    }
+    @media(max-width:768px){
+      .landing{
+        flex-direction:column;
+        text-align:center;
+      }
+      .landing img{
+        width:100%;
+        max-width:220px;
+      }
+    }
 
-/* ===== LANDING PAGE ===== */
-.landing{
-  width:100%;
-  background:#fff;
-  padding:50px 30px;
-  border-radius:16px;
-  box-shadow:0 8px 25px rgba(0,0,0,0.08);
-  margin-bottom:40px;
-  text-align:center;
-}
-.landing img{
-  width:320px;
-  max-width:100%;
-  margin-top:25px;
-  border-radius:14px;
-  animation:float 4s ease-in-out infinite;
-}
-.landing h1{
-  margin:0;
-  font-size:36px;
-  font-weight:800;
-}
-.landing p{
-  font-size:15px;
-  color:#475569;
-  margin:12px 0 20px;
-}
-.landing button{
-  padding:12px 22px;
-  font-size:15px;
-  background:var(--accent);
-  color:white;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-  font-weight:600;
-  box-shadow:0 4px 15px rgba(37,99,235,0.26);
-}
-</style>
+    /* ----------- HERO ---------- */
+    .hero{
+      background: linear-gradient(135deg,var(--accent),var(--accent-dark));
+      color:#fff;
+      padding:28px;
+      border-radius:12px;
+      margin-bottom:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    }
+    .hero h1{ margin:0 0 8px 0; font-size:22px; }
+
+    .cards{
+      display:grid;
+      gap:18px;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    }
+    .card{
+      background:#fff;
+      padding:18px;
+      border-radius:12px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.06);
+    }
+
+    /* --------- COUNT UP --------- */
+    .count-wrapper{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+      gap:16px;
+    }
+    .count-card{
+      background:#fff;
+      border-radius:12px;
+      padding:18px;
+      text-align:center;
+      box-shadow:0 6px 18px rgba(0,0,0,0.06);
+    }
+    .count-icon{
+      font-size:40px;
+      color:var(--accent);
+      display:block;
+      margin-bottom:8px;
+    }
+    .count-number{
+      font-size:28px;
+      font-weight:700;
+      color:var(--accent);
+    }
+
+    footer{
+      margin-top:26px;
+      text-align:center;
+      color:var(--muted);
+      padding-bottom:30px;
+    }
+
+    /* ----------- BOTTOM NAV (HP) ----------- */
+    .bottom-nav {
+      position:fixed;
+      left:12px;
+      right:12px;
+      bottom:12px;
+      height:66px;
+      background: #ffffffee;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-around;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      border:1px solid var(--border);
+      z-index:40;
+      padding:6px 8px;
+      backdrop-filter: blur(8px);
+    }
+
+    .bottom-item{
+      flex:1;
+      text-align:center;
+      font-size:12px;
+      color:var(--muted);
+      position:relative;
+    }
+
+    .bottom-item button{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      width:100%;
+      height:100%;
+      border-radius:10px;
+      background:transparent;
+      border:0;
+      cursor:pointer;
+      padding:6px 4px;
+      color:inherit;
+    }
+
+    .bottom-item.active{ color:var(--wa-green); }
+    .bottom-item.active .material-symbols-rounded{
+      transform:translateY(-6px);
+      color:var(--wa-green);
+    }
+
+    .badge{
+      position:absolute;
+      top:5px;
+      right:23%;
+      background:var(--wa-green);
+      color:white;
+      font-size:11px;
+      padding:2px 6px;
+      border-radius:999px;
+      min-width:20px;
+    }
+
+    @media(max-width:768px){
+      nav.menu{ display:none; }
+      .content{ padding:18px 14px 90px 14px; }
+    }
+    @media(min-width:769px){
+      .bottom-nav{ display:none; }
+    }
+
+  </style>
 </head>
 <body>
 
-<!-- ===================== SIDEBAR PC ===================== -->
-<div class="sidebar">
-  <h2>Organisasi</h2>
-  <p>Dashboard</p>
-  <p>Data Anggota</p>
-  <p>Kegiatan</p>
-</div>
+  <!-- SIDEBAR -->
+  <nav class="menu">
+    <button class="link"><span class="link-icon material-symbols-rounded">dashboard</span><span class="link-title">Dashboard</span></button>
+    <button class="link"><span class="link-icon material-symbols-rounded">groups</span><span class="link-title">Anggota</span></button>
+    <button class="link"><span class="link-icon material-symbols-rounded">folder</span><span class="link-title">Program</span></button>
+    <button class="link"><span class="link-icon material-symbols-rounded">bar_chart</span><span class="link-title">Laporan</span></button>
+    <button class="link"><span class="link-icon material-symbols-rounded">settings</span><span class="link-title">Pengaturan</span></button>
+  </nav>
 
-<!-- ===================== MAIN ===================== -->
-<main>
+  <!-- CONTENT -->
+  <main class="content">
 
-<!-- =====================================================
-     🌟 LANDING PAGE (HALAMAN AWAL)
-====================================================== -->
-<section class="landing">
-  <h1>Selamat Datang di Website Organisasi</h1>
-  <p>Platform modern untuk mengelola data anggota, kegiatan, statistik, dan informasi organisasi Anda.</p>
+    <!-- LANDING PAGE -->
+    <section class="landing">
+      <div class="landing-text">
+        <h1>Selamat Datang di Dashboard 👋</h1>
+        <p>Kelola seluruh data organisasi dengan lebih mudah dan responsif.</p>
+      </div>
 
-  <button onclick="window.scrollTo({top:600, behavior:'smooth'})">
-    Masuk Dashboard
-  </button>
+      <img src="https://i.ibb.co/m4qz1Ph/illustration.png" alt="Illustrasi">
+    </section>
 
-  <img src="https://img.freepik.com/free-vector/3d-dynamic-fluid-shapes_23-2149094074.jpg" alt="">
-</section>
+    <!-- HEADER -->
+    <header>
+      <div class="title">Dashboard Organisasi</div>
+      <div style="font-size:13px;color:var(--muted)">Hai, Admin</div>
+    </header>
 
-<!-- ===================== HERO BARU ===================== -->
-<section class="hero" aria-labelledby="hero-title" style="
-  background:#fff;
-  border-radius:16px;
-  padding:32px;
-  display:flex;
-  align-items:center;
-  gap:32px;
-  flex-wrap:wrap;
-  margin-bottom:32px;
-">
-  <div style="flex:1; min-width:260px;">
-    <h1 id="hero-title" style="margin:0; font-size:30px; font-weight:800; color:#0f172a;">
-      Selamat Datang di Dashboard Organisasi
-    </h1>
-    <p style="margin:12px 0 20px; font-size:15px; color:#475569;">
-      Kelola data anggota, kegiatan, program kerja, dan statistik organisasi Anda.
-      Tampilan responsif otomatis untuk PC & HP.
-    </p>
+    <!-- HERO -->
+    <section class="hero">
+      <h1>Selamat Datang!</h1>
+      <p>Kelola data organisasi, program kerja, dan laporan. Tampilan otomatis menyesuaikan perangkat.</p>
+    </section>
 
-    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
-      <button style="
-        padding:12px 20px;
-        font-size:14px;
-        background:var(--accent);
-        border:0;
-        border-radius:10px;
-        color:white;
-        cursor:pointer;
-        font-weight:600;
-        box-shadow:0 4px 14px rgba(37,99,235,0.26);
-      ">
-        Mulai Kelola
-      </button>
+    <!-- CARDS -->
+    <section class="cards">
+      <article class="card"><h3>Data Anggota</h3><p>Kelola profil & status.</p></article>
+      <article class="card"><h3>Program Kerja</h3><p>Atur program & timeline.</p></article>
+      <article class="card"><h3>Laporan Keuangan</h3><p>Pemasukan & pengeluaran.</p></article>
+      <article class="card"><h3>Dokumentasi</h3><p>Arsip file & foto.</p></article>
+    </section>
 
-      <button style="
-        padding:12px 20px;
-        font-size:14px;
-        background:#f1f5f9;
-        border:0;
-        border-radius:10px;
-        color:#334155;
-        cursor:pointer;
-        font-weight:600;
-      ">
-        Lihat Statistik
-      </button>
-    </div>
-  </div>
+    <!-- COUNT UP -->
+    <section class="count-wrapper">
+      <div class="count-card">
+        <span class="material-symbols-rounded count-icon">groups</span>
+        <h3>Total Anggota</h3>
+        <div id="countAnggota" class="count-number">0</div>
+      </div>
 
-  <img src="https://img.freepik.com/free-vector/3d-dynamic-fluid-shapes_23-2149094074.jpg"
-    alt="Hero Image"
-    style="
-      width:340px;
-      max-width:100%;
-      border-radius:12px;
-      box-shadow:0 10px 22px rgba(0,0,0,0.08);
-      animation:float 4s ease-in-out infinite;
-    "
-  />
-</section>
+      <div class="count-card">
+        <span class="material-symbols-rounded count-icon">event</span>
+        <h3>Event Terlaksana</h3>
+        <div id="countEvent" class="count-number">0</div>
+      </div>
 
-<!-- ===================== CARD COUNT UP ===================== -->
-<div class="card">
-  <h3>Total Anggota</h3>
-  <div id="count1" style="font-size:40px; font-weight:700;">0</div>
-</div>
+      <div class="count-card">
+        <span class="material-symbols-rounded count-icon">folder</span>
+        <h3>Program Aktif</h3>
+        <div id="countProgram" class="count-number">0</div>
+      </div>
+    </section>
 
-<div class="card">
-  <h3>Kegiatan Terlaksana</h3>
-  <div id="count2" style="font-size:40px; font-weight:700;">0</div>
-</div>
+    <footer>
+      © <span id="year"></span> Organisasi Anda — Semua Hak Dilindungi.
+    </footer>
 
-</main>
+  </main>
 
-<!-- ===================== BOTTOM NAV HP ===================== -->
-<div class="bottom-nav">
-  <div>🏠</div>
-  <div>📊</div>
-  <div>👤</div>
-</div>
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <div class="bottom-item active"><button><span class="material-symbols-rounded">dashboard</span><span class="title">Beranda</span></button></div>
+    <div class="bottom-item"><button><span class="material-symbols-rounded">groups</span><span class="title">Anggota</span></button></div>
+    <div class="bottom-item"><button><span class="material-symbols-rounded">chat</span><span class="title">Pesan</span></button><div class="badge">3</div></div>
+    <div class="bottom-item"><button><span class="material-symbols-rounded">settings</span><span class="title">Pengaturan</span></button></div>
+  </nav>
 
-<!-- ===================== JAVASCRIPT ===================== -->
-<script>
-function countUp(id, target){
-  let x = 0;
-  let speed = target / 40;
-  let el = document.getElementById(id);
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
 
-  let run = setInterval(()=>{
-    x += speed;
-    if(x >= target){
-      x = target;
-      clearInterval(run);
+    function animateCountUp(id, target, duration = 1200){
+      const el = document.getElementById(id);
+      let cur = 0;
+      const step = target / (duration / 16);
+      const timer = setInterval(()=>{
+        cur += step;
+        if(cur >= target){ el.textContent = target.toLocaleString('id-ID'); clearInterval(timer); }
+        else el.textContent = Math.floor(cur).toLocaleString('id-ID');
+      },16);
     }
-    el.textContent = Math.floor(x);
-  },30);
-}
 
-let started = false;
-window.addEventListener("scroll", ()=>{
-  let top = document.getElementById("count1").getBoundingClientRect().top;
-  if(top < window.innerHeight && !started){
-    started = true;
-    countUp("count1", 250);
-    countUp("count2", 48);
-  }
-});
-</script>
+    const obs = new IntersectionObserver((e)=>{
+      if(e[0].isIntersecting){
+        animateCountUp("countAnggota",1520);
+        animateCountUp("countEvent",82);
+        animateCountUp("countProgram",14);
+        obs.disconnect();
+      }
+    });
+    obs.observe(document.querySelector(".count-wrapper"));
+  </script>
 
 </body>
 </html>
