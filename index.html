@@ -1,138 +1,251 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard + Landing Page</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard Organisasi — Responsive (PC & HP)</title>
 
-<style>
-/* ==== RESET ==== */
-*{
-  margin:0; padding:0; box-sizing:border-box;
-  font-family:Arial, sans-serif;
-}
+  <!-- Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
 
-/* ==== LAYOUT ==== */
-body{
-  display:flex;
-  height:100vh;
-  overflow:hidden;
-  background:#f0f2f5;
-}
+  <style>
+    :root{
+      --bg:#dde8f3;
+      --menu-bg: rgba(255,255,255,0.75);
+      --border: rgba(0,0,0,0.06);
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --text: #111827;
+      --muted: #6b7280;
+      --radius: 16px;
+      --transition: 0.28s cubic-bezier(.2,.9,.2,1);
+      --wa-green: #25D366;
+    }
 
-/* ==== SIDEBAR ==== */
-.sidebar{
-  width:230px;
-  background:#0f172a;
-  color:white;
-  padding:20px;
-  display:flex;
-  flex-direction:column;
-  gap:15px;
-}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter, system-ui;
+      background:var(--bg);
+      color:var(--text);
+      display:flex;
+      overflow:hidden;
+    }
 
-.sidebar h2{
-  font-size:20px;
-  margin-bottom:10px;
-}
+    /* SIDEBAR (desktop) */
+    nav.menu{
+      width:90px;
+      padding:1rem;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      align-items:center;
+      background:var(--menu-bg);
+      border-right:1px solid var(--border);
+      backdrop-filter: blur(10px);
+      transition:width var(--transition);
+    }
+    nav.menu:hover{ width:205px; }
 
-.sidebar button{
-  background:#1e293b;
-  border:none;
-  padding:12px;
-  color:white;
-  cursor:pointer;
-  border-radius:6px;
-  text-align:left;
-}
-.sidebar button:hover{
-  background:#334155;
-}
+    .link{
+      display:flex;
+      align-items:center;
+      width:60px;
+      height:50px;
+      border-radius:12px;
+      text-decoration:none;
+      color:var(--muted);
+      overflow:hidden;
+      transition: all var(--transition);
+      padding-left:8px;
+      border:none;
+      background:transparent;
+      cursor:pointer;
+    }
+    nav.menu:hover .link{ width:170px; }
 
-/* ==== CONTENT WRAPPER ==== */
-.content{
-  flex:1;
-  padding:20px;
-  overflow-y:auto;
-}
+    .link:hover{
+      color:#fff;
+      background:var(--accent);
+      box-shadow:0 6px 18px rgba(37,99,235,0.18);
+    }
 
-/* ==== DASHBOARD HOMEPAGE ==== */
-.card{
-  background:white;
-  padding:25px;
-  border-radius:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.1);
-  margin-bottom:20px;
-}
+    .link-icon{
+      font-family:"Material Symbols Rounded";
+      font-size:26px;
+      margin-left:8px;
+    }
 
-/* ==== LANDING PAGE ==== */
-.landing-page{
-  display:none;
-  background:white;
-  padding:30px;
-  border-radius:15px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.1);
-  animation:fadeIn 0.3s ease;
-}
+    .link-title{
+      margin-left:12px;
+      white-space:nowrap;
+      opacity:0;
+      transform:translateX(8px);
+      transition:opacity var(--transition), transform var(--transition);
+      font-weight:600;
+      font-size:15px;
+    }
 
-.landing-page img{
-  width:100%;
-  border-radius:10px;
-  margin-top:15px;
-}
+    nav.menu:hover .link-title{
+      opacity:1; transform:translateX(0);
+    }
 
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(10px);}
-  to{opacity:1; transform:translateY(0);}
-}
-</style>
+    /* CONTENT */
+    .content{
+      flex:1;
+      padding:32px;
+      overflow:auto;
+    }
 
+    header{
+      background:#fff;
+      padding:18px 22px;
+      border-radius:12px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.06);
+      margin-bottom:20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .title{ font-size:20px; font-weight:700; }
+
+    .hero{
+      background: linear-gradient(135deg,var(--accent),var(--accent-dark));
+      color:#fff;
+      padding:28px;
+      border-radius:12px;
+      margin-bottom:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .cards{
+      display:grid;
+      gap:18px;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    }
+
+    .card{
+      background:#fff;
+      padding:18px;
+      border-radius:12px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.06);
+    }
+
+    .count-wrapper{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+      gap:16px;
+    }
+
+    footer{
+      margin-top:26px;
+      text-align:center;
+      color:var(--muted);
+      padding-bottom:30px;
+    }
+
+    /* MOBILE NAV */
+    @media (max-width: 768px){
+      nav.menu{ display:none; }
+      .content{ padding:18px 14px 86px 14px; }
+      .cards{ grid-template-columns:1fr; }
+      .count-wrapper{ grid-template-columns:1fr; }
+      .bottom-nav{ display:flex; }
+    }
+
+    @media (min-width: 769px){
+      .bottom-nav{ display:none; }
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <h2>Menu</h2>
-  <button onclick="showHome()">🏠 Dashboard</button>
-  <button onclick="showLanding()">🚀 Landing Page</button>
-</div>
+  <!-- SIDEBAR -->
+  <nav class="menu">
 
-<!-- CONTENT AREA -->
-<div class="content">
+    <!-- OPEN DASHBOARD (default) -->
+    <button class="link" onclick="showDashboard()">
+      <span class="link-icon material-symbols-rounded">dashboard</span>
+      <span class="link-title">Dashboard</span>
+    </button>
 
-  <!-- HOMEPAGE CONTENT -->
-  <div id="home">
-    <div class="card">
-      <h1>Dashboard Utama</h1>
-      <p>Ini adalah halaman utama dashboard milikmu.</p>
+    <!-- NEW: LANDING PAGE BUTTON -->
+    <button class="link" onclick="showLanding()">
+      <span class="link-icon material-symbols-rounded">home</span>
+      <span class="link-title">Landing Page</span>
+    </button>
+
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- DASHBOARD CONTENT -->
+    <div id="dashboardPage">
+
+      <header>
+        <div class="title">Dashboard Organisasi</div>
+        <div style="font-size:13px;color:var(--muted)">Hai, Admin</div>
+      </header>
+
+      <section class="hero">
+        <h1>Selamat Datang!</h1>
+        <p>Kelola data organisasi, program kerja, dan laporan.</p>
+      </section>
+
+      <section class="cards">
+        <div class="card"><h3>Data Anggota</h3><p>Kelola profil dan anggota.</p></div>
+        <div class="card"><h3>Program Kerja</h3><p>Atur timeline & kegiatan.</p></div>
+        <div class="card"><h3>Laporan</h3><p>Pemasukan & pengeluaran.</p></div>
+        <div class="card"><h3>Dokumentasi</h3><p>Arsip foto & file penting.</p></div>
+      </section>
+
+      <section class="count-wrapper">
+        <div class="card"><h3>Total Anggota</h3><div>1520</div></div>
+        <div class="card"><h3>Kegiatan</h3><div>82</div></div>
+        <div class="card"><h3>Program Aktif</h3><div>14</div></div>
+      </section>
+
+      <footer>© <span id="year"></span> Organisasi</footer>
     </div>
 
-    <div class="card">
-      <h3>Informasi lainnya</h3>
-      <p>Isi card lain seperti sebelumnya.</p>
+    <!-- LANDING PAGE (hidden awal) -->
+    <div id="landingPage" style="display:none;">
+
+      <div class="hero" style="background:#2563eb;">
+        <h1>Landing Page</h1>
+        <p>Ini halaman khusus terpisah dari dashboard.</p>
+      </div>
+
+      <div class="card">
+        <h3>Informasi</h3>
+        <p>Ini adalah landing page buatanmu yang berdiri sendiri.</p>
+      </div>
+
+      <img src="https://picsum.photos/900/300"
+           style="border-radius:12px;margin-top:18px;">
     </div>
-  </div>
 
-  <!-- LANDING PAGE (BARU) -->
-  <div id="landing" class="landing-page">
-    <h1>Selamat Datang!</h1>
-    <p>Ini adalah landing page khusus di samping sidebar.</p>
-    <img src="https://picsum.photos/800/300" alt="Landing Image">
-  </div>
+  </main>
 
-</div>
+  <!-- SCRIPT -->
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
 
-<script>
-function showHome(){
-  document.getElementById("home").style.display = "block";
-  document.getElementById("landing").style.display = "none";
-}
+    function showDashboard(){
+      document.getElementById("dashboardPage").style.display = "block";
+      document.getElementById("landingPage").style.display = "none";
+    }
 
-function showLanding(){
-  document.getElementById("home").style.display = "none";
-  document.getElementById("landing").style.display = "block";
-}
-</script>
+    function showLanding(){
+      document.getElementById("dashboardPage").style.display = "none";
+      document.getElementById("landingPage").style.display = "block";
+    }
+  </script>
 
 </body>
 </html>
