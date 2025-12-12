@@ -1,223 +1,205 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dashboard Organisasi</title>
 
 <style>
-/* ---------------- ROOT ---------------- */
-:root {
-  --bg: #dde8f3;
-  --menu-bg: rgba(255, 255, 255, 0.7);
-  --border: rgba(0, 0, 0, 0.06);
-  --accent: #2563eb;
-  --text: #111827;
-  --muted: #6b7280;
-  --radius: 16px;
-  --transition: 0.3s ease;
-  --hero-text: #0f172a;
+:root{
+  --bg:#f1f5f9;
+  --card:#ffffff;
+  --text:#0f172a;
+  --sub:#475569;
+  --accent:#2563eb;
 }
 
-/* ---------------- BODY ---------------- */
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg);
-  font-family: "Outfit", sans-serif;
+body{
+  margin:0;
+  font-family:"Poppins",sans-serif;
+  background:var(--bg);
+  color:var(--text);
 }
 
-/* ---------------- HERO AICM ---------------- */
-.hero {
-  width: 100%;
-  padding: 120px 10%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 60px;
-  background: radial-gradient(circle at top right, #dfe7ff, #d9e4f7, #e7edf9);
+/* ===== SIDEBAR PC ===== */
+.sidebar{
+  width:240px;
+  height:100vh;
+  background:#fff;
+  padding:20px;
+  position:fixed;
+  left:0; top:0;
+  border-right:1px solid #e2e8f0;
+}
+.sidebar h2{
+  margin-top:0;
 }
 
-.hero-text {
-  max-width: 500px;
+/* ===== MAIN CONTENT ===== */
+main{
+  margin-left:240px;
+  padding:25px;
 }
 
-.hero-text h1 {
-  font-size: 48px;
-  font-weight: 800;
-  margin: 0;
-  color: var(--hero-text);
+/* ===== CARD ===== */
+.card{
+  background:var(--card);
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.06);
+  margin-bottom:20px;
 }
 
-.hero-text p {
-  margin: 16px 0 24px;
-  font-size: 18px;
-  color: #475569;
+/* ===== BOTTOM NAV HP ===== */
+.bottom-nav{
+  position:fixed;
+  bottom:0; left:0;
+  width:100%;
+  height:60px;
+  background:#fff;
+  border-top:1px solid #e2e8f0;
+  display:none;
+  justify-content:space-around;
+  align-items:center;
 }
 
-.hero-search {
-  width: 100%;
-  padding: 14px 20px;
-  border-radius: 14px;
-  border: 1px solid #cbd5e1;
-  font-size: 16px;
-  outline: none;
+/* RESPONSIVE */
+@media (max-width:768px){
+  .sidebar{display:none;}
+  main{margin-left:0; padding-bottom:80px;}
+  .bottom-nav{display:flex;}
 }
 
-.hero-img {
-  width: 420px;
-  animation: float 4s ease-in-out infinite;
-}
-
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-14px); }
-  100% { transform: translateY(0px); }
-}
-
-/* ---------------- MOBILE HERO ---------------- */
-@media (max-width: 800px) {
-  .hero {
-    flex-direction: column;
-    padding: 60px 8%;
-    text-align: center;
-  }
-
-  .hero-img {
-    width: 90%;
-    margin-top: 20px;
-  }
-}
-
-/* ---------------- DASHBOARD MENU ---------------- */
-.menu {
-  margin: 40px auto;
-  padding: 1rem;
-  background: var(--menu-bg);
-  backdrop-filter: blur(12px);
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-  width: fit-content;
-}
-
-.link {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 60px;
-  height: 50px;
-  border-radius: var(--radius);
-  color: var(--muted);
-  text-decoration: none;
-  font-weight: 500;
-  position: relative;
-  overflow: hidden;
-  transition: all var(--transition);
-}
-
-.link-icon {
-  font-family: "Material Symbols Rounded";
-  font-size: 26px;
-  margin-left: 16px;
-  flex-shrink: 0;
-  transition: transform var(--transition);
-}
-
-.link-title {
-  margin-left: 12px;
-  opacity: 0;
-  transform: translateX(10px);
-  transition: opacity var(--transition), transform var(--transition);
-  white-space: nowrap;
-  font-size: 15px;
-}
-
-/* Hover PC */
-.link:hover {
-  width: 150px;
-  color: #fff;
-  background: var(--accent);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-}
-
-.link:hover .link-icon {
-  transform: scale(1.1);
-}
-
-.link:hover .link-title {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* ---------------- MOBILE BOTTOM NAV ---------------- */
-@media (max-width: 768px) {
-  .menu {
-    position: fixed;
-    bottom: 16px;
-    width: 90%;
-    left: 50%;
-    transform: translateX(-50%);
-    justify-content: space-around;
-  }
-
-  .link {
-    width: 50px !important;
-    justify-content: center;
-  }
-
-  .link-title {
-    display: none !important;
-  }
-
-  .link:hover {
-    width: 50px !important;
-    background: var(--accent);
-    color: #fff;
-  }
+/* FLOAT HERO IMAGE */
+@keyframes float{
+  0%{ transform:translateY(0); }
+  50%{ transform:translateY(-8px); }
+  100%{ transform:translateY(0); }
 }
 </style>
-
 </head>
 <body>
 
-<!-- ---------------- HERO BARU AICM ---------------- -->
-<section class="hero">
-  <div class="hero-text">
-    <h1>Platform Manajemen Organisasi Modern</h1>
-    <p>Dashboard terpusat untuk mengelola data anggota, kegiatan, laporan, dan perkembangan organisasi Anda.</p>
-    <input class="hero-search" placeholder="Cari data anggota, kegiatan, laporan..." />
+<!-- ===================== SIDEBAR PC ===================== -->
+<div class="sidebar">
+  <h2>Organisasi</h2>
+  <p>Dashboard</p>
+  <p>Data Anggota</p>
+  <p>Kegiatan</p>
+</div>
+
+<!-- ===================== MAIN ===================== -->
+<main>
+
+<!-- ===================== HERO BARU ===================== -->
+<section class="hero" aria-labelledby="hero-title" style="
+  background:#fff;
+  border-radius:16px;
+  padding:32px;
+  display:flex;
+  align-items:center;
+  gap:32px;
+  flex-wrap:wrap;
+  margin-bottom:32px;
+">
+  <div style="flex:1; min-width:260px;">
+    <h1 id="hero-title" style="margin:0; font-size:30px; font-weight:800; color:#0f172a;">
+      Selamat Datang di Dashboard Organisasi
+    </h1>
+    <p style="margin:12px 0 20px; font-size:15px; color:#475569;">
+      Kelola data anggota, kegiatan, program kerja, dan statistik organisasi Anda.
+      Tampilan responsif otomatis untuk PC & HP.
+    </p>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+      <button style="
+        padding:12px 20px;
+        font-size:14px;
+        background:var(--accent);
+        border:0;
+        border-radius:10px;
+        color:white;
+        cursor:pointer;
+        font-weight:600;
+        box-shadow:0 4px 14px rgba(37,99,235,0.26);
+      ">
+        Mulai Kelola
+      </button>
+
+      <button style="
+        padding:12px 20px;
+        font-size:14px;
+        background:#f1f5f9;
+        border:0;
+        border-radius:10px;
+        color:#334155;
+        cursor:pointer;
+        font-weight:600;
+      ">
+        Lihat Statistik
+      </button>
+    </div>
   </div>
 
-  <img class="hero-img" src="https://img.freepik.com/free-vector/3d-dynamic-fluid-shapes_23-2149094074.jpg"
-  alt="Abstract 3D" />
+  <img src="https://img.freepik.com/free-vector/3d-dynamic-fluid-shapes_23-2149094074.jpg"
+    alt="Hero Image"
+    style="
+      width:340px;
+      max-width:100%;
+      border-radius:12px;
+      box-shadow:0 10px 22px rgba(0,0,0,0.08);
+      animation:float 4s ease-in-out infinite;
+    "
+  />
 </section>
 
-<!-- ---------------- MENU DASHBOARD ---------------- -->
-<nav class="menu">
-  <a href="#" class="link">
-    <span class="link-icon">dashboard</span>
-    <span class="link-title">Dashboard</span>
-  </a>
+<!-- ===================== CARD COUNT UP ===================== -->
+<div class="card">
+  <h3>Total Anggota</h3>
+  <div id="count1" style="font-size:40px; font-weight:700;">0</div>
+</div>
 
-  <a href="#" class="link">
-    <span class="link-icon">group</span>
-    <span class="link-title">Anggota</span>
-  </a>
+<div class="card">
+  <h3>Kegiatan Terlaksana</h3>
+  <div id="count2" style="font-size:40px; font-weight:700;">0</div>
+</div>
 
-  <a href="#" class="link">
-    <span class="link-icon">bar_chart</span>
-    <span class="link-title">Statistik</span>
-  </a>
+</main>
 
-  <a href="#" class="link">
-    <span class="link-icon">settings</span>
-    <span class="link-title">Pengaturan</span>
-  </a>
-</nav>
+<!-- ===================== BOTTOM NAV HP ===================== -->
+<div class="bottom-nav">
+  <div>🏠</div>
+  <div>📊</div>
+  <div>👤</div>
+</div>
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+function countUp(id, target){
+  let x = 0;
+  let speed = target / 40;
+  let el = document.getElementById(id);
+
+  let run = setInterval(()=>{
+    x += speed;
+    if(x >= target){
+      x = target;
+      clearInterval(run);
+    }
+    el.textContent = Math.floor(x);
+  },30);
+}
+
+let started = false;
+window.addEventListener("scroll", ()=>{
+  let top = document.getElementById("count1").getBoundingClientRect().top;
+  if(top < window.innerHeight && !started){
+    started = true;
+    countUp("count1", 250);
+    countUp("count2", 48);
+  }
+});
+</script>
 
 </body>
 </html>
