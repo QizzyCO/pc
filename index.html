@@ -1,537 +1,145 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dashboard Organisasi — Responsive (PC & HP)</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Landing + Dashboard</title>
 
-  <!-- Material Symbols -->
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
+<style>
+/* ========== GLOBAL ========== */
+body {
+  margin: 0;
+  font-family: "Outfit", sans-serif;
+  background: #ffffff;
+  overflow-x: hidden;
+}
 
-  <style>
-    :root{
-      --bg:#dde8f3;
-      --menu-bg: rgba(255,255,255,0.75);
-      --border: rgba(0,0,0,0.06);
-      --accent: #2563eb;
-      --accent-dark: #1d4ed8;
-      --text: #111827;
-      --muted: #6b7280;
-      --radius: 16px;
-      --transition: 0.28s cubic-bezier(.2,.9,.2,1);
-      --wa-green: #25D366; /* kept for palette if needed */
-    }
+/* ========== HERO SECTION ========== */
+.hero {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 80px 8%;
+  min-height: 85vh;
+  background: linear-gradient(to bottom, #f6f8ff, #ffffff);
+  box-sizing: border-box;
+}
 
-    *{box-sizing:border-box}
-    html,body{
-      margin:0;
-      min-height:100%;
-      font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background:var(--bg);
-      color:var(--text);
-    }
+.hero-content {
+  max-width: 550px;
+  z-index: 2;
+}
 
-    /* layout: sidebar + content */
-    .app {
-      display:flex;
-      min-height:100vh;
-      align-items:stretch;
-      gap:0;
-    }
+.hero h1 {
+  font-size: 48px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
 
-    /* ---------------- SIDEBAR (desktop) ---------------- */
-    nav.menu{
-      width:90px;
-      padding:1rem;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      align-items:center;
-      background:var(--menu-bg);
-      border-right:1px solid var(--border);
-      backdrop-filter: blur(10px);
-      transition:width var(--transition);
-      flex-shrink:0;
-    }
-    nav.menu:hover{ width:205px; }
+.hero p {
+  font-size: 18px;
+  color: #475569;
+  margin-bottom: 28px;
+}
 
-    .link{
-      display:flex;
-      align-items:center;
-      width:60px;
-      height:50px;
-      border-radius:12px;
-      text-decoration:none;
-      color:var(--muted);
-      overflow:hidden;
-      transition: all var(--transition);
-      position:relative;
-      padding-left:8px;
-      cursor:pointer;
-      border:none;
-      background:transparent;
-    }
-    .link:focus{ outline:2px solid rgba(37,99,235,0.12); }
+/* SEARCH */
+.hero-search {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 40px;
+  padding: 12px 20px;
+  width: 320px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
 
-    nav.menu:hover .link{ width:170px; } /* allow hover expansion */
+.hero-search .material-symbols-rounded {
+  font-size: 22px;
+  color: #1e293b;
+  margin-right: 10px;
+}
 
-    .link:hover{
-      color:#fff;
-      background:var(--accent);
-      box-shadow:0 6px 18px rgba(37,99,235,0.18);
-    }
+.hero-search input {
+  border: none;
+  outline: none;
+  font-size: 16px;
+  width: 100%;
+}
 
-    .link-icon{
-      font-family:"Material Symbols Rounded";
-      font-size:26px;
-      margin-left:8px;
-      flex-shrink:0;
-      transition: transform var(--transition);
-    }
+/* HERO IMAGE */
+.hero-image {
+  width: 50%;
+  height: 100%;
+  background-image: url("https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2000");
+  background-size: cover;
+  background-position: center;
+  border-radius: 20px;
+  filter: brightness(1.03);
+}
 
-    .link-title{
-      margin-left:12px;
-      white-space:nowrap;
-      opacity:0;
-      transform:translateX(8px);
-      transition:opacity var(--transition), transform var(--transition);
-      font-weight:600;
-      font-size:15px;
-    }
+/* MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    padding: 40px 6%;
+    text-align: center;
+    gap: 30px;
+  }
 
-    nav.menu:hover .link-title{ opacity:1; transform:translateX(0); }
+  .hero h1 {
+    font-size: 32px;
+  }
 
-    /* ---------------- CONTENT ---------------- */
-    .content{
-      flex:1;
-      padding:32px;
-      overflow:auto; /* allow page scroll */
-    }
+  .hero-image {
+    width: 100%;
+    height: 260px;
+  }
 
-    header{
-      background:#fff;
-      padding:18px 22px;
-      border-radius:12px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.06);
-      margin-bottom:20px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .title{ font-size:20px; font-weight:700; }
-
-    .hero{
-      background: linear-gradient(135deg,var(--accent),var(--accent-dark));
-      color:#fff;
-      padding:28px;
-      border-radius:12px;
-      margin-bottom:20px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.08);
-    }
-    .hero h1{ margin:0 0 8px 0; font-size:22px; }
-    .hero p{ margin:0; opacity:.92 }
-
-    .cards{
-      display:grid;
-      gap:18px;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    }
-
-    .card{
-      background:#fff;
-      padding:18px;
-      border-radius:12px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.06);
-    }
-    .card h3{ margin:0 0 8px 0; font-size:16px; }
-    .card p{ margin:0; color:var(--muted); font-size:14px }
-
-    /* ---------------- COUNT-UP ---------------- */
-    .count-wrapper{
-      margin-top:18px;
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-      gap:16px;
-    }
-    .count-card{
-      background:#fff;
-      border-radius:12px;
-      padding:18px;
-      text-align:center;
-      box-shadow:0 6px 18px rgba(0,0,0,0.06);
-      transition: transform var(--transition);
-    }
-    .count-card:hover{ transform:translateY(-6px) }
-    .count-icon{
-      font-size:40px;
-      color:var(--accent);
-      display:block;
-      margin-bottom:8px;
-    }
-    .count-number{
-      font-size:28px;
-      font-weight:700;
-      color:var(--accent);
-      margin:6px 0 0 0;
-    }
-
-    footer{
-      margin-top:26px;
-      text-align:center;
-      color:var(--muted);
-      padding-bottom:30px;
-    }
-
-    /* ---------------- BOTTOM NAV (mobile) ---------------- */
-    .bottom-nav {
-      position:fixed;
-      left:12px;
-      right:12px;
-      bottom:12px;
-      height:66px;
-      background: #ffffffee;
-      border-radius:14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-around;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-      border:1px solid var(--border);
-      z-index:40;
-      padding:6px 8px;
-      backdrop-filter: blur(8px);
-      transform-origin: center bottom;
-      transition: transform .18s ease, opacity .18s ease;
-      display:none; /* hidden on desktop by default */
-    }
-
-    .bottom-item{
-      flex:1;
-      text-align:center;
-      font-size:12px;
-      color:var(--muted);
-      position:relative;
-      user-select:none;
-    }
-
-    .bottom-item button{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-      gap:4px;
-      width:100%;
-      height:100%;
-      border-radius:10px;
-      background:transparent;
-      border:0;
-      cursor:pointer;
-      padding:6px 4px;
-      color:inherit;
-      font:inherit;
-    }
-
-    .bottom-item .material-symbols-rounded{
-      font-size:26px;
-      transition: transform .22s var(--transition), color .22s var(--transition);
-    }
-
-    .bottom-item .title{ font-size:11px; }
-
-    /* ACTIVE mobile style */
-    .bottom-item.active{ color:var(--accent); }
-    .bottom-item.active .material-symbols-rounded{ transform:translateY(-6px); color:var(--accent); }
-
-    /* Ripple effect element */
-    .ripple {
-      position:absolute;
-      border-radius:50%;
-      transform:scale(0);
-      animation:ripple .5s linear;
-      background: rgba(0,0,0,0.08);
-      pointer-events:none;
-    }
-    @keyframes ripple{
-      to { transform:scale(2.5); opacity:0; }
-    }
-
-    /* ---------------- RESPONSIVE rules ---------------- */
-    @media (max-width: 768px){
-      /* hide desktop sidebar */
-      nav.menu{ display:none; }
-      .content{ padding:18px 14px 86px 14px; } /* leave space for bottom nav */
-      .hero{ padding:18px; border-radius:12px; }
-      .cards{ grid-template-columns: 1fr; }
-      .count-wrapper{ grid-template-columns: 1fr; }
-      .bottom-nav{ display:flex; }
-    }
-
-    @media (min-width: 769px){
-      /* hide bottom nav on desktop */
-      .bottom-nav{ display:none; }
-    }
-
-    /* small screens: make bottom nav full width with slight margin */
-    @media (max-width:420px){
-      .bottom-nav{ left:8px; right:8px; height:64px; }
-    }
-  </style>
+  .hero-search {
+    width: 100%;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+}
+</style>
 </head>
+
 <body>
 
-  <div class="app">
-    <!-- SIDEBAR (desktop) -->
-    <nav class="menu" aria-label="Menu Utama">
-      <button class="link" aria-label="Dashboard" title="Dashboard">
-        <span class="link-icon material-symbols-rounded">dashboard</span>
-        <span class="link-title">Dashboard</span>
-      </button>
+<!-- ================= HERO SECTION ================= -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>The Smarter, AI-Powered Decentralized Marketplace</h1>
+    <p>Harness the power of decentralized AI marketplace with AICM.</p>
 
-      <button class="link" aria-label="Anggota" title="Anggota">
-        <span class="link-icon material-symbols-rounded">groups</span>
-        <span class="link-title">Anggota</span>
-      </button>
-
-      <button class="link" aria-label="Program" title="Program">
-        <span class="link-icon material-symbols-rounded">folder</span>
-        <span class="link-title">Program</span>
-      </button>
-
-      <button class="link" aria-label="Laporan" title="Laporan">
-        <span class="link-icon material-symbols-rounded">bar_chart</span>
-        <span class="link-title">Laporan</span>
-      </button>
-
-      <button class="link" aria-label="Pengaturan" title="Pengaturan">
-        <span class="link-icon material-symbols-rounded">settings</span>
-        <span class="link-title">Pengaturan</span>
-      </button>
-    </nav>
-
-    <!-- CONTENT -->
-    <main class="content" role="main">
-      <header>
-        <div class="title">Dashboard Organisasi</div>
-        <div style="display:flex;gap:12px;align-items:center">
-          <div style="font-size:13px;color:var(--muted)">Hai, Admin</div>
-        </div>
-      </header>
-
-      <section class="hero" aria-labelledby="hero-title">
-        <h1 id="hero-title">Selamat Datang!</h1>
-        <p>Kelola data organisasi, program kerja, dan laporan. Tampilan berubah otomatis sesuai perangkat (PC / HP).</p>
-      </section>
-
-      <section class="cards" aria-label="Fitur cepat">
-        <article class="card" role="article">
-          <h3>Data Anggota</h3>
-          <p>Kelola profil, jabatan, dan status keanggotaan.</p>
-        </article>
-
-        <article class="card">
-          <h3>Program Kerja</h3>
-          <p>Atur program, timeline, dan penanggung jawab.</p>
-        </article>
-
-        <article class="card">
-          <h3>Laporan Keuangan</h3>
-          <p>Catat pemasukan & pengeluaran organisasi.</p>
-        </article>
-
-        <article class="card">
-          <h3>Dokumentasi</h3>
-          <p>Arsip foto, file, dan notulen kegiatan.</p>
-        </article>
-      </section>
-
-      <!-- COUNT-UP -->
-      <section class="count-wrapper" aria-label="Statistik singkat">
-        <div class="count-card" aria-hidden="false">
-          <span class="material-symbols-rounded count-icon" aria-hidden="true">groups</span>
-          <h3>Total Anggota</h3>
-          <div id="countAnggota" class="count-number">0</div>
-        </div>
-
-        <div class="count-card">
-          <span class="material-symbols-rounded count-icon" aria-hidden="true">event</span>
-          <h3>Event Terlaksana</h3>
-          <div id="countEvent" class="count-number">0</div>
-        </div>
-
-        <div class="count-card">
-          <span class="material-symbols-rounded count-icon" aria-hidden="true">folder</span>
-          <h3>Program Aktif</h3>
-          <div id="countProgram" class="count-number">0</div>
-        </div>
-      </section>
-
-      <footer>
-        © <span id="year"></span> Organisasi Anda — Semua Hak Dilindungi.
-      </footer>
-    </main>
+    <div class="hero-search">
+      <span class="material-symbols-rounded">search</span>
+      <input type="text" placeholder="Search with AICM">
+    </div>
   </div>
 
-  <!-- BOTTOM NAV (mobile) -->
-  <nav class="bottom-nav" role="navigation" aria-label="Navigasi bawah">
-    <div class="bottom-item" data-key="dashboard" aria-hidden="false">
-      <button aria-label="Dashboard">
-        <span class="material-symbols-rounded">dashboard</span>
-        <span class="title">Dashboard</span>
-      </button>
-    </div>
+  <div class="hero-image"></div>
+</section>
 
-    <div class="bottom-item" data-key="anggota">
-      <button aria-label="Anggota">
-        <span class="material-symbols-rounded">groups</span>
-        <span class="title">Anggota</span>
-      </button>
-    </div>
 
-    <div class="bottom-item" data-key="program">
-      <button aria-label="Program">
-        <span class="material-symbols-rounded">folder</span>
-        <span class="title">Program</span>
-      </button>
-    </div>
+<!-- ============== DASHBOARD KAMU ADA DI SINI ============== -->
+<!-- Tempelkan seluruh code dashboard kamu di bawah ini -->
 
-    <div class="bottom-item" data-key="laporan">
-      <button aria-label="Laporan">
-        <span class="material-symbols-rounded">bar_chart</span>
-        <span class="title">Laporan</span>
-      </button>
-    </div>
+<!-- contoh placeholder (hapus saja nanti) -->
+<div style="padding:40px; font-size:22px; color:#64748b;">
+  <i>Dashboard kamu muncul di sini...</i>
+</div>
 
-    <div class="bottom-item" data-key="settings">
-      <button aria-label="Pengaturan">
-        <span class="material-symbols-rounded">settings</span>
-        <span class="title">Pengaturan</span>
-      </button>
-    </div>
-  </nav>
 
-  <!-- ========== SCRIPTS ========== -->
-  <script>
-    // set year
-    document.getElementById('year').textContent = new Date().getFullYear();
+<!-- ========== JS (Jika dibutuhkan) ========== -->
+<script>
+// Tambahkan JS kamu di sini kalau ada (countup, scroll effect, dll)
+console.log("Page loaded.");
+</script>
 
-    /* ================= COUNT-UP (trigger on scroll) ================= */
-    function animateCountUp(elementId, target, duration = 1400) {
-      const el = document.getElementById(elementId);
-      if(!el) return;
-      let start = 0;
-      const stepTime = 16;
-      const steps = Math.max(1, Math.floor(duration / stepTime));
-      const increment = target / steps;
-      let current = 0;
-      const interval = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-          el.textContent = target.toLocaleString('id-ID');
-          clearInterval(interval);
-        } else {
-          el.textContent = Math.floor(current).toLocaleString('id-ID');
-        }
-      }, stepTime);
-    }
-
-    // intersection observer for counts
-    (function(){
-      let ran = false;
-      const wrapper = document.querySelector('.count-wrapper');
-      if(!wrapper) return;
-      const obs = new IntersectionObserver(entries => {
-        if(entries[0].isIntersecting && !ran){
-          ran = true;
-          // set your numbers here
-          animateCountUp('countAnggota', 1520);
-          animateCountUp('countEvent', 82);
-          animateCountUp('countProgram', 14);
-          obs.disconnect();
-        }
-      }, {threshold: 0.35});
-      obs.observe(wrapper);
-    })();
-
-    /* ================= BOTTOM NAV behavior (mobile) ================= */
-    (function(){
-      const items = document.querySelectorAll('.bottom-item');
-
-      // default active (dashboard)
-      function setActiveByKey(key){
-        items.forEach(it=>{
-          if(it.dataset.key === key) it.classList.add('active');
-          else it.classList.remove('active');
-        });
-      }
-      setActiveByKey('dashboard');
-
-      // ripple helper
-      function createRipple(container, x, y){
-        const r = document.createElement('span');
-        r.className = 'ripple';
-        // size relative to container
-        const rect = container.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height) * 1.2;
-        r.style.width = r.style.height = size + 'px';
-        r.style.left = (x - rect.left - size/2) + 'px';
-        r.style.top  = (y - rect.top - size/2) + 'px';
-        container.appendChild(r);
-        setTimeout(()=> r.remove(), 520);
-      }
-
-      // add click listeners
-      items.forEach(item => {
-        const btn = item.querySelector('button');
-        btn.addEventListener('click', (ev) => {
-          // active state
-          items.forEach(i=> i.classList.remove('active'));
-          item.classList.add('active');
-
-          // ripple
-          const clientX = ev.clientX || (ev.touches && ev.touches[0] && ev.touches[0].clientX) || window.innerWidth/2;
-          const clientY = ev.clientY || (ev.touches && ev.touches[0] && ev.touches[0].clientY) || window.innerHeight/2;
-          createRipple(item, clientX, clientY);
-
-          // optionally: swap content or navigate via router here
-        });
-
-        // tactile feedback on touchstart: small scale
-        btn.addEventListener('touchstart', () => {
-          btn.style.transform = 'scale(.98)';
-        }, {passive:true});
-        btn.addEventListener('touchend', () => {
-          btn.style.transform = '';
-        });
-      });
-    })();
-
-    /* ================= Accessibility: keyboard navigation for mobile nav ================= */
-    (function(){
-      const btns = document.querySelectorAll('.bottom-item button');
-      btns.forEach(b => {
-        b.addEventListener('keyup', (e) => {
-          if(e.key === 'Enter' || e.key === ' '){
-            b.click();
-          }
-        });
-      });
-    })();
-
-    /* ================= Optional: hide bottom nav when keyboard visible on mobile (improve UX) ================= */
-    (function(){
-      const bottom = document.querySelector('.bottom-nav');
-      if(!bottom) return;
-      window.addEventListener('focusin', (e) => {
-        if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA'){
-          bottom.style.transform = 'translateY(14px)';
-          bottom.style.opacity = '0.9';
-        }
-      });
-      window.addEventListener('focusout', () => {
-        bottom.style.transform = '';
-        bottom.style.opacity = '';
-      });
-    })();
-  </script>
 </body>
 </html>
