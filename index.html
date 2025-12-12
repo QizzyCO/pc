@@ -3,263 +3,386 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Dashboard Organisasi — SPA Sederhana</title>
+<title>Dashboard Organisasi — Responsive</title>
+
+<!-- Material Symbols -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
+
 <style>
-  :root{
-    --bg:#dde8f3;
-    --menu-bg: rgba(255,255,255,0.75);
-    --border: rgba(0,0,0,0.06);
-    --accent: #2563eb;
-    --text: #111827;
-    --muted: #6b7280;
-    --card-bg: #fff;
-    --transition: 0.28s cubic-bezier(.2,.9,.2,1);
-  }
-  .dark{
-    --bg:#0f172a;
-    --menu-bg: rgba(30,41,59,0.7);
-    --border: rgba(255,255,255,0.1);
-    --text:#e2e8f0;
-    --muted:#94a3b8;
-    --card-bg:#1e293b;
-  }
+:root{
+  --bg:#dde8f3;
+  --menu-bg: rgba(255,255,255,0.75);
+  --border: rgba(0,0,0,0.06);
+  --accent: #2563eb;
+  --accent-dark: #1d4ed8;
+  --text: #111827;
+  --muted: #6b7280;
+  --radius: 16px;
+  --transition: 0.28s cubic-bezier(.2,.9,.2,1);
+  --wa-green: #25D366;
+}
 
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{
-    font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-    background:var(--bg);
-    color:var(--text);
-    display:flex;
-    min-height:100vh;
-  }
+/* ===== DARK MODE ===== */
+.dark{
+  --bg:#0f172a;
+  --menu-bg: rgba(30,41,59,0.7);
+  --border: rgba(255,255,255,0.1);
+  --text:#e2e8f0;
+  --muted:#94a3b8;
+  --card-bg:#1e293b;
+}
 
-  /* SIDEBAR */
-  nav.menu{
-    width:90px;
-    padding:1rem;
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-    align-items:center;
-    background:var(--menu-bg);
-    border-right:1px solid var(--border);
-    backdrop-filter: blur(10px);
-    transition:width var(--transition);
-  }
-  nav.menu:hover{ width:205px }
-  .link{
-    display:flex; align-items:center;
-    width:60px; height:48px; border-radius:10px;
-    padding-left:8px; overflow:hidden;
-    color:var(--muted); background:transparent;
-    border:0; cursor:pointer; transition:all .18s;
-  }
-  nav.menu:hover .link{ width:170px }
-  .link:hover{ background:var(--accent); color:#fff; box-shadow:0 8px 22px rgba(37,99,235,0.16) }
-  .link-icon{ font-family:"Material Symbols Rounded"; font-size:24px; margin-left:8px; flex-shrink:0 }
-  .link-title{ margin-left:12px; white-space:nowrap; opacity:0; transform:translateX(8px); transition:opacity var(--transition), transform var(--transition); font-weight:600; font-size:14px }
-  nav.menu:hover .link-title{ opacity:1; transform:translateX(0) }
+*{box-sizing:border-box; margin:0; padding:0}
+body{
+  font-family:sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  min-height:100vh;
+}
 
-  /* MAIN WRAPPER */
-  .wrapper{flex:1; display:flex; flex-direction:column; overflow:hidden}
-  .main{flex:1; overflow:auto; padding:28px; padding-bottom:110px}
+/* ================= SIDEBAR ================= */
+nav.menu{
+  width:90px;
+  padding:1rem;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  align-items:center;
+  background:var(--menu-bg);
+  border-right:1px solid var(--border);
+  backdrop-filter: blur(10px);
+  transition:width var(--transition);
+}
+nav.menu:hover{ width:205px }
 
-  /* PAGES */
-  .page{ display:none; }
-  .page.active{ display:block; }
+.link{
+  display:flex;
+  align-items:center;
+  width:60px;
+  height:50px;
+  border-radius:12px;
+  text-decoration:none;
+  color:var(--muted);
+  overflow:hidden;
+  transition: all var(--transition);
+  position:relative;
+  padding-left:8px;
+  cursor:pointer;
+  border:none;
+  background:transparent;
+}
+nav.menu:hover .link{ width:170px; }
 
-  /* Small dashboard styling (keperluan visual) */
-  .hero{
-    background-image: url('https://media.istockphoto.com/id/1482432255/id/vektor/warna-latar-belakang-gradien-buram-abstrak-dengan-efek-dinamis.jpg?s=612x612&w=0&k=20&c=jDoDy8H7fDJgrGgc8D2X4SyT2wjtvzcmbPLFzA4x7dE=');
-    background-size:cover; background-position:center;
-    border-radius:14px; min-height:160px; display:flex; align-items:center; justify-content:center;
-    color:#fff; box-shadow:0 8px 28px rgba(0,0,0,0.08); margin-bottom:18px;
-  }
-  .cards{ display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); margin-bottom:18px }
-  .card{ background:var(--card-bg); padding:14px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06) }
-  .count-wrapper{ display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)) }
-  .count-card{ background:var(--card-bg); padding:16px; border-radius:12px; text-align:center; box-shadow:0 6px 18px rgba(0,0,0,0.06) }
+.link:hover{
+  color:#fff;
+  background:var(--accent);
+  box-shadow:0 6px 18px rgba(37,99,235,0.18);
+}
+.link-icon{
+  font-family:"Material Symbols Rounded";
+  font-size:26px;
+  margin-left:8px;
+  flex-shrink:0;
+}
+.link-title{
+  margin-left:12px;
+  white-space:nowrap;
+  opacity:0;
+  transform:translateX(8px);
+  transition:opacity var(--transition), transform var(--transition);
+  font-weight:600;
+  font-size:15px;
+}
+nav.menu:hover .link-title{ opacity:1; transform:translateX(0); }
 
-  /* SETTINGS (simple row) */
-  .settings-row{ background:var(--card-bg); padding:14px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06); display:flex; justify-content:space-between; align-items:center; max-width:420px }
+/* ================= LAYOUT ================= */
+.wrapper{
+  display:flex;
+  flex:1;
+  flex-direction:column;
+  width:100%;
+  overflow:hidden;
+}
+.content{
+  flex:1;
+  overflow-y:auto;
+  padding:32px;
+  padding-bottom:70px;
+}
 
-  /* BOTTOM NAV (mobile) */
-  .bottom-nav{
-    position:fixed; left:12px; right:12px; bottom:12px; height:66px;
-    background:var(--card-bg); border-radius:16px; display:flex; align-items:center; justify-content:space-around;
-    box-shadow:0 10px 30px rgba(0,0,0,0.12); border:1px solid var(--border); z-index:60;
-  }
-  .bottom-item{ flex:1; text-align:center; color:var(--muted) }
-  .bottom-item .material-symbols-rounded{ font-size:24px; display:block; margin:0 auto }
-  .bottom-item.active{ color:var(--accent) }
+/* ================= HERO ================= */
+.welcome-card-hero{
+  width:100%;
+  min-height:200px;
+  background-image: url('https://media.istockphoto.com/id/1482432255/id/vektor/warna-latar-belakang-gradien-buram-abstrak-dengan-efek-dinamis.jpg?s=612x612&w=0&k=20&c=jDoDy8H7fDJgrGgc8D2X4SyT2wjtvzcmbPLFzA4x7dE=');
+  background-size: cover;
+  background-position: center;
+  border-radius:16px;
+  margin-bottom:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  position:relative;
+}
 
-  footer{ margin-top:22px; color:var(--muted) }
+.welcome-card-hero .welcome-text{
+  padding:20px 28px;
+  text-align:center;
+  color:#fff;
+}
 
-  @media(min-width:769px){ .bottom-nav{ display:none } }
-  @media(max-width:768px){ nav.menu{ display:none } .main{ padding:18px } .cards{ grid-template-columns:1fr } .count-wrapper{ grid-template-columns:1fr } }
+.welcome-card-hero h1{
+  font-size:30px;
+  margin-bottom:8px;
+}
+.welcome-card-hero p{
+  font-size:16px;
+}
+
+/* ================= CARDS ================= */
+.cards{
+  display:grid;
+  gap:22px;
+  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+}
+.card{
+  background:var(--card-bg, #fff);
+  padding:20px;
+  border-radius:12px;
+  min-height:120px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+}
+.card h3{
+  margin-bottom:10px;
+  font-size:17px;
+}
+.card p{
+  color:var(--muted);
+  font-size:14px;
+}
+
+/* ================= COUNT ================= */
+.count-wrapper{
+  margin-top:26px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:22px;
+}
+.count-card{
+  background:var(--card-bg, #fff);
+  border-radius:12px;
+  padding:22px;
+  text-align:center;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+  transition: transform var(--transition);
+}
+.count-card:hover{ transform:translateY(-6px); }
+.count-icon{
+  font-size:42px;
+  color:var(--accent);
+}
+.count-number{
+  font-size:30px;
+  margin-top:6px;
+  font-weight:700;
+  color:var(--accent);
+}
+
+/* ================= SETTINGS ================= */
+#settingsPanel{
+  margin-top:34px;
+  background:var(--card-bg, #fff);
+  padding:20px;
+  border-radius:12px;
+  display:none;
+}
+.toggle-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:12px;
+}
+.switch{
+  width:50px;
+  height:26px;
+  background:#94a3b8;
+  border-radius:20px;
+  position:relative;
+  cursor:pointer;
+  transition:0.3s;
+}
+.switch::after{
+  content:"";
+  width:22px;
+  height:22px;
+  background:white;
+  border-radius:50%;
+  position:absolute;
+  top:2px;
+  left:2px;
+  transition:0.3s;
+}
+.switch.active{ background:#2563eb; }
+.switch.active::after{ left:26px; }
+
+/* ================= FOOTER ================= */
+footer{
+  margin-top:40px;
+  text-align:center;
+  color:var(--muted);
+  padding-bottom:40px;
+}
+
+/* ================= BOTTOM NAV ================= */
+.bottom-nav{
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:12px;
+  height:66px;
+  background:var(--card-bg, #fff);
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  box-shadow:0 10px 30px rgba(0,0,0,0.12);
+  border:1px solid var(--border);
+  z-index:50;
+  padding:6px 0;
+}
+.bottom-item{
+  flex:1;
+  text-align:center;
+  color:var(--muted);
+}
+.bottom-item.active{
+  color:var(--accent);
+}
+
+@media (max-width:768px){
+  nav.menu{ display:none }
+  .content{ padding:18px 14px; padding-bottom:70px; }
+}
+@media (min-width:769px){
+  .bottom-nav{ display:none }
+}
 </style>
 </head>
 <body>
+
 <!-- SIDEBAR -->
-<nav class="menu" aria-label="Main menu">
-  <button class="link" data-page="dashboard"><span class="link-icon material-symbols-rounded">dashboard</span><span class="link-title">Dashboard</span></button>
-  <button class="link" data-page="anggota"><span class="link-icon material-symbols-rounded">groups</span><span class="link-title">Anggota</span></button>
-  <button class="link" data-page="program"><span class="link-icon material-symbols-rounded">folder</span><span class="link-title">Program</span></button>
-  <button class="link" data-page="laporan"><span class="link-icon material-symbols-rounded">bar_chart</span><span class="link-title">Laporan</span></button>
-  <button class="link" data-page="settings"><span class="link-icon material-symbols-rounded">settings</span><span class="link-title">Pengaturan</span></button>
+<nav class="menu">
+  <button class="link" data-key="dashboard"><span class="link-icon material-symbols-rounded">dashboard</span><span class="link-title">Dashboard</span></button>
+  <button class="link" data-key="anggota"><span class="link-icon material-symbols-rounded">groups</span><span class="link-title">Anggota</span></button>
+  <button class="link" data-key="program"><span class="link-icon material-symbols-rounded">folder</span><span class="link-title">Program</span></button>
+  <button class="link" data-key="laporan"><span class="link-icon material-symbols-rounded">bar_chart</span><span class="link-title">Laporan</span></button>
+  <button class="link" data-key="settings"><span class="link-icon material-symbols-rounded">settings</span><span class="link-title">Pengaturan</span></button>
 </nav>
 
 <div class="wrapper">
-  <main class="main" id="mainArea">
+<main class="content">
 
-    <!-- PAGE: DASHBOARD -->
-    <section id="dashboard" class="page active">
-      <div class="hero">
-        <div style="text-align:center; padding:16px">
-          <h1 style="margin-bottom:6px">Selamat Datang di Dashboard!</h1>
-          <p style="opacity:.9">Kelola anggota, program, laporan, dan statistik di sini.</p>
-        </div>
-      </div>
+  <!-- HERO -->
+  <section class="welcome-card-hero">
+    <div class="welcome-text">
+      <h1>Selamat Datang di Dashboard!</h1>
+      <p>Kelola data anggota, program kerja, laporan kegiatan, dan statistik dalam satu tempat.</p>
+    </div>
+  </section>
 
-      <div class="cards">
-        <div class="card"><h3>Data Anggota</h3><p style="color:var(--muted)">Kelola profil, jabatan, status.</p></div>
-        <div class="card"><h3>Program Kerja</h3><p style="color:var(--muted)">Atur program dan timeline.</p></div>
-        <div class="card"><h3>Laporan</h3><p style="color:var(--muted)">Catat pemasukan & pengeluaran.</p></div>
-        <div class="card"><h3>Dokumentasi</h3><p style="color:var(--muted)">Arsip foto dan notulen.</p></div>
-      </div>
+  <!-- CARDS -->
+  <section class="cards">
+    <div class="card"><h3>Data Anggota</h3><p>Kelola profil anggota, jabatan, dan status.</p></div>
+    <div class="card"><h3>Program Kerja</h3><p>Atur program, timeline, dan penanggung jawab.</p></div>
+    <div class="card"><h3>Laporan</h3><p>Catat pemasukan dan pengeluaran organisasi.</p></div>
+    <div class="card"><h3>Dokumentasi</h3><p>Arsip foto, file, dan notulen kegiatan.</p></div>
+  </section>
 
-      <div class="count-wrapper">
-        <div class="count-card"><strong id="countAnggota">0</strong><div style="opacity:.7">Total Anggota</div></div>
-        <div class="count-card"><strong id="countEvent">0</strong><div style="opacity:.7">Event Terlaksana</div></div>
-        <div class="count-card"><strong id="countProgram">0</strong><div style="opacity:.7">Program Aktif</div></div>
-      </div>
+  <!-- COUNT -->
+  <section class="count-wrapper">
+    <div class="count-card"><span class="material-symbols-rounded count-icon">groups</span><h3>Total Anggota</h3><div id="countAnggota" class="count-number">0</div></div>
+    <div class="count-card"><span class="material-symbols-rounded count-icon">event</span><h3>Event Terlaksana</h3><div id="countEvent" class="count-number">0</div></div>
+    <div class="count-card"><span class="material-symbols-rounded count-icon">folder</span><h3>Program Aktif</h3><div id="countProgram" class="count-number">0</div></div>
+  </section>
 
-      <footer>© <span id="year"></span> Organisasi Anda</footer>
-    </section>
+  <!-- SETTINGS -->
+  <section id="settingsPanel">
+    <h2 style="margin-bottom:10px">Pengaturan</h2>
+    <div class="toggle-row">
+      <span>Dark Mode</span>
+      <div id="darkSwitch" class="switch"></div>
+    </div>
+  </section>
 
-    <!-- PAGE: ANGGOTA (simple) -->
-    <section id="anggota" class="page">
-      <h2>Halaman Anggota</h2>
-      <p>Ini halaman Anggota. Tambahkan daftar anggota atau fitur CRUD nanti.</p>
-    </section>
-
-    <!-- PAGE: PROGRAM (simple) -->
-    <section id="program" class="page">
-      <h2>Halaman Program</h2>
-      <p>Ini halaman Program. Tempat mengelola program kerja organisasi.</p>
-    </section>
-
-    <!-- PAGE: LAPORAN (simple) -->
-    <section id="laporan" class="page">
-      <h2>Halaman Laporan</h2>
-      <p>Ini halaman Laporan. Ringkasan pemasukan & pengeluaran di sini.</p>
-    </section>
-
-    <!-- PAGE: SETTINGS -->
-    <section id="settings" class="page">
-      <h2>Pengaturan</h2>
-      <div style="height:12px"></div>
-      <div class="settings-row">
-        <div>Dark Mode</div>
-        <div>
-          <button id="toggleDark" style="padding:6px 10px;border-radius:8px;border:0;cursor:pointer">Toggle</button>
-        </div>
-      </div>
-    </section>
-
-  </main>
+  <footer>© <span id="year"></span> Organisasi Anda</footer>
+</main>
 </div>
 
-<!-- BOTTOM NAV (mobile) -->
-<nav class="bottom-nav" aria-hidden="false">
-  <div class="bottom-item active" data-page="dashboard"><span class="material-symbols-rounded">dashboard</span><small>Dashboard</small></div>
-  <div class="bottom-item" data-page="anggota"><span class="material-symbols-rounded">groups</span><small>Anggota</small></div>
-  <div class="bottom-item" data-page="program"><span class="material-symbols-rounded">folder</span><small>Program</small></div>
-  <div class="bottom-item" data-page="laporan"><span class="material-symbols-rounded">bar_chart</span><small>Laporan</small></div>
-  <div class="bottom-item" data-page="settings"><span class="material-symbols-rounded">settings</span><small>Pengaturan</small></div>
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="bottom-item active" data-key="dashboard"><button><span class="material-symbols-rounded">dashboard</span><div style="font-size:11px">Dashboard</div></button></div>
+  <div class="bottom-item" data-key="anggota"><button><span class="material-symbols-rounded">groups</span><div style="font-size:11px">Anggota</div></button></div>
+  <div class="bottom-item" data-key="program"><button><span class="material-symbols-rounded">folder</span><div style="font-size:11px">Program</div></button></div>
+  <div class="bottom-item" data-key="laporan"><button><span class="material-symbols-rounded">bar_chart</span><div style="font-size:11px">Laporan</div></button></div>
+  <div class="bottom-item" data-key="settings"><button><span class="material-symbols-rounded">settings</span><div style="font-size:11px">Pengaturan</div></button></div>
 </nav>
 
 <script>
-  // year
-  document.getElementById("year").textContent = new Date().getFullYear();
+document.getElementById("year").textContent = new Date().getFullYear();
 
-  // page switching
-  const links = document.querySelectorAll('[data-page]');
-  const pages = document.querySelectorAll('.page');
-  const bottomItems = document.querySelectorAll('.bottom-item');
+// COUNT UP
+function animateCount(id, target){
+  let el = document.getElementById(id);
+  let num = 0;
+  let step = target / 60;
+  let int = setInterval(()=>{
+    num += step;
+    if(num >= target){ num = target; clearInterval(int); }
+    el.textContent = Math.floor(num).toLocaleString("id-ID");
+  }, 16);
+}
 
-  function showPage(name){
-    pages.forEach(p => p.classList.remove('active'));
-    const el = document.getElementById(name);
-    if(el) el.classList.add('active');
-
-    // highlight bottom nav
-    bottomItems.forEach(b => b.classList.toggle('active', b.dataset.page === name));
-
-    // optionally scroll top of main
-    document.getElementById('mainArea').scrollTop = 0;
+let triggered = false;
+let obs = new IntersectionObserver((e)=>{
+  if(e[0].isIntersecting && !triggered){
+    triggered = true;
+    animateCount("countAnggota",1500);
+    animateCount("countEvent",80);
+    animateCount("countProgram",14);
   }
+},{threshold:0.2});
+obs.observe(document.querySelector(".count-wrapper"));
 
-  links.forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const page = btn.dataset.page;
-      if(page) showPage(page);
-    });
-  });
+// NAVIGASI
+function showSettings(){
+  document.getElementById("settingsPanel").style.display = "block";
+  window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" });
+}
 
-  bottomItems.forEach(b=>{
-    b.addEventListener('click', ()=> showPage(b.dataset.page));
-  });
+document.querySelectorAll(".bottom-item, .link").forEach(item=>{
+  item.addEventListener("click", ()=>{
+    let key = item.getAttribute("data-key");
 
-  // initial counts animation (when dashboard becomes visible)
-  function animateCountSimple(id, target, duration=800){
-    const el = document.getElementById(id);
-    let start = 0, steps = Math.max(10, Math.floor(duration / 16));
-    const step = target / steps;
-    let cur = 0;
-    const t = setInterval(()=>{
-      cur += step;
-      if(cur >= target){ cur = target; clearInterval(t); }
-      el.textContent = Math.floor(cur).toLocaleString('id-ID');
-    }, 16);
-  }
-
-  // trigger counts when dashboard visible first time
-  let countsTriggered = false;
-  function maybeTriggerCounts(pageName){
-    if(pageName === 'dashboard' && !countsTriggered){
-      countsTriggered = true;
-      animateCountSimple('countAnggota', 1500);
-      animateCountSimple('countEvent', 80);
-      animateCountSimple('countProgram', 14);
+    if(key === "settings"){ showSettings(); }
+    else{
+      document.getElementById("settingsPanel").style.display = "none";
     }
-  }
-  // watch page changes to trigger
-  const observer = new MutationObserver(()=> {
-    const active = document.querySelector('.page.active');
-    if(active) maybeTriggerCounts(active.id);
+
+    document.querySelectorAll(".bottom-item").forEach(a=>a.classList.remove("active"));
+    let bottom = document.querySelector(`.bottom-item[data-key="${key}"]`);
+    if(bottom) bottom.classList.add("active");
   });
-  observer.observe(document.getElementById('mainArea'), { attributes:true, childList:true, subtree:true });
+});
 
-  // Dark mode toggle (persists in localStorage)
-  const toggle = document.getElementById('toggleDark');
-  function setDark(v){
-    if(v){
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('spa-dark','1');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.removeItem('spa-dark');
-    }
-  }
-  // init from storage
-  if(localStorage.getItem('spa-dark')) setDark(true);
-  toggle.addEventListener('click', ()=> setDark(!document.documentElement.classList.contains('dark')));
-
-  // ensure initial counts trigger if dashboard is initial
-  maybeTriggerCounts('dashboard');
+// DARK MODE
+document.getElementById("darkSwitch").addEventListener("click", ()=>{
+  let sw = document.getElementById("darkSwitch");
+  sw.classList.toggle("active");
+  document.body.classList.toggle("dark");
+});
 </script>
+
 </body>
 </html>
