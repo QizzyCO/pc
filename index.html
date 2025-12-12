@@ -1,187 +1,226 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Responsive Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Responsive</title>
+
+  <!-- ICON FONT -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
 
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        background: #0f172a;
-        font-family: Arial, sans-serif;
-        color: white;
-        overflow-x: hidden;
-    }
+/* =========================
+      CSS DIGABUNG
+   ========================= */
 
-    /* ======== DESKTOP NAV (PC) ======== */
-    .desktop-nav {
-        position: fixed;
-        top: 50%;
-        left: 20px;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        z-index: 999;
-    }
+:root {
+  --bg: #dde8f3;
+  --menu-bg: rgba(255, 255, 255, 0.7);
+  --border: rgba(0, 0, 0, 0.1);
+  --accent: #2563eb;
+  --text: #111827;
+  --muted: #6b7280;
+  --radius: 16px;
+  --transition: .3s ease;
+}
 
-    .desktop-nav button {
-        width: 55px;
-        height: 55px;
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 15px;
-        color: white;
-        font-size: 22px;
-        backdrop-filter: blur(10px);
-        transition: 0.2s;
-        cursor: pointer;
-    }
+body {
+  margin: 0;
+  font-family: "Outfit", sans-serif;
+  background: var(--bg);
+}
 
-    .desktop-nav button:hover,
-    .desktop-nav button.active {
-        background: #4f46e5;
-        transform: scale(1.1);
-    }
+/* UNIVERSAL NAV (PC + HP auto) */
+.nav {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 14px;
+  padding: 1rem;
+  background: var(--menu-bg);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  z-index: 20;
+}
 
-    /* ======== BOTTOM NAV (HP) ======== */
-    .bottom-nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background: rgba(255,255,255,0.08);
-        border-top: 1px solid rgba(255,255,255,0.2);
-        backdrop-filter: blur(10px);
-        display: flex;
-        justify-content: space-around;
-        padding: 10px 0;
-        z-index: 999;
-        display: none;
-    }
+.nav-item {
+  width: 60px;
+  height: 50px;
+  border-radius: var(--radius);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  text-decoration: none;
+  position: relative;
+  transition: var(--transition);
+}
 
-    .bottom-nav button {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 26px;
-        opacity: 0.5;
-        transition: 0.2s;
-    }
+.nav-item span {
+  font-size: 26px;
+  margin-left: 16px;
+}
 
-    .bottom-nav button.active {
-        opacity: 1;
-        transform: scale(1.2);
-        color: #4f46e5;
-    }
+/* title muncul saat hover PC */
+.nav-item::after {
+  content: attr(data-title);
+  opacity: 0;
+  margin-left: 8px;
+  color: white;
+  white-space: nowrap;
+  transition: var(--transition);
+}
 
-    /* ======== CONTENT ======== */
-    .content {
-        max-width: 900px;
-        margin: 40px auto;
-        padding: 20px;
-        padding-bottom: 120px; /* space bawah untuk bottom nav */
-    }
+.nav-item:hover {
+  width: 150px;
+  background: var(--accent);
+  color: white;
+}
 
-    .card {
-        background: rgba(255,255,255,0.07);
-        border: 1px solid rgba(255,255,255,0.15);
-        padding: 20px;
-        margin-bottom: 20px;
-        border-radius: 20px;
-        backdrop-filter: blur(10px);
-        text-align: center;
-    }
+.nav-item:hover::after {
+  opacity: 1;
+}
 
-    .count {
-        font-size: 40px;
-        font-weight: bold;
-        margin-top: 10px;
-    }
+/* MOBILE MODE */
+@media (max-width: 768px) {
 
-    /* ======== RESPONSIVE ======== */
-    @media (max-width: 768px) {
-        .desktop-nav { display: none; }
-        .bottom-nav { display: flex; }
-        .content { padding: 20px; }
-    }
+  .nav {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    justify-content: space-around;
+    padding: 6px 0;
+    border-radius: 0;
+    border-top: 1px solid var(--border);
+    background: white;
+  }
+
+  .nav-item {
+    flex-direction: column;
+    width: auto;
+    height: auto;
+    padding: 6px 14px;
+    background: none;
+  }
+
+  .nav-item:active {
+    transform: scale(0.9);
+    background: rgba(37,99,235,0.1);
+  }
+
+  .nav-item.active {
+    color: var(--accent);
+  }
+
+  .nav-item.active span {
+    color: var(--accent);
+    transform: translateY(-3px);
+  }
+
+  .nav-item:hover {
+    width: auto;
+    background: none;
+  }
+
+  .nav-item::after {
+    display: none;
+    content: "";
+  }
+
+  .content {
+    padding-bottom: 100px;
+  }
+}
+
+/* CONTENT */
+.content {
+  padding-top: 120px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.count-card {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  margin-bottom: 20px;
+}
+
+.count {
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--accent);
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- PC NAV -->
-<div class="desktop-nav">
-    <button class="nav-btn active" data-page="home">🏠</button>
-    <button class="nav-btn" data-page="stats">📊</button>
-    <button class="nav-btn" data-page="anggota">👥</button>
-</div>
+<!-- UNIVERSAL NAV -->
+<nav class="nav">
+  <a class="nav-item active" data-title="Dashboard">
+    <span class="material-symbols-rounded">dashboard</span>
+  </a>
+  <a class="nav-item" data-title="Projects">
+    <span class="material-symbols-rounded">folder</span>
+  </a>
+  <a class="nav-item" data-title="Teams">
+    <span class="material-symbols-rounded">groups</span>
+  </a>
+  <a class="nav-item" data-title="Settings">
+    <span class="material-symbols-rounded">settings</span>
+  </a>
+</nav>
 
-<!-- MOBILE NAV -->
-<div class="bottom-nav">
-    <button class="nav-btn active" data-page="home">🏠</button>
-    <button class="nav-btn" data-page="stats">📊</button>
-    <button class="nav-btn" data-page="anggota">👥</button>
-</div>
+<!-- CONTENT -->
+<main class="content">
+  <h1>Dashboard Utama</h1>
 
-<div class="content">
+  <div class="count-card">
+    <h2>Jumlah Anggota</h2>
+    <div id="countUp" class="count">0</div>
+  </div>
 
-    <div class="card">
-        <h2>Jumlah Anggota</h2>
-        <div class="count" data-target="725">0</div>
-    </div>
+  <div style="height: 1000px"></div>
+</main>
 
-    <div class="card">
-        <h2>Anggota Aktif</h2>
-        <div class="count" data-target="513">0</div>
-    </div>
-
-    <div class="card">
-        <h2>Anggota Baru Tahun Ini</h2>
-        <div class="count" data-target="120">0</div>
-    </div>
-
-</div>
-
-
+<!-- ======================
+      JAVASCRIPT DIGABUNG
+     ====================== -->
 <script>
-/* ========== COUNT UP ON SCROLL ========== */
-function startCountUp(el) {
-    let target = parseInt(el.getAttribute("data-target"));
-    let count = 0;
-    let speed = target / 100;
+let started = false;
+let target = 1500;
 
-    let timer = setInterval(() => {
-        count += speed;
-        if (count >= target) {
-            count = target;
-            clearInterval(timer);
-        }
-        el.innerText = Math.floor(count);
-    }, 20);
+function countUp() {
+  let el = document.getElementById("countUp");
+  let num = 0;
+  let speed = 20;
+
+  let run = setInterval(() => {
+    num++;
+    el.textContent = num;
+    if (num >= target) clearInterval(run);
+  }, speed);
 }
 
-let counters = document.querySelectorAll(".count");
-let started = false;
-
 window.addEventListener("scroll", () => {
-    let top = counters[0].getBoundingClientRect().top;
-    if (top < window.innerHeight && !started) {
-        counters.forEach(startCountUp);
-        started = true;
-    }
-});
+  let box = document.querySelector(".count-card");
+  let pos = box.getBoundingClientRect().top;
 
-/* ========== NAV ACTIVE EFFECT (PC & HP) ========== */
-const navButtons = document.querySelectorAll(".nav-btn");
-
-navButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-        navButtons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-    });
+  if (pos < window.innerHeight - 80 && !started) {
+    started = true;
+    countUp();
+  }
 });
 </script>
 
