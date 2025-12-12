@@ -1,157 +1,381 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard + Settings Panel</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dashboard Organisasi — Responsive</title>
+
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
 
 <style>
-    body{
-        margin:0;
-        font-family: Arial, sans-serif;
-        background:#f5f6fa;
-        overflow-x:hidden;
-    }
+/* ================= ROOT ================= */
+:root{
+    --bg:#dde8f3;
+    --menu-bg: rgba(255,255,255,0.75);
+    --border: rgba(0,0,0,0.06);
+    --accent: #2563eb;
+    --accent-dark: #1d4ed8;
+    --text: #111827;
+    --muted: #6b7280;
+    --radius: 16px;
+    --transition: 0.28s cubic-bezier(.2,.9,.2,1);
+    --wa-green: #25D366;
+}
 
-    /* Sidebar */
-    .sidebar{
-        width:220px;
-        height:100vh;
-        background:#1e1e1e;
-        color:white;
-        position:fixed;
-        left:0;
-        top:0;
-        padding:20px 0;
-    }
-    .sidebar h2{
-        text-align:center;
-        margin-bottom:40px;
-    }
-    .sidebar a{
-        display:block;
-        padding:12px 25px;
-        color:white;
-        text-decoration:none;
-        transition:0.2s;
-    }
-    .sidebar a:hover{
-        background:#333;
-    }
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0
+}
 
-    /* Main content */
-    .content{
-        margin-left:220px;
-        padding:25px;
-    }
+body{
+    font-family:sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    display:flex;
+    min-height:100vh;
+}
 
-    .card{
-        background:white;
-        padding:25px;
-        border-radius:12px;
-        box-shadow:0 3px 10px rgba(0,0,0,0.09);
-        max-width:400px;
-    }
+/* ================= SIDEBAR ================= */
+nav.menu{
+    width:90px;
+    padding:1rem;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    align-items:center;
+    background:var(--menu-bg);
+    border-right:1px solid var(--border);
+    backdrop-filter: blur(10px);
+    transition:width var(--transition);
+}
+nav.menu:hover{
+    width:205px
+}
+.link{
+    display:flex;
+    align-items:center;
+    width:60px;
+    height:50px;
+    border-radius:12px;
+    text-decoration:none;
+    color:var(--muted);
+    overflow:hidden;
+    transition: all var(--transition);
+    position:relative;
+    padding-left:8px;
+    cursor:pointer;
+    border:none;
+    background:transparent;
+}
+nav.menu:hover .link{
+    width:170px;
+}
+.link:hover{
+    color:#fff;
+    background:var(--accent);
+    box-shadow:0 6px 18px rgba(37,99,235,0.18);
+}
+.link-icon{
+    font-family:"Material Symbols Rounded";
+    font-size:26px;
+    margin-left:8px;
+    flex-shrink:0;
+}
+.link-title{
+    margin-left:12px;
+    white-space:nowrap;
+    opacity:0;
+    transform:translateX(8px);
+    transition:opacity var(--transition), transform var(--transition);
+    font-weight:600;
+    font-size:15px;
+}
+nav.menu:hover .link-title{
+    opacity:1;
+    transform:translateX(0);
+}
 
-    /* Settings Panel (Slide) */
-    .settings-panel{
-        width:320px;
-        background:white;
-        height:100vh;
-        position:fixed;
-        top:0;
-        right:-400px;
-        box-shadow:-4px 0 15px rgba(0,0,0,0.15);
-        padding:25px;
-        transition:0.35s ease;
-    }
-    .settings-panel.active{
-        right:0;
-    }
-    .settings-panel h2{
-        margin-top:0;
-    }
+/* ================= LAYOUT ================= */
+.wrapper{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    overflow:hidden;
+}
+.content{
+    flex:1;
+    overflow-y:auto;
+    padding:32px;
+    padding-bottom:90px;
+}
 
-    .close-btn{
-        background:#e74c3c;
-        color:white;
-        padding:8px 15px;
-        border:none;
-        border-radius:6px;
-        cursor:pointer;
-    }
+/* ================= HERO CARD ================= */
+.welcome-card-hero{
+    width:100%;
+    min-height:180px;
+    background-image:url('https://media.istockphoto.com/id/1482432255/id/vektor/warna-latar-belakang-gradien-buram-abstrak-dengan-efek-dinamis.jpg?s=612x612&w=0&k=20&c=jDoDy8H7fDJgrGgc8D2X4SyT2wjtvzcmbPLFzA4x7dE=');
+    background-size:cover;
+    background-position:center;
+    border-radius:16px;
+    margin-bottom:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+.welcome-text{
+    padding:20px 28px;
+    text-align:center;
+    color:#fff;
+}
+.welcome-card-hero h1{
+    font-size:28px;
+    margin-bottom:8px;
+}
 
-    .settings-option{
-        margin:15px 0;
-    }
+/* ================= CARDS ================= */
+.cards{
+    display:grid;
+    gap:18px;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+}
+.card{
+    background:#fff;
+    padding:18px;
+    border-radius:12px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.06);
+}
+.card p{
+    color:var(--muted);
+}
+
+/* ================= COUNT ================= */
+.count-wrapper{
+    margin-top:20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+    gap:16px;
+}
+.count-card{
+    background:#fff;
+    border-radius:12px;
+    padding:18px;
+    text-align:center;
+    box-shadow:0 6px 18px rgba(0,0,0,0.06);
+}
+.count-number{
+    font-size:28px;
+    font-weight:700;
+    color:var(--accent);
+}
+
+/* ================= BOTTOM NAV ================= */
+.bottom-nav{
+    position:fixed;
+    left:12px;
+    right:12px;
+    bottom:12px;
+    height:66px;
+    background:#fff;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    box-shadow:0 10px 30px rgba(0,0,0,0.12);
+    border:1px solid var(--border);
+    z-index:50;
+}
+.bottom-item{
+    flex:1;
+    text-align:center;
+    color:var(--muted);
+}
+.bottom-item.active{
+    color:var(--wa-green);
+}
+.bottom-item.active .material-symbols-rounded{
+    transform:translateY(-4px);
+    color:var(--wa-green);
+}
+
+/* ================= PANEL PENGATURAN (BARU) ================= */
+.settings-panel{
+    position:fixed;
+    top:0;
+    right:-360px;
+    width:320px;
+    height:100vh;
+    background:#fff;
+    box-shadow:-4px 0 20px rgba(0,0,0,0.12);
+    padding:24px;
+    transition:var(--transition);
+    z-index:200;
+}
+.settings-panel.active{
+    right:0;
+}
+.settings-panel h2{
+    margin-bottom:14px;
+}
+.close-settings{
+    display:block;
+    margin-top:20px;
+    padding:10px 14px;
+    background:#e53935;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+    nav.menu{display:none}
+}
+@media(min-width:769px){
+    .bottom-nav{display:none}
+}
 </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <h2>Menu</h2>
-    <a href="#" onclick="openDashboard()">Dashboard</a>
-    <a href="#" onclick="openSettings()">Settings</a>
-</div>
+<!-- ================= SIDEBAR ================= -->
+<nav class="menu">
+    <button class="link"><span class="link-icon material-symbols-rounded">dashboard</span><span class="link-title">Dashboard</span></button>
+    <button class="link"><span class="link-icon material-symbols-rounded">groups</span><span class="link-title">Anggota</span></button>
+    <button class="link"><span class="link-icon material-symbols-rounded">folder</span><span class="link-title">Program</span></button>
+    <button class="link"><span class="link-icon material-symbols-rounded">bar_chart</span><span class="link-title">Laporan</span></button>
 
-<!-- CONTENT -->
-<div class="content" id="mainContent">
-    <h1>Dashboard</h1>
-    <div class="card">
-        <h3>Selamat Datang!</h3>
-        <p>Ini adalah halaman dashboard utama.</p>
+    <!-- tombol Pengaturan -->
+    <button class="link" onclick="openSettings()">
+        <span class="link-icon material-symbols-rounded">settings</span>
+        <span class="link-title">Pengaturan</span>
+    </button>
+</nav>
+
+<div class="wrapper">
+<main class="content">
+
+<!-- HERO SECTION -->
+<section class="welcome-card-hero">
+    <div class="welcome-text">
+        <h1>Selamat Datang di Dashboard!</h1>
+        <p>Kelola data anggota, program kerja, laporan kegiatan, dan statistik dalam satu tempat.</p>
     </div>
+</section>
+
+<!-- CARDS -->
+<section class="cards">
+    <div class="card"><h3>Data Anggota</h3><p>Kelola profil anggota, jabatan, dan status.</p></div>
+    <div class="card"><h3>Program Kerja</h3><p>Atur program, timeline, dan penanggung jawab.</p></div>
+    <div class="card"><h3>Laporan</h3><p>Catat pemasukan dan pengeluaran organisasi.</p></div>
+    <div class="card"><h3>Dokumentasi</h3><p>Arsip foto, file, dan notulen kegiatan.</p></div>
+</section>
+
+<!-- COUNT -->
+<section class="count-wrapper">
+    <div class="count-card">
+        <span class="material-symbols-rounded count-icon">groups</span>
+        <h3>Total Anggota</h3>
+        <div id="countAnggota" class="count-number">0</div>
+    </div>
+
+    <div class="count-card">
+        <span class="material-symbols-rounded count-icon">event</span>
+        <h3>Event Terlaksana</h3>
+        <div id="countEvent" class="count-number">0</div>
+    </div>
+
+    <div class="count-card">
+        <span class="material-symbols-rounded count-icon">folder</span>
+        <h3>Program Aktif</h3>
+        <div id="countProgram" class="count-number">0</div>
+    </div>
+</section>
+
+<footer>© <span id="year"></span> Organisasi Anda</footer>
+
+</main>
 </div>
 
-<!-- SETTINGS PANEL -->
+<!-- ================= PANEL SETTINGS (BARU) ================= -->
 <div class="settings-panel" id="settingsPanel">
-    <h2>Settings</h2>
+    <h2>Pengaturan</h2>
 
-    <div class="settings-option">
-        <label>Tema:</label><br>
-        <select id="themeSelect" onchange="changeTheme()">
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-        </select>
-    </div>
+    <label>Tema</label><br>
+    <select id="themeSelect" onchange="changeTheme()" style="margin-top:6px; padding:8px; width:100%; border-radius:8px;">
+        <option value="light">Mode Terang</option>
+        <option value="dark">Mode Gelap</option>
+    </select>
 
-    <button class="close-btn" onclick="closeSettings()">Tutup</button>
+    <button class="close-settings" onclick="closeSettings()">Tutup</button>
 </div>
 
+<!-- ================= JS ================= -->
 <script>
-    const settingsPanel = document.getElementById("settingsPanel");
+document.getElementById("year").textContent = new Date().getFullYear();
 
-    function openSettings(){
-        settingsPanel.classList.add("active");
-    }
-
-    function closeSettings(){
-        settingsPanel.classList.remove("active");
-    }
-
-    function openDashboard(){
-        document.getElementById("mainContent").innerHTML = `
-            <h1>Dashboard</h1>
-            <div class="card">
-                <h3>Selamat Datang!</h3>
-                <p>Ini adalah halaman dashboard utama.</p>
-            </div>
-        `;
-    }
-
-    // Tema
-    function changeTheme(){
-        let theme = document.getElementById("themeSelect").value;
-        if(theme === "dark"){
-            document.body.style.background = "#1e1e1e";
-            document.querySelector(".content").style.color = "white";
-        } else {
-            document.body.style.background = "#f5f6fa";
-            document.querySelector(".content").style.color = "black";
+/* COUNT UP */
+function animateCount(id, target){
+    let el = document.getElementById(id);
+    let num = 0;
+    let step = target / 50;
+    let int = setInterval(()=>{
+        num += step;
+        if(num >= target){
+            num = target;
+            clearInterval(int);
         }
+        el.textContent = Math.floor(num);
+    }, 16);
+}
+
+let triggered = false;
+let obs = new IntersectionObserver((e)=>{
+    if(e[0].isIntersecting && !triggered){
+        triggered = true;
+        animateCount("countAnggota",1500);
+        animateCount("countEvent",80);
+        animateCount("countProgram",14);
     }
+});
+obs.observe(document.querySelector(".count-wrapper"));
+
+/* BOTTOM NAV ACTIVE */
+document.querySelectorAll(".bottom-item").forEach(item=>{
+    item.addEventListener("click", ()=>{
+        document.querySelectorAll(".bottom-item").forEach(a=>a.classList.remove("active"));
+        item.classList.add("active");
+
+        if(item.dataset.key === "settings"){
+            openSettings();
+        }
+    });
+});
+
+/* PANEL PENGATURAN */
+function openSettings(){
+    document.getElementById("settingsPanel").classList.add("active");
+}
+function closeSettings(){
+    document.getElementById("settingsPanel").classList.remove("active");
+}
+
+/* GANTI TEMA */
+function changeTheme(){
+    let v = document.getElementById("themeSelect").value;
+
+    if(v === "dark"){
+        document.body.style.background = "#111827";
+        document.body.style.color = "white";
+    } else {
+        document.body.style.background = "var(--bg)";
+        document.body.style.color = "var(--text)";
+    }
+}
 </script>
 
 </body>
