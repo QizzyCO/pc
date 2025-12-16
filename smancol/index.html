@@ -271,11 +271,15 @@ nav.menu:hover .link-title{
 @media(min-width:769px){
   .bottom-nav{ display:none }
 }
-  /* ================= LOADING SCREEN ================= */
+/* ================= BATTERY LOADING ================= */
 #loading{
   position:fixed;
   inset:0;
-  background:linear-gradient(135deg,#2563eb,#1e40af);
+  background:
+    linear-gradient(135deg,#1e40af,#2563eb),
+    url('bg-loading.jpg'); /* optional */
+  background-size:cover;
+  background-position:center;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -288,34 +292,89 @@ nav.menu:hover .link-title{
   visibility:hidden;
 }
 
-.loading-box{
+.loading-card{
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(14px);
+  padding:34px 40px;
+  border-radius:20px;
   text-align:center;
   color:#fff;
+  width:280px;
+  box-shadow:0 20px 50px rgba(0,0,0,.25);
 }
 
-.spinner{
-  width:56px;
-  height:56px;
-  border:5px solid rgba(255,255,255,.3);
-  border-top-color:#fff;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  margin:0 auto 18px;
+.loading-logo{
+  width:70px;
+  margin-bottom:14px;
 }
 
-@keyframes spin{
-  to{ transform:rotate(360deg) }
+.loading-card h2{
+  margin-bottom:6px;
+  letter-spacing:1px;
 }
+
+.loading-card p{
+  font-size:14px;
+  opacity:.9;
+  margin-bottom:18px;
+}
+
+/* Battery */
+.battery{
+  width:200px;
+  height:34px;
+  border:3px solid #fff;
+  border-radius:6px;
+  position:relative;
+  margin:0 auto 10px;
+  overflow:hidden;
+}
+
+.battery-tip{
+  position:absolute;
+  right:-10px;
+  top:8px;
+  width:8px;
+  height:16px;
+  background:#fff;
+  border-radius:2px;
+}
+
+.battery-level{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#22c55e,#4ade80);
+  transition:width .3s ease;
+}
+
+.percent{
+  font-weight:700;
+  margin-top:6px;
+}
+
 
 </style>
 </head>
 <body>
-<!-- ============= LOADING ============= -->
+<!-- ============= LOADING BATTERY ============= -->
 <div id="loading">
-  <div class="loading-box">
-    <div class="spinner"></div>
-    <h2>Memuat Dashboard</h2>
-    <p>Mohon tunggu sebentar...</p>
+  <div class="loading-card">
+
+    <!-- LOGO -->
+    <img src="logo.png" alt="Logo Rohis" class="loading-logo">
+    <!-- ganti logo.png dengan logo kamu -->
+
+    <h2>ROHIS WEB</h2>
+    <p>Menyiapkan dashboard...</p>
+
+    <!-- BATTERY -->
+    <div class="battery">
+      <div class="battery-level" id="batteryLevel"></div>
+      <span class="battery-tip"></span>
+    </div>
+
+    <div class="percent" id="percentText">0%</div>
+
   </div>
 </div>
 
@@ -463,9 +522,24 @@ let observer = new IntersectionObserver((e)=>{
 observer.observe(document.querySelector(".count-wrapper"));
 /*====loading====*/
 window.addEventListener("load",()=>{
-  setTimeout(()=>{
-    document.getElementById("loading").classList.add("hide");
-  },1500); // durasi loading (ms)
+  let percent = 0;
+  const bar = document.getElementById("batteryLevel");
+  const text = document.getElementById("percentText");
+  const loading = document.getElementById("loading");
+
+  const interval = setInterval(()=>{
+    percent += Math.floor(Math.random()*8)+3;
+    if(percent >= 100){
+      percent = 100;
+      clearInterval(interval);
+
+      setTimeout(()=>{
+        loading.classList.add("hide");
+      },400);
+    }
+    bar.style.width = percent + "%";
+    text.textContent = percent + "%";
+  },120);
 });
 </script>
 
