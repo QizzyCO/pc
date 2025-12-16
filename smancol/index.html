@@ -271,9 +271,53 @@ nav.menu:hover .link-title{
 @media(min-width:769px){
   .bottom-nav{ display:none }
 }
+  /* ================= LOADING SCREEN ================= */
+#loading{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg,#2563eb,#1e40af);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  transition:opacity .6s ease, visibility .6s ease;
+}
+
+#loading.hide{
+  opacity:0;
+  visibility:hidden;
+}
+
+.loading-box{
+  text-align:center;
+  color:#fff;
+}
+
+.spinner{
+  width:56px;
+  height:56px;
+  border:5px solid rgba(255,255,255,.3);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:0 auto 18px;
+}
+
+@keyframes spin{
+  to{ transform:rotate(360deg) }
+}
+
 </style>
 </head>
 <body>
+<!-- ============= LOADING ============= -->
+<div id="loading">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <h2>Memuat Dashboard</h2>
+    <p>Mohon tunggu sebentar...</p>
+  </div>
+</div>
 
 <!-- ============= SIDEBAR ============= -->
 <nav class="menu">
@@ -417,6 +461,12 @@ let observer = new IntersectionObserver((e)=>{
 },{threshold:0.3});
 
 observer.observe(document.querySelector(".count-wrapper"));
+/*====loading====*/
+window.addEventListener("load",()=>{
+  setTimeout(()=>{
+    document.getElementById("loading").classList.add("hide");
+  },1500); // durasi loading (ms)
+});
 </script>
 
 </body>
