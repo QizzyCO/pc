@@ -18,7 +18,7 @@
   --accent: #2563eb;
   --text: #111827;
   --muted:#6b7280;
-  --card-bg: rgba(255,255,255,0.9);
+  --card-bg: #ffffff;
   --transition:.28s cubic-bezier(.2,.9,.2,1);
 }
 
@@ -34,40 +34,39 @@
 *{margin:0;padding:0;box-sizing:border-box; font-family: sans-serif;}
 
 body{
+  /* Background Luar Angkasa Tetap Ada di Belakang */
   background: var(--bg-space) no-repeat center center fixed;
   background-size: cover;
-  color: var(--text);
-  display: flex;
   min-height: 100vh;
-  overflow: hidden;
+  display: flex;
 }
 
-/* ================= LOGIN PAGE (STYLISH & TRANSPARENT) ================= */
+/* ================= LOGIN PAGE (GLASSMORPHISM) ================= */
 #loginPage {
   position: fixed; inset: 0; z-index: 10000;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(8px);
+  background: rgba(0,0,0,0.5); /* Overlay gelap agar gambar bg terlihat */
+  backdrop-filter: blur(10px);
 }
 
 .login-wrapper {
   width: 420px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1); /* Transparan */
   border: 2px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(20px);
   color: #fff;
   border-radius: 20px;
-  padding: 30px 40px;
+  padding: 40px;
   text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-.login-wrapper h1 { font-size: 36px; margin-bottom: 20px; }
+.login-wrapper h1 { font-size: 32px; margin-bottom: 30px; }
 
 .input-box {
   position: relative;
-  width: 100%;
-  height: 50px;
-  margin: 30px 0;
+  width: 100%; height: 50px;
+  margin: 25px 0;
 }
 
 .input-box input {
@@ -75,13 +74,13 @@ body{
   background: transparent;
   border: 2px solid rgba(255, 255, 255, .2);
   border-radius: 40px;
-  font-size: 16px;
   color: #fff;
   padding: 0 45px 0 20px;
   outline: none;
+  font-size: 16px;
 }
 
-.input-box input::placeholder { color: #fff; }
+.input-box input::placeholder { color: rgba(255,255,255,0.8); }
 
 .input-box i {
   position: absolute; right: 20px; top: 50%;
@@ -91,13 +90,18 @@ body{
 .btn-login {
   width: 100%; height: 45px;
   background: #fff; border: none; border-radius: 40px;
-  font-size: 16px; color: #333; font-weight: 600;
+  font-size: 16px; color: #333; font-weight: 700;
   cursor: pointer; transition: .3s;
 }
+.btn-login:hover { background: #e2e8f0; transform: scale(1.02); }
 
-.btn-login:hover { background: #e2e8f0; }
+/* ================= DASHBOARD APP ================= */
+#app {
+  display: none; /* Sembunyi sebelum login */
+  width: 100%;
+  background: var(--bg); /* Warna solid dashboard Anda */
+}
 
-/* ================= SIDEBAR ================= */
 nav.menu{
   width:90px; padding:1rem; display:flex; flex-direction:column; gap:14px;
   align-items:center; background:var(--menu-bg); border-right:1px solid var(--border);
@@ -110,29 +114,55 @@ nav.menu:hover{ width:205px }
   cursor:pointer; color:var(--muted); overflow:hidden; padding-left:8px;
   transition:all var(--transition); background:transparent; border:none;
 }
-nav.menu:hover .link{ width:170px }
+nav.menu:hover .link { width:170px; }
 .link:hover{ color:#fff; background:var(--accent); }
 .link-icon{ font-family:"Material Symbols Rounded"; font-size:26px; margin-left:8px; flex-shrink:0; }
 .link-title{ margin-left:12px; white-space:nowrap; opacity:0; transition:var(--transition); font-weight:600; }
 nav.menu:hover .link-title{ opacity:1; }
 
-/* ================= MAIN CONTENT ================= */
-.wrapper-main{ flex:1; display:flex; flex-direction:column; width:100%; overflow:hidden; background: var(--bg); opacity: 0.95; }
+.wrapper-main{ flex:1; display:flex; flex-direction:column; width:100%; overflow:hidden; position: relative; }
 
 .page{ flex:1; overflow-y:auto; padding:32px; padding-bottom:100px; display:none; opacity:0; transition:opacity .3s; }
 .page.active{ display:block; opacity:1; }
 
 .welcome-card-hero{
-  width:100%; min-height:180px; border-radius:16px; margin-bottom:22px;
+  width:100%; min-height:180px; border-radius:16px; margin-bottom:25px;
   background: url('https://media.istockphoto.com/id/1482432255/id/vektor/warna-latar-belakang-gradien-buram-abstrak-dengan-efek-dinamis.jpg?s=612x612&w=0&k=20&c=jDoDy8H7fDJgrGgc8D2X4SyT2wjtvzcmbPLFzA4x7dE=') center/cover;
-  display:flex; align-items:center; justify-content:center;
+  display:flex; align-items:center; justify-content:center; color: #fff;
 }
 
 .cards, .count-wrapper { display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
-.card, .count-card { background:var(--card-bg); padding:18px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
-.count-wrapper { margin-top: 32px; } /* Memberi jarak agar tidak berdempetan */
-.count-card { text-align:center; }
-.count-number { font-size:28px; font-weight:700; color:var(--accent); margin-top:6px; }
+.card, .count-card { background:var(--card-bg); padding:20px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06); color: var(--text); }
+.count-wrapper { margin-top: 40px; }
+.count-card { text-align:center; transition: .3s; }
+.count-card:hover { transform: translateY(-5px); }
+.count-number { font-size:28px; font-weight:700; color:var(--accent); margin-top:10px; }
+
+/* ================= DARK MODE SWITCH FIX ================= */
+.switch {
+  width: 50px; height: 26px;
+  background: #94a3b8;
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: background .3s;
+}
+
+/* Bulatan Putih */
+.switch::after {
+  content: "";
+  width: 20px; height: 20px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  left: 3px; top: 3px;
+  transition: transform .3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Saat Aktif */
+.switch.active { background: #2563eb; }
+.switch.active::after { transform: translateX(24px); }
 
 /* ================= LOADING ================= */
 #loading {
@@ -141,14 +171,14 @@ nav.menu:hover .link-title{ opacity:1; }
   display:none; align-items:center; justify-content:center;
 }
 
-.bottom-nav{ position:fixed; left:12px; right:12px; bottom:12px; height:66px; background:var(--card-bg); border-radius:16px; display:flex; align-items:center; justify-content:space-around; z-index:50; }
-.bottom-item { color:var(--muted); background:none; border:none; flex:1; }
+.bottom-nav{ position:fixed; left:12px; right:12px; bottom:12px; height:66px; background:var(--card-bg); border-radius:16px; display:flex; align-items:center; justify-content:space-around; z-index:50; border: 1px solid var(--border); }
+.bottom-item { color:var(--muted); background:none; border:none; cursor:pointer; flex:1; }
 .bottom-item.active { color:var(--accent); }
 
 @media(max-width:768px){ nav.menu{ display:none } }
 @media(min-width:769px){ .bottom-nav{ display:none } }
 
-.footer { width:100%; text-align:center; padding:18px; font-size:14px; color:var(--muted); position:fixed; bottom:0; z-index:0; }
+.footer { width:100%; text-align:center; padding:15px; font-size:13px; color:var(--muted); position:fixed; bottom:0; pointer-events:none; }
 </style>
 </head>
 <body>
@@ -165,8 +195,8 @@ nav.menu:hover .link-title{ opacity:1; }
         <input type="password" id="password" placeholder="Password" required>
         <i class='bx bxs-lock-alt' ></i>
       </div>
-      <button type="submit" class="btn-login">Login</button>
-      <p id="errorMsg" style="color: #ff4d4d; margin-top: 15px; display: none;">Login gagal!</p>
+      <button type="submit" class="btn-login">Masuk</button>
+      <p id="errorMsg" style="color: #ff6b6b; font-size: 14px; margin-top: 15px; display: none;">Kredensial salah!</p>
     </form>
   </div>
 </div>
@@ -175,14 +205,14 @@ nav.menu:hover .link-title{ opacity:1; }
   <div style="background:rgba(255,255,255,.15); backdrop-filter:blur(12px); padding:30px; border-radius:18px; text-align:center; color:#fff; width:260px;">
     <h2>Organisasi</h2>
     <p>Menyiapkan dashboard...</p>
-    <div style="width:200px; height:28px; border:3px solid #fff; border-radius:6px; margin:18px auto; overflow:hidden;">
-      <div id="battery" style="height:100%; width:0%; background:linear-gradient(90deg,#22c55e,#4ade80); transition:.3s;"></div>
+    <div style="width:200px; height:24px; border:2px solid #fff; border-radius:6px; margin:18px auto; overflow:hidden;">
+      <div id="battery" style="height:100%; width:0%; background:linear-gradient(90deg,#22c55e,#4ade80); transition:.2s;"></div>
     </div>
     <div id="percent">0%</div>
   </div>
 </div>
 
-<div id="app" style="display: none; width: 100%;">
+<div id="app">
   <nav class="menu">
     <button class="link" onclick="showPage('dashboard')"><span class="link-icon material-symbols-rounded">dashboard</span><span class="link-title">Dashboard</span></button>
     <button class="link" onclick="showPage('anggota')"><span class="link-icon material-symbols-rounded">groups</span><span class="link-title">Anggota</span></button>
@@ -194,7 +224,7 @@ nav.menu:hover .link-title{ opacity:1; }
   <div class="wrapper-main">
     <main id="dashboard" class="page active">
       <section class="welcome-card-hero">
-        <div style="text-align:center; color:#fff;">
+        <div style="text-align:center;">
           <h1>Selamat Datang di Dashboard!</h1>
           <p>Kelola data organisasi dalam satu tempat.</p>
         </div>
@@ -214,16 +244,18 @@ nav.menu:hover .link-title{ opacity:1; }
       </section>
     </main>
 
-    <main id="anggota" class="page"><h1>Data Anggota</h1></main>
-    <main id="program" class="page"><h1>Program Kerja</h1></main>
-    <main id="laporan" class="page"><h1>Laporan Keuangan</h1></main>
+    <main id="anggota" class="page"><h1>Halaman Anggota</h1></main>
+    <main id="program" class="page"><h1>Halaman Program</h1></main>
+    <main id="laporan" class="page"><h1>Halaman Laporan</h1></main>
     <main id="settings" class="page">
       <h1>Pengaturan</h1>
-      <div class="card" style="margin-top:20px; display:flex; justify-content:space-between;">
-        <span>Dark Mode</span>
-        <div id="darkSwitch" class="switch" style="width:50px; height:26px; background:#94a3b8; border-radius:20px; position:relative; cursor:pointer;" onclick="toggleDark()"></div>
+      <div class="card" style="margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
+        <span>Tampilan Gelap (Dark Mode)</span>
+        <div id="darkSwitch" class="switch" onclick="toggleDark()"></div>
       </div>
     </main>
+
+    <footer class="footer">© <span id="year"></span> Organisasi Anda</footer>
   </div>
 
   <nav class="bottom-nav">
@@ -234,14 +266,12 @@ nav.menu:hover .link-title{ opacity:1; }
   </nav>
 </div>
 
-<footer class="footer">© <span id="year"></span> Organisasi Anda</footer>
-
 <script>
 let loadingDone = false;
 let once = false;
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// LOGIN LOGIC
+// LOGIN
 document.getElementById('loginForm').addEventListener('submit', function(e) {
   e.preventDefault();
   const u = document.getElementById('username').value;
@@ -255,7 +285,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
   }
 });
 
-// LOADING LOGIC
+// LOADING
 function startLoading() {
   const loadDiv = document.getElementById('loading');
   loadDiv.style.display = 'flex';
@@ -264,7 +294,7 @@ function startLoading() {
   let txt = document.getElementById("percent");
 
   let int = setInterval(() => {
-    p += Math.random() * 10 + 5;
+    p += Math.random() * 12 + 5;
     if(p >= 100) {
       p = 100;
       clearInterval(int);
@@ -273,33 +303,38 @@ function startLoading() {
         document.getElementById('app').style.display = 'flex';
         loadingDone = true;
         startCountIfReady();
-      }, 400);
+      }, 500);
     }
     bar.style.width = p + "%";
     txt.textContent = Math.floor(p) + "%";
-  }, 150);
+  }, 120);
 }
 
-// DASHBOARD LOGIC
+// DASHBOARD
 function showPage(pg){
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById(pg).classList.add("active");
+  
+  // Update nav active
+  document.querySelectorAll(".bottom-item").forEach(i => i.classList.remove("active"));
+  // (Logika tambahan untuk bottom nav highlight bisa ditaruh di sini)
 }
 
 function toggleDark() {
   document.body.classList.toggle("dark");
-  document.getElementById("darkSwitch").style.background = document.body.classList.contains("dark") ? "#2563eb" : "#94a3b8";
+  document.getElementById("darkSwitch").classList.toggle("active");
 }
 
 function animateCount(id, target) {
   let el = document.getElementById(id);
+  if(!el) return;
   let num = 0;
-  let step = target / 60;
+  let step = target / 50;
   let int = setInterval(() => {
     num += step;
     if(num >= target) { num = target; clearInterval(int); }
     el.textContent = Math.floor(num).toLocaleString("id-ID");
-  }, 20);
+  }, 25);
 }
 
 function startCountIfReady() {
