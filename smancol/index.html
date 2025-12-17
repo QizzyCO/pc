@@ -40,8 +40,9 @@ body{
   color:var(--text);
   display:flex;
   min-height:100vh;
-  overflow:auto; /* ← GANTI INI */
+  overflow:hidden; /* WAJIB */
 }
+
 
 /* ================= SIDEBAR ================= */
 nav.menu{
@@ -324,13 +325,48 @@ nav.menu:hover .link-title{
  
 </head>
 <body>
-  <div id="loginPage">
-  <form id="loginForm" class="login-box">
+
+<div id="loginPage" style="
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg,#1e3a8a,#2563eb);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10000;
+">
+  <form id="loginForm" style="
+    background:white;
+    padding:32px;
+    border-radius:18px;
+    width:300px;
+    text-align:center;
+  ">
     <h2>Login</h2>
-    <input id="username" placeholder="Username" required>
-    <input id="password" type="password" placeholder="Password" required>
-    <button>Login</button>
-    <p id="loginError">Username / Password salah</p>
+
+    <input id="username" placeholder="Username" style="
+      width:100%;padding:12px;margin-top:14px;border-radius:10px;border:1px solid #ccc;
+    ">
+
+    <input id="password" type="password" placeholder="Password" style="
+      width:100%;padding:12px;margin-top:10px;border-radius:10px;border:1px solid #ccc;
+    ">
+
+    <button style="
+      margin-top:16px;
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      border:none;
+      background:#2563eb;
+      color:white;
+      font-weight:600;
+      cursor:pointer;
+    ">Masuk</button>
+
+    <p id="loginError" style="color:red;font-size:13px;margin-top:10px;display:none">
+      Username atau password salah
+    </p>
   </form>
 </div>
 
@@ -494,10 +530,14 @@ document.querySelectorAll(".link, .bottom-item").forEach(btn=>{
 });
 
 /* ===== DARK MODE ===== */
-document.getElementById("darkSwitch").onclick = ()=>{
-  document.body.classList.toggle("dark");
-  document.getElementById("darkSwitch").classList.toggle("active");
-};
+// DARK MODE (aman walau tombol belum ada)
+const darkBtn = document.getElementById("darkSwitch");
+if(darkBtn){
+  darkBtn.onclick = ()=>{
+    document.body.classList.toggle("dark");
+    darkBtn.classList.toggle("active");
+  };
+}
 
 /* ===== COUNT UP ===== */
 let once=false;
@@ -524,15 +564,21 @@ const loginForm=document.getElementById("loginForm");
 const loading=document.getElementById("loading");
 const app=document.getElementById("app");
 
-loginForm.onsubmit=e=>{
+loginForm.onsubmit = (e)=>{
   e.preventDefault();
-  if(username.value==="RohisSmanc" && password.value==="GuestSmanc"){
-    loginPage.style.display="none";
+
+  const u = document.getElementById("username").value;
+  const p = document.getElementById("password").value;
+
+  if(u === "RohisSmanc" && p === "GuestSmanc"){
+    document.getElementById("loginError").style.display = "none";
+    loginPage.style.display = "none";
     startLoading();
   }else{
-    document.getElementById("loginError").style.display="block";
+    document.getElementById("loginError").style.display = "block";
   }
 };
+
 
 function startLoading(){
   loading.style.display="flex";
@@ -553,6 +599,8 @@ function startLoading(){
     txt.textContent=p+"%";
   },80);
 }
+
+
 
 </script>
 
