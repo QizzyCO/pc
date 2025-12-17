@@ -112,14 +112,19 @@ nav.menu:hover .link-title{
   overflow:hidden;
 }
 
-.page{
-  flex:1;
-  overflow-y:auto;
-  padding:32px;
-  padding-bottom:100px;
+.page {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px;
+  padding-bottom: 100px;
+  display: none;
+  opacity: 0;
+  transition: opacity .3s;
 
-  max-width:1200px;   /* 🔥 INI KUNCINYA */
-  margin:0 auto;      /* 🔥 TENGAH */
+  /* --- TAMBAHAN BARU AGAR POSISI DI TENGAH --- */
+  width: 100%;        /* Memastikan mengambil lebar penuh */
+  max-width: 1200px;  /* Membatasi lebar maksimal agar tidak terlalu melar di layar lebar */
+  margin: 0 auto;     /* RUMUS AJAIB: Membuat elemen otomatis ke tengah horizontal */
 }
 
 .page.active{
