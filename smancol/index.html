@@ -389,81 +389,72 @@ nav.menu:hover .link-title{
 
 <div class="wrapper">
 
-    <!-- ============= PAGE: DASHBOARD ============= -->
-  <main id="dashboard" class="page active">
+<main id="dashboard" class="page active">
 
-    <section class="welcome-card-hero">
-      <div class="welcome-text">
-        <h1>Selamat Datang di ROHIS WEB!</h1>
-        <p>Dapatkan info dari mana saja.</p>
+  <section style="
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:32px;
+    align-items:center;
+  ">
+
+    <!-- LEFT : TEXT LANDING -->
+    <div>
+      <h1 style="font-size:36px;font-weight:800;">
+        Dashboard Organisasi
+      </h1>
+      <p style="margin:14px 0 24px;color:var(--muted);font-size:16px;">
+        Pusat pengelolaan data anggota, program kerja, laporan,
+        dan aktivitas organisasi dalam satu sistem.
+      </p>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <button style="
+          padding:14px 22px;
+          border-radius:12px;
+          border:none;
+          background:var(--accent);
+          color:white;
+          font-weight:600;
+          cursor:pointer;
+        ">Kelola Anggota</button>
+
+        <button style="
+          padding:14px 22px;
+          border-radius:12px;
+          border:1px solid var(--border);
+          background:transparent;
+          font-weight:600;
+          cursor:pointer;
+        ">Lihat Laporan</button>
       </div>
-    </section>
+    </div>
 
-    <section class="cards">
-      <div class="card"><h3>Data Anggota</h3><p>Kelola profil anggota, jabatan, status.</p></div>
-      <div class="card"><h3>Program Kerja</h3><p>Atur program, timeline, dan penanggung jawab.</p></div>
-      <div class="card"><h3>Laporan</h3><p>Catat pemasukan & pengeluaran.</p></div>
-      <div class="card"><h3>Dokumentasi</h3><p>Arsip foto, file, dan notulen kegiatan.</p></div>
-    </section>
-
-    <section class="count-wrapper">
-      <div class="count-card"><span class="material-symbols-rounded count-icon">groups</span><h3>Total Anggota</h3><div id="countAnggota" class="count-number">0</div></div>
-      <div class="count-card"><span class="material-symbols-rounded count-icon">event</span><h3>Event Terlaksana</h3><div id="countEvent" class="count-number">0</div></div>
-      <div class="count-card"><span class="material-symbols-rounded count-icon">folder</span><h3>Program Aktif</h3><div id="countProgram" class="count-number">0</div></div>
-    </section>
-
-  </main>
-
-  <!-- ============= PAGE: ANGGOTA ============= -->
-  <main id="anggota" class="page">
-    <h1>Data Anggota</h1>
-    <p>Halaman ini bisa kamu isi tabel anggota.</p>
-  </main>
-
-  <!-- ============= PAGE: PROGRAM ============= -->
-  <main id="program" class="page">
-    <h1>Program Kerja</h1>
-    <p>Isi daftar program kerja organisasi.</p>
-  </main>
-
-  <!-- ============= PAGE: LAPORAN ============= -->
-  <main id="laporan" class="page">
-    <h1>Laporan</h1>
-    <p>Halaman laporan keuangan.</p>
-  </main>
-
-  <!-- ============= PAGE: SETTINGS ============= -->
-  <main id="settings" class="page">
-    <h1>Pengaturan</h1>
-
-    <section id="settingsPanel">
-      <div class="toggle-row">
-        <span>Dark Mode</span>
-        <div id="darkSwitch" class="switch"></div>
+    <!-- RIGHT : STATS -->
+    <div class="count-wrapper">
+      <div class="count-card">
+        <span class="material-symbols-rounded count-icon">groups</span>
+        <h3>Total Anggota</h3>
+        <div id="countAnggota" class="count-number">0</div>
       </div>
-    </section>
-  </main>
 
-</div>
+      <div class="count-card">
+        <span class="material-symbols-rounded count-icon">event</span>
+        <h3>Event Terlaksana</h3>
+        <div id="countEvent" class="count-number">0</div>
+      </div>
 
-<!-- ============= BOTTOM NAV ============= -->
-<nav class="bottom-nav">
-  <div class="bottom-item active" data-page="dashboard">
-    <button><span class="material-symbols-rounded">dashboard</span><div style="font-size:11px">Dashboard</div></button>
-  </div>
-  <div class="bottom-item" data-page="anggota">
-    <button><span class="material-symbols-rounded">groups</span><div style="font-size:11px">Anggota</div></button>
-  </div>
-  <div class="bottom-item" data-page="program">
-    <button><span class="material-symbols-rounded">folder</span><div style="font-size:11px">Program</div></button>
-  </div>
-  <div class="bottom-item" data-page="laporan">
-    <button><span class="material-symbols-rounded">bar_chart</span><div style="font-size:11px">Laporan</div></button>
-  </div>
-  <div class="bottom-item" data-page="settings">
-    <button><span class="material-symbols-rounded">settings</span><div style="font-size:11px">Pengaturan</div></button>
-  </div>
-</nav>
+      <div class="count-card">
+        <span class="material-symbols-rounded count-icon">folder</span>
+        <h3>Program Aktif</h3>
+        <div id="countProgram" class="count-number">0</div>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
 
 
 
