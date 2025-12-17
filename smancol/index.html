@@ -5,28 +5,24 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Dashboard Organisasi — Responsive</title>
 
-<!-- Material Symbols -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
 
 <style>
 /* ================= VARIABLES ================= */
 :root{
   --bg:#dde8f3;
-  --menu-bg: rgba(255,255,255,0.75);
+  --menu-bg: rgba(255,255,255,0.9);
   --border: rgba(0,0,0,0.06);
   --accent: #2563eb;
-  --accent-dark: #1d4ed8;
   --text: #111827;
   --muted:#6b7280;
-  --radius:16px;
+  --card-bg:#ffffff;
   --transition:.28s cubic-bezier(.2,.9,.2,1);
-  --wa-green:#25D366;
 }
 
-/* DARK MODE */
 .dark{
   --bg:#0f172a;
-  --menu-bg:rgba(30,41,59,0.7);
+  --menu-bg:rgba(30,41,59,0.95);
   --border:rgba(255,255,255,0.1);
   --text:#e2e8f0;
   --muted:#94a3b8;
@@ -34,597 +30,231 @@
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
+
 body{
   font-family:sans-serif;
   background:var(--bg);
   color:var(--text);
-  display:flex;
   min-height:100vh;
-  overflow:hidden; /* WAJIB */
+  overflow-x:hidden;
 }
 
+/* ================= LOGIN & LOADING ================= */
+#loginPage, #loading {
+  position:fixed; inset:0; z-index:10000;
+  display:flex; align-items:center; justify-content:center;
+}
 
-/* ================= SIDEBAR ================= */
+#loginPage { background: linear-gradient(135deg,#1e3a8a,#2563eb); }
+#loading { background: linear-gradient(135deg,#2563eb,#1d4ed8); display:none; }
+
+.glass-box {
+  background:rgba(255,255,255,1);
+  padding:32px; border-radius:18px; width:320px; text-align:center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+/* ================= LAYOUT UTAMA ================= */
+#app {
+  display: none; /* Muncul setelah login */
+  display: flex; 
+}
+
 nav.menu{
-  width:90px;
-  padding:1rem;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  align-items:center;
-  background:var(--menu-bg);
-  border-right:1px solid var(--border);
-  backdrop-filter:blur(10px);
-  transition:width var(--transition);
+  width:90px; height:100vh; position:sticky; top:0;
+  display:flex; flex-direction:column; gap:14px; align-items:center;
+  padding:1rem; background:var(--menu-bg); border-right:1px solid var(--border);
+  backdrop-filter:blur(10px); transition:width var(--transition);
+  z-index: 100;
 }
-nav.menu:hover{ width:205px }
+nav.menu:hover{ width:210px }
 
-.link{
-  width:60px;
-  height:50px;
-  border-radius:12px;
-  display:flex;
-  align-items:center;
-  cursor:pointer;
-  text-decoration:none;
-  color:var(--muted);
-  overflow:hidden;
-  position:relative;
-  padding-left:8px;
-  transition:all var(--transition);
-  background:transparent;
-  border:none;
-}
-nav.menu:hover .link{ width:170px }
-
-.link:hover{
-  color:#fff;
-  background:var(--accent);
-  box-shadow:0 6px 18px rgba(37,99,235,0.18);
-}
-
-.link-icon{
-  font-family:"Material Symbols Rounded";
-  font-size:26px;
-  margin-left:8px;
-  flex-shrink:0;
-}
-.link-title{
-  margin-left:12px;
-  white-space:nowrap;
-  opacity:0;
-  transform:translateX(8px);
-  transition:var(--transition);
-  font-weight:600;
-  font-size:15px;
-}
-nav.menu:hover .link-title{
-  opacity:1;
-  transform:translateX(0);
-}
-
-/* ================= MAIN WRAPPER ================= */
 .wrapper{
   flex:1;
   display:flex;
   flex-direction:column;
+  align-items: center; /* MEMBUAT KONTEN DI TENGAH */
   width:100%;
-  overflow:hidden;
 }
 
 .page {
-  flex: 1;
-  overflow-y: auto;
+  width: 100%;
+  max-width: 1100px; /* Batas lebar konten agar tidak melar */
   padding: 32px;
-  padding-bottom: 100px;
+  padding-bottom: 120px;
   display: none;
   opacity: 0;
-  transition: opacity .3s;
-
-  /* --- TAMBAHAN BARU AGAR POSISI DI TENGAH --- */
-  width: 100%;        /* Memastikan mengambil lebar penuh */
-  max-width: 1200px;  /* Membatasi lebar maksimal agar tidak terlalu melar di layar lebar */
-  margin: 0 auto;     /* RUMUS AJAIB: Membuat elemen otomatis ke tengah horizontal */
+  margin: 0 auto; /* Tengah secara horizontal */
 }
 
-.page.active{
-  display:block;
-  opacity:1;
-}
+.page.active{ display:block; opacity:1; }
 
-/* ================= HERO CARD ================= */
+/* ================= KOMPONEN DASHBOARD ================= */
 .welcome-card-hero{
-  width:100%;
-  min-height:180px;
-  background-image:url('https://media.istockphoto.com/id/1482432255/id/vektor/warna-latar-belakang-gradien-buram-abstrak-dengan-efek-dinamis.jpg?s=612x612&w=0&k=20&c=jDoDy8H7fDJgrGgc8D2X4SyT2wjtvzcmbPLFzA4x7dE=');
-  background-size:cover;
-  background-position:center;
-  border-radius:16px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin-bottom:22px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  width:100%; min-height:180px; border-radius:16px; margin-bottom:22px;
+  background: url('https://media.istockphoto.com/id/1482432255/id/vektor/warna-latar-belakang-gradien-buram-abstrak-dengan-efek-dinamis.jpg?s=612x612&w=0&k=20&c=jDoDy8H7fDJgrGgc8D2X4SyT2wjtvzcmbPLFzA4x7dE=') center/cover;
+  display:flex; align-items:center; justify-content:center; color:#fff; text-align:center;
 }
 
-.welcome-text{ text-align:center; padding:20px 28px; color:#fff }
-.welcome-text h1{ font-size:28px; margin-bottom:8px }
-.welcome-text p{ font-size:16px }
-
-/* ================= CARDS ================= */
-.cards{
-  display:grid;
-  gap:18px;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-}
-.card{
-  background:var(--card-bg,#fff);
-  padding:18px;
-  border-radius:12px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.06);
-}
-.card h3{ margin-bottom:8px; font-size:16px }
-.card p{ font-size:14px; color:var(--muted) }
-
-/* ================= COUNT-UP CARDS ================= */
-.count-wrapper{
-  margin-top:20px;
-  display:grid;
-  gap:16px;
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-}
-.count-card{
-  background:var(--card-bg,#fff);
-  padding:18px;
-  border-radius:12px;
-  text-align:center;
-  box-shadow:0 6px 18px rgba(0,0,0,0.06);
-  transition:transform var(--transition);
-}
-.count-card:hover{ transform:translateY(-6px) }
-.count-icon{
-  font-size:40px;
-  color:var(--accent);
-}
-.count-number{
-  font-size:28px;
-  font-weight:700;
-  margin-top:6px;
-  color:var(--accent);
+.cards, .count-wrapper {
+  display:grid; gap:20px; 
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  width: 100%;
 }
 
-/* ================= SETTINGS ================= */
-#settingsPanel{
-  background:var(--card-bg,#fff);
-  padding:18px;
-  border-radius:12px;
-  margin-top:20px;
-}
-.toggle-row{
-  display:flex;
-  justify-content:space-between;
-  margin-top:10px;
-}
-.switch{
-  width:50px;
-  height:26px;
-  background:#94a3b8;
-  border-radius:20px;
-  position:relative;
-  cursor:pointer;
-}
-.switch::after{
-  content:"";
-  width:22px;
-  height:22px;
-  background:white;
-  border-radius:50%;
-  position:absolute;
-  left:2px;
-  top:2px;
-  transition:.3s;
-}
-.switch.active{
-  background:#2563eb;
-}
-.switch.active::after{
-  left:26px;
+.card, .count-card {
+  background:var(--card-bg); padding:24px; border-radius:16px;
+  box-shadow:0 10px 25px var(--border);
 }
 
-/* ================= BOTTOM NAVIGATION ================= */
-.bottom-nav{
-  position:fixed;
-  left:12px;
-  right:12px;
-  bottom:12px;
-  height:66px;
-  background:var(--card-bg,#fff);
-  border-radius:16px;
-  display:flex;
-  align-items:center;
-  justify-content:space-around;
-  box-shadow:0 10px 30px rgba(0,0,0,0.12);
-  border:1px solid var(--border);
-  z-index:50;
+.count-number { font-size:32px; font-weight:800; color:var(--accent); margin-top:10px; }
+
+/* ================= NAVIGASI ================= */
+.link{
+  width:100%; height:50px; border-radius:12px; display:flex; align-items:center;
+  cursor:pointer; color:var(--muted); transition: var(--transition);
+  border:none; background:transparent; overflow:hidden;
 }
-.bottom-item{
-  flex:1;
-  text-align:center;
-  color:var(--muted);
-}
-.bottom-item.active{
-  color:var(--accent);
+.link:hover { background: var(--accent); color: white; }
+.link-icon { font-size:26px; margin: 0 18px; }
+.link-title { font-weight:600; white-space:nowrap; }
+
+.bottom-nav {
+  position:fixed; bottom:15px; left:50%; transform:translateX(-50%);
+  width: 90%; max-width: 500px; height:65px;
+  background:var(--card-bg); border-radius:20px; display:none;
+  align-items:center; justify-content:space-around;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2); border:1px solid var(--border); z-index:1000;
 }
 
-/* ================= FOOTER ================= */
-.footer{
-  width:100%;
-  text-align:center;
-  padding:18px;
-  font-size:14px;
-  color:var(--muted);
-  position:fixed;
-  bottom:0;
-  left:0;
-  z-index:0;
-  pointer-events:none;
-}
-
-/* ================= RESPONSIVE ================= */
 @media(max-width:768px){
-  nav.menu{ display:none }
-  .page{ padding:18px 14px; padding-bottom:100px }
-}
-@media(min-width:769px){
-  .bottom-nav{ display:none }
-}
-  #loginPage{
-  position:fixed;
-  inset:0;
-  background:
-    linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-    url("https://images.unsplash.com/photo-1446776811953-b23d57bd21aa");
-  background-size:cover;
-  background-position:center;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:99999;
+  nav.menu { display:none; }
+  .bottom-nav { display:flex; }
+  .page { padding: 20px; }
 }
 
-.login-box{
-  width:320px;
-  padding:32px;
-  border-radius:18px;
-  background:rgba(255,255,255,.15);
-  backdrop-filter:blur(14px);
-  color:#fff;
-  text-align:center;
-}
-
-.login-box input{
-  width:100%;
-  padding:12px;
-  margin-top:12px;
-  border-radius:10px;
-  border:none;
-}
-
-.login-box button{
-  width:100%;
-  padding:12px;
-  margin-top:16px;
-  background:#22c55e;
-  border:none;
-  border-radius:10px;
-  color:#fff;
-  cursor:pointer;
-}
-
-#loginError{
-  display:none;
-  margin-top:10px;
-  color:#ffdada;
-}
+/* Penyesuaian Switch */
+.switch { width:50px; height:26px; background:#ccc; border-radius:20px; cursor:pointer; position:relative; }
+.switch::after { content:''; position:absolute; width:22px; height:22px; background:#fff; border-radius:50%; top:2px; left:2px; transition:.3s; }
+.switch.active { background: var(--accent); }
+.switch.active::after { left:26px; }
 
 </style>
- 
 </head>
 <body>
 
-<div id="loginPage" style="
-  position:fixed;
-  inset:0;
-  background:linear-gradient(135deg,#1e3a8a,#2563eb);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:10000;
-">
-  <form id="loginForm" style="
-    background:white;
-    padding:32px;
-    border-radius:18px;
-    width:300px;
-    text-align:center;
-  ">
-    <h2>Login</h2>
-
-    <input id="username" placeholder="Username" style="
-      width:100%;padding:12px;margin-top:14px;border-radius:10px;border:1px solid #ccc;
-    ">
-
-    <input id="password" type="password" placeholder="Password" style="
-      width:100%;padding:12px;margin-top:10px;border-radius:10px;border:1px solid #ccc;
-    ">
-
-    <button style="
-      margin-top:16px;
-      width:100%;
-      padding:12px;
-      border-radius:10px;
-      border:none;
-      background:#2563eb;
-      color:white;
-      font-weight:600;
-      cursor:pointer;
-    ">Masuk</button>
-
-    <p id="loginError" style="color:red;font-size:13px;margin-top:10px;display:none">
-      Username atau password salah
-    </p>
-  </form>
+<div id="loginPage">
+  <div class="glass-box">
+    <h2 style="margin-bottom:20px">Login Organisasi</h2>
+    <input id="username" type="text" placeholder="Username" style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd">
+    <input id="password" type="password" placeholder="Password" style="width:100%; padding:12px; margin-bottom:20px; border-radius:8px; border:1px solid #ddd">
+    <button onclick="handleLogin()" style="width:100%; padding:12px; background:var(--accent); color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer">Masuk</button>
+    <p id="loginError" style="color:red; font-size:12px; margin-top:10px; display:none">Username/Password Salah</p>
+  </div>
 </div>
 
-<!-- ===== LOADING ===== -->
-<div id="loading" style="
-  display:none;
-  position:fixed;
-  inset:0;
-  background:linear-gradient(135deg,#2563eb,#1d4ed8);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-">
-  <div style="
-    background:rgba(255,255,255,.15);
-    backdrop-filter:blur(12px);
-    padding:30px;
-    border-radius:18px;
-    text-align:center;
-    color:#fff;
-    width:260px;
-  ">
-    <h2>Organisasi</h2>
-    <p>Menyiapkan dashboard...</p>
-
-    <div style="
-      width:200px;height:28px;
-      border:3px solid #fff;
-      border-radius:6px;
-      margin:18px auto;
-      overflow:hidden;
-    ">
-      <div id="battery" style="
-        height:100%;
-        width:0%;
-        background:linear-gradient(90deg,#22c55e,#4ade80);
-        transition:.3s;
-      "></div>
+<div id="loading">
+  <div class="glass-box" style="background:none; color:white">
+    <h3>Menyiapkan Data...</h3>
+    <div style="width:100%; height:10px; background:rgba(255,255,255,0.2); border-radius:10px; margin:20px 0; overflow:hidden">
+      <div id="bar" style="width:0%; height:100%; background:#22c55e; transition:0.3s"></div>
     </div>
-
-    <div id="percent">0%</div>
+    <span id="pct">0%</span>
   </div>
 </div>
 
-<div id="app" style="display:none;">
+<div id="app" style="display:none">
+  <nav class="menu">
+    <button class="link" onclick="showPage('dashboard')"><span class="link-icon material-symbols-rounded">dashboard</span><span class="link-title">Dashboard</span></button>
+    <button class="link" onclick="showPage('anggota')"><span class="link-icon material-symbols-rounded">groups</span><span class="link-title">Anggota</span></button>
+    <button class="link" onclick="showPage('settings')"><span class="link-icon material-symbols-rounded">settings</span><span class="link-title">Pengaturan</span></button>
+  </nav>
 
-<!-- ============= SIDEBAR ============= -->
-<nav class="menu">
-  <button class="link" data-page="dashboard"><span class="link-icon material-symbols-rounded">dashboard</span><span class="link-title">Dashboard</span></button>
-  <button class="link" data-page="anggota"><span class="link-icon material-symbols-rounded">groups</span><span class="link-title">Anggota</span></button>
-  <button class="link" data-page="program"><span class="link-icon material-symbols-rounded">folder</span><span class="link-title">Program</span></button>
-  <button class="link" data-page="laporan"><span class="link-icon material-symbols-rounded">bar_chart</span><span class="link-title">Laporan</span></button>
-  <button class="link" data-page="settings"><span class="link-icon material-symbols-rounded">settings</span><span class="link-title">Pengaturan</span></button>
-</nav>
-
-<div class="wrapper">
-
-  <!-- ============= PAGE: DASHBOARD ============= -->
-  <main id="dashboard" class="page active">
-
-    <section class="welcome-card-hero">
-      <div class="welcome-text">
-        <h1>Selamat Datang di Dashboard!</h1>
-        <p>Kelola data organisasi dalam satu tempat.</p>
+  <div class="wrapper">
+    <main id="dashboard" class="page active">
+      <div class="welcome-card-hero">
+        <div>
+          <h1>Selamat Datang!</h1>
+          <p>Rohis SMANC Digital Dashboard</p>
+        </div>
       </div>
-    </section>
 
-    <section class="cards">
-      <div class="card"><h3>Data Anggota</h3><p>Kelola profil anggota, jabatan, status.</p></div>
-      <div class="card"><h3>Program Kerja</h3><p>Atur program, timeline, dan penanggung jawab.</p></div>
-      <div class="card"><h3>Laporan</h3><p>Catat pemasukan & pengeluaran.</p></div>
-      <div class="card"><h3>Dokumentasi</h3><p>Arsip foto, file, dan notulen kegiatan.</p></div>
-    </section>
-
-    <section class="count-wrapper">
-      <div class="count-card"><span class="material-symbols-rounded count-icon">groups</span><h3>Total Anggota</h3><div id="countAnggota" class="count-number">0</div></div>
-      <div class="count-card"><span class="material-symbols-rounded count-icon">event</span><h3>Event Terlaksana</h3><div id="countEvent" class="count-number">0</div></div>
-      <div class="count-card"><span class="material-symbols-rounded count-icon">folder</span><h3>Program Aktif</h3><div id="countProgram" class="count-number">0</div></div>
-    </section>
-
-  </main>
-
-  <!-- ============= PAGE: ANGGOTA ============= -->
-  <main id="anggota" class="page">
-    <h1>Data Anggota</h1>
-    <p>Halaman ini bisa kamu isi tabel anggota.</p>
-  </main>
-
-  <!-- ============= PAGE: PROGRAM ============= -->
-  <main id="program" class="page">
-    <h1>Program Kerja</h1>
-    <p>Isi daftar program kerja organisasi.</p>
-  </main>
-
-  <!-- ============= PAGE: LAPORAN ============= -->
-  <main id="laporan" class="page">
-    <h1>Laporan</h1>
-    <p>Halaman laporan keuangan.</p>
-  </main>
-
-  <!-- ============= PAGE: SETTINGS ============= -->
-  <main id="settings" class="page">
-    <h1>Pengaturan</h1>
-
-    <section id="settingsPanel">
-      <div class="toggle-row">
-        <span>Dark Mode</span>
-        <div id="darkSwitch" class="switch"></div>
+      <div class="count-wrapper">
+        <div class="count-card"><h3>Total Anggota</h3><div id="numA" class="count-number">0</div></div>
+        <div class="count-card"><h3>Event</h3><div id="numE" class="count-number">0</div></div>
       </div>
-    </section>
-  </main>
+    </main>
 
+    <main id="anggota" class="page">
+      <h1>Data Anggota</h1>
+      <p>Daftar anggota organisasi ada di sini.</p>
+    </main>
+
+    <main id="settings" class="page">
+      <h1>Pengaturan</h1>
+      <div class="card" style="margin-top:20px; display:flex; justify-content:space-between; align-items:center">
+        <span>Mode Gelap</span>
+        <div id="darkSwitch" class="switch" onclick="toggleDark()"></div>
+      </div>
+    </main>
+  </div>
 </div>
 
-<!-- ============= BOTTOM NAV ============= -->
 <nav class="bottom-nav">
-  <div class="bottom-item active" data-page="dashboard">
-    <button><span class="material-symbols-rounded">dashboard</span><div style="font-size:11px">Dashboard</div></button>
-  </div>
-  <div class="bottom-item" data-page="anggota">
-    <button><span class="material-symbols-rounded">groups</span><div style="font-size:11px">Anggota</div></button>
-  </div>
-  <div class="bottom-item" data-page="program">
-    <button><span class="material-symbols-rounded">folder</span><div style="font-size:11px">Program</div></button>
-  </div>
-  <div class="bottom-item" data-page="laporan">
-    <button><span class="material-symbols-rounded">bar_chart</span><div style="font-size:11px">Laporan</div></button>
-  </div>
-  <div class="bottom-item" data-page="settings">
-    <button><span class="material-symbols-rounded">settings</span><div style="font-size:11px">Pengaturan</div></button>
-  </div>
+  <button class="link" onclick="showPage('dashboard')"><span class="material-symbols-rounded">dashboard</span></button>
+  <button class="link" onclick="showPage('anggota')"><span class="material-symbols-rounded">groups</span></button>
+  <button class="link" onclick="showPage('settings')"><span class="material-symbols-rounded">settings</span></button>
 </nav>
-
-<!-- ============= FOOTER ©2025 ============= -->
-<footer class="footer">© <span id="year"></span> Organisasi Anda</footer>
 
 <script>
-/* ===== GLOBAL ===== */
-document.getElementById("year").textContent = new Date().getFullYear();
-
-const loginPage = document.getElementById("loginPage");
-const loginForm = document.getElementById("loginForm");
-const loginError = document.getElementById("loginError");
-const loading = document.getElementById("loading");
-const app = document.getElementById("app");
-const darkSwitch = document.getElementById("darkSwitch");
-
-let loadingDone = false;
-let once = false;
-
-/* ===== LOGIN ===== */
-loginForm.addEventListener("submit", e => {
-  e.preventDefault();
-
+function handleLogin() {
   const u = document.getElementById("username").value;
   const p = document.getElementById("password").value;
-
-  if (u === "RohisSmanc" && p === "GuestSmanc") {
-    loginError.style.display = "none";
-    loginPage.style.display = "none";
+  if(u === "RohisSmanc" && p === "GuestSmanc") {
+    document.getElementById("loginPage").style.display = "none";
     startLoading();
   } else {
-    loginError.style.display = "block";
+    document.getElementById("loginError").style.display = "block";
   }
-});
+}
 
-/* ===== LOADING ===== */
 function startLoading() {
-  loading.style.display = "flex";
-  let percent = 0;
-
-  const bar = document.getElementById("battery");
-  const txt = document.getElementById("percent");
-
-  const timer = setInterval(() => {
-    percent += Math.random() * 8 + 5;
-    if (percent >= 100) {
-      percent = 100;
-      clearInterval(timer);
-
+  const ld = document.getElementById("loading");
+  const bar = document.getElementById("bar");
+  const pct = document.getElementById("pct");
+  ld.style.display = "flex";
+  let p = 0;
+  let t = setInterval(() => {
+    p += Math.random() * 10;
+    if(p >= 100) {
+      p = 100; clearInterval(t);
       setTimeout(() => {
-        loading.style.display = "none";
-        app.style.display = "flex";
-        loadingDone = true;
-        startCountIfReady();
-      }, 300);
+        ld.style.display = "none";
+        document.getElementById("app").style.display = "flex";
+        animateNums();
+      }, 500);
     }
-    bar.style.width = percent + "%";
-    txt.textContent = Math.floor(percent) + "%";
-  }, 120);
+    bar.style.width = p + "%";
+    pct.textContent = Math.floor(p) + "%";
+  }, 100);
 }
 
-/* ===== PAGE SWITCH ===== */
-const pages = document.querySelectorAll(".page");
-
-function showPage(page) {
-  pages.forEach(p => p.classList.remove("active"));
-  document.getElementById(page).classList.add("active");
-
-  document.querySelectorAll(".bottom-item").forEach(i => i.classList.remove("active"));
-  const active = document.querySelector(`.bottom-item[data-page="${page}"]`);
-  if (active) active.classList.add("active");
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-document.querySelectorAll(".link, .bottom-item").forEach(btn => {
-  btn.addEventListener("click", () => showPage(btn.dataset.page));
-});
-
-/* ===== DARK MODE ===== */
-darkSwitch.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-  darkSwitch.classList.toggle("active");
-});
-
-/* ===== COUNT UP ===== */
-function animateCount(id, target) {
-  let el = document.getElementById(id);
-  let n = 0;
-  let step = target / 60;
-
-  const i = setInterval(() => {
-    n += step;
-    if (n >= target) {
-      n = target;
-      clearInterval(i);
-    }
-    el.textContent = Math.floor(n).toLocaleString("id-ID");
-  }, 16);
+function toggleDark() {
+  document.body.classList.toggle('dark');
+  document.getElementById('darkSwitch').classList.toggle('active');
 }
 
-function startCountIfReady() {
-  if (once || !loadingDone) return;
-
-  const wrap = document.querySelector(".count-wrapper");
-  const r = wrap.getBoundingClientRect();
-
-  if (r.top < window.innerHeight) {
-    once = true;
-    animateCount("countAnggota", 1500);
-    animateCount("countEvent", 80);
-    animateCount("countProgram", 14);
-  }
+function animateNums() {
+  let a = 0; let e = 0;
+  setInterval(() => { if(a < 1500) a += 25; document.getElementById("numA").textContent = a; }, 30);
+  setInterval(() => { if(e < 80) e += 2; document.getElementById("numE").textContent = e; }, 50);
 }
-
-new IntersectionObserver(e => {
-  if (e[0].isIntersecting) startCountIfReady();
-}, { threshold: 0.3 }).observe(document.querySelector(".count-wrapper"));
 </script>
-
-
-</div>
 
 </body>
 </html>
