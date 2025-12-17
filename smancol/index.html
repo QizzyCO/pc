@@ -448,15 +448,25 @@ function animateCount(id,target){
     el.textContent = Math.floor(num).toLocaleString("id-ID");
   },16);
 }
+function startCountIfReady(){
+  if(once || !loadingDone) return;
 
-let once = false;
-let observer = new IntersectionObserver((e)=>{
-  if(e[0].isIntersecting && !once && loadingDone){
+  const wrapper = document.querySelector(".count-wrapper");
+  if(!wrapper) return;
 
+  const rect = wrapper.getBoundingClientRect();
+  if(rect.top < window.innerHeight){
     once = true;
     animateCount("countAnggota",1500);
     animateCount("countEvent",80);
     animateCount("countProgram",14);
+  }
+}
+
+let once = false;
+let observer = new IntersectionObserver((e)=>{
+  if(e[0].isIntersecting){
+    startCountIfReady();
   }
 },{threshold:0.3});
 
@@ -477,6 +487,7 @@ observer.observe(document.querySelector(".count-wrapper"));
         load.style.pointerEvents = "none";
         setTimeout(()=> load.remove(),400);
         loadingDone = true;
+        startCountIfReady();
       },300);
     }
     bar.style.width = p+"%";
