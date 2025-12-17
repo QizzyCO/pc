@@ -40,7 +40,7 @@ body{
   color:var(--text);
   display:flex;
   min-height:100vh;
-  overflow:hidden;
+  overflow:auto; /* ← GANTI INI */
 }
 
 /* ================= SIDEBAR ================= */
@@ -271,56 +271,66 @@ nav.menu:hover .link-title{
 @media(min-width:769px){
   .bottom-nav{ display:none }
 }
-</style>
- 
-</head>
-<body>
-  <!-- ===== LOGIN PAGE (HALAMAN SENDIRI) ===== -->
-<div id="loginPage" style="
+  #loginPage{
   position:fixed;
   inset:0;
   background:
-    linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),
-    url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d');
+    linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+    url("https://images.unsplash.com/photo-1446776811953-b23d57bd21aa");
   background-size:cover;
   background-position:center;
   display:flex;
   align-items:center;
   justify-content:center;
-  z-index:10000;
-">
-  <form id="loginForm" style="
-    background:rgba(255,255,255,.15);
-    backdrop-filter:blur(12px);
-    padding:32px;
-    border-radius:18px;
-    width:300px;
-    text-align:center;
-    color:#fff;
-  ">
-    <h2>Login Rohis</h2>
+  z-index:99999;
+}
 
-    <input id="username" placeholder="Username" required
-      style="width:100%;padding:12px;margin-top:14px">
+.login-box{
+  width:320px;
+  padding:32px;
+  border-radius:18px;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(14px);
+  color:#fff;
+  text-align:center;
+}
 
-    <input id="password" type="password" placeholder="Password" required
-      style="width:100%;padding:12px;margin-top:10px">
+.login-box input{
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  border-radius:10px;
+  border:none;
+}
 
-    <button style="
-      width:100%;
-      padding:12px;
-      margin-top:16px;
-      background:#22c55e;
-      border:0;
-      border-radius:8px;
-      color:#fff;
-    ">
-      Login
-    </button>
+.login-box button{
+  width:100%;
+  padding:12px;
+  margin-top:16px;
+  background:#22c55e;
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  cursor:pointer;
+}
 
-    <p id="loginError" style="display:none;margin-top:10px;color:#ffdada">
-      Username / Password salah
-    </p>
+#loginError{
+  display:none;
+  margin-top:10px;
+  color:#ffdada;
+}
+
+</style>
+ 
+</head>
+<body>
+  <div id="loginPage">
+  <form id="loginForm" class="login-box">
+    <h2>Login</h2>
+    <input id="username" placeholder="Username" required>
+    <input id="password" type="password" placeholder="Password" required>
+    <button>Login</button>
+    <p id="loginError">Username / Password salah</p>
   </form>
 </div>
 
@@ -459,100 +469,100 @@ nav.menu:hover .link-title{
 <footer class="footer">© <span id="year"></span> Organisasi Anda</footer>
 
 <script>
-  let loadingDone = false;
-
 document.getElementById("year").textContent = new Date().getFullYear();
-
-/* ================= PAGE SWITCH ================= */
 const pages = document.querySelectorAll(".page");
 
 function showPage(pg){
   pages.forEach(p=>p.classList.remove("active"));
-  document.getElementById(pg).classList.add("active");
+  const target = document.getElementById(pg);
+  if(target){
+    target.classList.add("active");
+  }
 
-  document.querySelectorAll(".bottom-item").forEach(i=>i.classList.remove("active"));
-  let bottom = document.querySelector(`.bottom-item[data-page="${pg}"]`);
-  if(bottom) bottom.classList.add("active");
+  // count-up hanya jalan saat dashboard tampil
+  if(pg === "dashboard"){
+    startCount();
+  }
 }
 
+/* ===== PAGE SWITCH ===== */
 document.querySelectorAll(".link, .bottom-item").forEach(btn=>{
   btn.addEventListener("click",()=>{
-    let pg = btn.getAttribute("data-page");
+    const pg = btn.getAttribute("data-page");
     showPage(pg);
+
+    document.querySelectorAll(".bottom-item")
+      .forEach(i=>i.classList.remove("active"));
+
+    if(btn.classList.contains("bottom-item")){
+      btn.classList.add("active");
+    }
   });
 });
 
-/* ================= DARK MODE ================= */
-document.getElementById("darkSwitch").addEventListener("click",()=>{
+/* ===== DARK MODE ===== */
+document.getElementById("darkSwitch").onclick = ()=>{
   document.body.classList.toggle("dark");
   document.getElementById("darkSwitch").classList.toggle("active");
-});
+};
 
-/* ================= COUNT UP ================= */
+/* ===== COUNT UP ===== */
+let once=false;
 function animateCount(id,target){
-  let el = document.getElementById(id);
-  let num = 0;
-  let step = target/60;
-
-  let int = setInterval(()=>{
-    num += step;
-    if(num >= target){ num = target; clearInterval(int); }
-    el.textContent = Math.floor(num).toLocaleString("id-ID");
+  let el=document.getElementById(id);
+  let n=0,step=target/60;
+  let i=setInterval(()=>{
+    n+=step;
+    if(n>=target){n=target;clearInterval(i);}
+    el.textContent=Math.floor(n).toLocaleString("id-ID");
   },16);
 }
 function startCount(){
   if(once) return;
-  once = true;
-
+  once=true;
   animateCount("countAnggota",1500);
   animateCount("countEvent",80);
   animateCount("countProgram",14);
 }
 
-let once = false;
+/* ===== LOGIN → LOADING → DASHBOARD ===== */
+const loginPage=document.getElementById("loginPage");
+const loginForm=document.getElementById("loginForm");
+const loading=document.getElementById("loading");
+const app=document.getElementById("app");
 
-const loginPage = document.getElementById("loginPage");
-const loginForm = document.getElementById("loginForm");
-const loading = document.getElementById("loading");
-const app = document.getElementById("app");
-
-loginForm.addEventListener("submit", e=>{
+loginForm.onsubmit=e=>{
   e.preventDefault();
-
-  if(username.value === "RohisSmanc" && password.value === "GuestSmanc"){
-    loginPage.style.display = "none";
+  if(username.value==="RohisSmanc" && password.value==="GuestSmanc"){
+    loginPage.style.display="none";
     startLoading();
   }else{
-    document.getElementById("loginError").style.display = "block";
+    document.getElementById("loginError").style.display="block";
   }
-});
+};
 
 function startLoading(){
-  loading.style.display = "flex";
+  loading.style.display="flex";
+  let p=0;
 
-  let p = 0;
   const bar = document.getElementById("battery");
   const txt = document.getElementById("percent");
 
-  const int = setInterval(()=>{
-    p += Math.random()*8 + 4;
-    if(p >= 100){
-      p = 100;
-      clearInterval(int);
-
-      setTimeout(()=>{
-        loading.style.display = "none";
-        app.style.display = "flex";
-        loadingDone = true;
-        startCount();
-      },400);
+  const i=setInterval(()=>{
+    p+=6;
+    if(p>=100){
+      clearInterval(i);
+      loading.style.display="none";
+      app.style.display="flex";
+      showPage("dashboard"); // langsung dashboard
     }
-    bar.style.width = p + "%";
-    txt.textContent = Math.floor(p) + "%";
-  },120);
+    bar.style.width=p+"%";
+    txt.textContent=p+"%";
+  },80);
 }
 
 </script>
+
 </div>
 
 </body>
