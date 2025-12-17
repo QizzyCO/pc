@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Dashboard Organisasi — Space Edition</title>
+<title>Dashboard Organisasi — Responsive</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -12,65 +12,76 @@
 /* ================= VARIABLES ================= */
 :root{
   --bg-space: url('https://w0.peakpx.com/wallpaper/542/335/wallpaper-ai-generated-space-planets-universe-stars-colorful.jpg');
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.2);
+  --bg:#dde8f3;
+  --menu-bg: rgba(255,255,255,0.75);
+  --border: rgba(0,0,0,0.06);
   --accent: #2563eb;
-  --text: #ffffff;
-  --muted: #cbd5e1;
-  --transition: .28s cubic-bezier(.2,.9,.2,1);
+  --text: #111827;
+  --muted:#6b7280;
+  --card-bg: rgba(255,255,255,0.9);
+  --transition:.28s cubic-bezier(.2,.9,.2,1);
 }
 
-*{margin:0;padding:0;box-sizing:border-box; font-family: "Nunito", sans-serif;}
+.dark{
+  --bg:#0f172a;
+  --menu-bg:rgba(30,41,59,0.7);
+  --border:rgba(255,255,255,0.1);
+  --text:#e2e8f0;
+  --muted:#94a3b8;
+  --card-bg:#1e293b;
+}
+
+*{margin:0;padding:0;box-sizing:border-box; font-family: sans-serif;}
 
 body{
   background: var(--bg-space) no-repeat center center fixed;
   background-size: cover;
   color: var(--text);
-  min-height: 100vh;
   display: flex;
+  min-height: 100vh;
   overflow: hidden;
 }
 
-/* ================= LOGIN PAGE (STYLISH) ================= */
+/* ================= LOGIN PAGE (STYLISH & TRANSPARENT) ================= */
 #loginPage {
   position: fixed; inset: 0; z-index: 10000;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(5px);
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
 }
 
 .login-wrapper {
-  width: 400px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid var(--glass-border);
+  width: 420px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(15px);
+  color: #fff;
   border-radius: 20px;
-  padding: 40px;
+  padding: 30px 40px;
   text-align: center;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
 }
 
-.login-wrapper h1 { font-size: 32px; margin-bottom: 30px; }
+.login-wrapper h1 { font-size: 36px; margin-bottom: 20px; }
 
 .input-box {
   position: relative;
   width: 100%;
   height: 50px;
-  margin: 20px 0;
+  margin: 30px 0;
 }
 
 .input-box input {
   width: 100%; height: 100%;
   background: transparent;
-  border: 2px solid var(--glass-border);
+  border: 2px solid rgba(255, 255, 255, .2);
   border-radius: 40px;
-  padding: 0 45px 0 20px;
+  font-size: 16px;
   color: #fff;
+  padding: 0 45px 0 20px;
   outline: none;
-  transition: .3s;
 }
 
-.input-box input:focus { border-color: #fff; }
+.input-box input::placeholder { color: #fff; }
 
 .input-box i {
   position: absolute; right: 20px; top: 50%;
@@ -80,85 +91,64 @@ body{
 .btn-login {
   width: 100%; height: 45px;
   background: #fff; border: none; border-radius: 40px;
-  font-weight: 700; color: #333; cursor: pointer;
-  margin-top: 10px; transition: .3s;
+  font-size: 16px; color: #333; font-weight: 600;
+  cursor: pointer; transition: .3s;
 }
 
-.btn-login:hover { transform: scale(1.02); background: #e2e8f0; }
+.btn-login:hover { background: #e2e8f0; }
 
 /* ================= SIDEBAR ================= */
 nav.menu{
-  width: 90px;
-  padding: 1rem;
-  display: flex; flex-direction: column; gap: 14px; align-items: center;
-  background: rgba(15, 23, 42, 0.6);
-  border-right: 1px solid var(--glass-border);
-  backdrop-filter: blur(15px);
-  transition: width var(--transition);
-  z-index: 100;
+  width:90px; padding:1rem; display:flex; flex-direction:column; gap:14px;
+  align-items:center; background:var(--menu-bg); border-right:1px solid var(--border);
+  backdrop-filter:blur(10px); transition:width var(--transition);
 }
-nav.menu:hover{ width: 210px }
+nav.menu:hover{ width:205px }
 
 .link{
-  width: 100%; height: 50px; border-radius: 12px;
-  display: flex; align-items: center; cursor: pointer;
-  color: var(--muted); text-decoration: none;
-  overflow: hidden; padding-left: 8px;
-  transition: all var(--transition);
-  background: transparent; border: none;
+  width:60px; height:50px; border-radius:12px; display:flex; align-items:center;
+  cursor:pointer; color:var(--muted); overflow:hidden; padding-left:8px;
+  transition:all var(--transition); background:transparent; border:none;
+}
+nav.menu:hover .link{ width:170px }
+.link:hover{ color:#fff; background:var(--accent); }
+.link-icon{ font-family:"Material Symbols Rounded"; font-size:26px; margin-left:8px; flex-shrink:0; }
+.link-title{ margin-left:12px; white-space:nowrap; opacity:0; transition:var(--transition); font-weight:600; }
+nav.menu:hover .link-title{ opacity:1; }
+
+/* ================= MAIN CONTENT ================= */
+.wrapper-main{ flex:1; display:flex; flex-direction:column; width:100%; overflow:hidden; background: var(--bg); opacity: 0.95; }
+
+.page{ flex:1; overflow-y:auto; padding:32px; padding-bottom:100px; display:none; opacity:0; transition:opacity .3s; }
+.page.active{ display:block; opacity:1; }
+
+.welcome-card-hero{
+  width:100%; min-height:180px; border-radius:16px; margin-bottom:22px;
+  background: url('https://media.istockphoto.com/id/1482432255/id/vektor/warna-latar-belakang-gradien-buram-abstrak-dengan-efek-dinamis.jpg?s=612x612&w=0&k=20&c=jDoDy8H7fDJgrGgc8D2X4SyT2wjtvzcmbPLFzA4x7dE=') center/cover;
+  display:flex; align-items:center; justify-content:center;
 }
 
-.link:hover{ color: #fff; background: var(--accent); }
-
-.link-icon{ font-size: 26px; margin-left: 8px; flex-shrink: 0; }
-.link-title{
-  margin-left: 15px; white-space: nowrap; opacity: 0;
-  transition: var(--transition); font-weight: 600;
-}
-nav.menu:hover .link-title{ opacity: 1; }
-
-/* ================= CONTENT ================= */
-.wrapper { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-
-.page {
-  max-width: 1100px; width: 100%; margin: 0 auto;
-  padding: 40px 20px; display: none; opacity: 0;
-}
-.page.active { display: block; opacity: 1; }
-
-.welcome-hero {
-  width: 100%; min-height: 200px;
-  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), var(--bg-space) center/cover;
-  border-radius: 20px; border: 1px solid var(--glass-border);
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 30px; text-align: center;
-}
-
-.cards, .count-wrapper {
-  display: grid; gap: 20px;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-}
-
-.card, .count-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  padding: 25px; border-radius: 20px;
-}
-
-.count-number { font-size: 32px; font-weight: 800; color: #60a5fa; margin-top: 10px; }
+.cards, .count-wrapper { display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
+.card, .count-card { background:var(--card-bg); padding:18px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+.count-wrapper { margin-top: 32px; } /* Memberi jarak agar tidak berdempetan */
+.count-card { text-align:center; }
+.count-number { font-size:28px; font-weight:700; color:var(--accent); margin-top:6px; }
 
 /* ================= LOADING ================= */
 #loading {
-  position: fixed; inset: 0; z-index: 9999;
-  background: #0f172a; display: none;
-  align-items: center; justify-content: center;
+  position:fixed; inset:0; z-index:9999;
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
+  display:none; align-items:center; justify-content:center;
 }
 
-@media(max-width: 768px) {
-  nav.menu { display: none; }
-  .page { padding-bottom: 100px; }
-}
+.bottom-nav{ position:fixed; left:12px; right:12px; bottom:12px; height:66px; background:var(--card-bg); border-radius:16px; display:flex; align-items:center; justify-content:space-around; z-index:50; }
+.bottom-item { color:var(--muted); background:none; border:none; flex:1; }
+.bottom-item.active { color:var(--accent); }
+
+@media(max-width:768px){ nav.menu{ display:none } }
+@media(min-width:769px){ .bottom-nav{ display:none } }
+
+.footer { width:100%; text-align:center; padding:18px; font-size:14px; color:var(--muted); position:fixed; bottom:0; z-index:0; }
 </style>
 </head>
 <body>
@@ -176,110 +166,150 @@ nav.menu:hover .link-title{ opacity: 1; }
         <i class='bx bxs-lock-alt' ></i>
       </div>
       <button type="submit" class="btn-login">Login</button>
-      <p id="errorMsg" style="color: #fb7185; font-size: 13px; margin-top: 15px; display: none;">Kredensial tidak valid!</p>
+      <p id="errorMsg" style="color: #ff4d4d; margin-top: 15px; display: none;">Login gagal!</p>
     </form>
   </div>
 </div>
 
 <div id="loading">
-  <div style="text-align: center;">
-    <h2 style="margin-bottom: 20px;">Memasuki Orbit...</h2>
-    <div style="width: 250px; height: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
-      <div id="loadBar" style="width: 0%; height: 100%; background: #60a5fa; transition: .3s;"></div>
+  <div style="background:rgba(255,255,255,.15); backdrop-filter:blur(12px); padding:30px; border-radius:18px; text-align:center; color:#fff; width:260px;">
+    <h2>Organisasi</h2>
+    <p>Menyiapkan dashboard...</p>
+    <div style="width:200px; height:28px; border:3px solid #fff; border-radius:6px; margin:18px auto; overflow:hidden;">
+      <div id="battery" style="height:100%; width:0%; background:linear-gradient(90deg,#22c55e,#4ade80); transition:.3s;"></div>
     </div>
+    <div id="percent">0%</div>
   </div>
 </div>
 
-<div id="app" style="display: none; width: 100%; height: 100vh;">
+<div id="app" style="display: none; width: 100%;">
   <nav class="menu">
-    <button class="link" onclick="showPage('dashboard')">
-      <span class="material-symbols-rounded link-icon">dashboard</span>
-      <span class="link-title">Dashboard</span>
-    </button>
-    <button class="link" onclick="showPage('anggota')">
-      <span class="material-symbols-rounded link-icon">groups</span>
-      <span class="link-title">Anggota</span>
-    </button>
-    <button class="link" onclick="showPage('program')">
-      <span class="material-symbols-rounded link-icon">folder</span>
-      <span class="link-title">Program</span>
-    </button>
+    <button class="link" onclick="showPage('dashboard')"><span class="link-icon material-symbols-rounded">dashboard</span><span class="link-title">Dashboard</span></button>
+    <button class="link" onclick="showPage('anggota')"><span class="link-icon material-symbols-rounded">groups</span><span class="link-title">Anggota</span></button>
+    <button class="link" onclick="showPage('program')"><span class="link-icon material-symbols-rounded">folder</span><span class="link-title">Program</span></button>
+    <button class="link" onclick="showPage('laporan')"><span class="link-icon material-symbols-rounded">bar_chart</span><span class="link-title">Laporan</span></button>
+    <button class="link" onclick="showPage('settings')"><span class="link-icon material-symbols-rounded">settings</span><span class="link-title">Pengaturan</span></button>
   </nav>
 
-  <div class="wrapper">
+  <div class="wrapper-main">
     <main id="dashboard" class="page active">
-      <section class="welcome-hero">
-        <div>
-          <h1 style="font-size: 36px;">Selamat Datang, Komandan!</h1>
-          <p style="color: var(--muted);">Sistem Organisasi Rohis Smanc dalam kendali Anda.</p>
+      <section class="welcome-card-hero">
+        <div style="text-align:center; color:#fff;">
+          <h1>Selamat Datang di Dashboard!</h1>
+          <p>Kelola data organisasi dalam satu tempat.</p>
         </div>
       </section>
 
-      <div class="cards">
-        <div class="card"><h3>Misi Berjalan</h3><p>Pantau kegiatan Rohis minggu ini.</p></div>
-        <div class="card"><h3>Log Keuangan</h3><p>Laporan infak dan pengeluaran.</p></div>
-      </div>
+      <section class="cards">
+        <div class="card"><h3>Data Anggota</h3><p>Kelola profil anggota, jabatan, status.</p></div>
+        <div class="card"><h3>Program Kerja</h3><p>Atur program, timeline, dan penanggung jawab.</p></div>
+        <div class="card"><h3>Laporan</h3><p>Catat pemasukan & pengeluaran.</p></div>
+        <div class="card"><h3>Dokumentasi</h3><p>Arsip foto, file, dan notulen kegiatan.</p></div>
+      </section>
 
-      <div class="count-wrapper" style="margin-top: 30px;">
-        <div class="count-card"><h3>Total Kader</h3><div id="cA" class="count-number">0</div></div>
-        <div class="count-card"><h3>Misi Selesai</h3><div id="cE" class="count-number">0</div></div>
+      <section class="count-wrapper">
+        <div class="count-card"><span class="material-symbols-rounded" style="font-size:40px; color:var(--accent)">groups</span><h3>Total Anggota</h3><div id="countAnggota" class="count-number">0</div></div>
+        <div class="count-card"><span class="material-symbols-rounded" style="font-size:40px; color:var(--accent)">event</span><h3>Event Terlaksana</h3><div id="countEvent" class="count-number">0</div></div>
+        <div class="count-card"><span class="material-symbols-rounded" style="font-size:40px; color:var(--accent)">folder</span><h3>Program Aktif</h3><div id="countProgram" class="count-number">0</div></div>
+      </section>
+    </main>
+
+    <main id="anggota" class="page"><h1>Data Anggota</h1></main>
+    <main id="program" class="page"><h1>Program Kerja</h1></main>
+    <main id="laporan" class="page"><h1>Laporan Keuangan</h1></main>
+    <main id="settings" class="page">
+      <h1>Pengaturan</h1>
+      <div class="card" style="margin-top:20px; display:flex; justify-content:space-between;">
+        <span>Dark Mode</span>
+        <div id="darkSwitch" class="switch" style="width:50px; height:26px; background:#94a3b8; border-radius:20px; position:relative; cursor:pointer;" onclick="toggleDark()"></div>
       </div>
     </main>
-    
-    <main id="anggota" class="page"><h1>Data Kader</h1></main>
-    <main id="program" class="page"><h1>Rencana Strategis</h1></main>
   </div>
+
+  <nav class="bottom-nav">
+    <button class="bottom-item active" onclick="showPage('dashboard')"><span class="material-symbols-rounded">dashboard</span></button>
+    <button class="bottom-item" onclick="showPage('anggota')"><span class="material-symbols-rounded">groups</span></button>
+    <button class="bottom-item" onclick="showPage('program')"><span class="material-symbols-rounded">folder</span></button>
+    <button class="bottom-item" onclick="showPage('settings')"><span class="material-symbols-rounded">settings</span></button>
+  </nav>
 </div>
 
-<script>
-const loginForm = document.getElementById('loginForm');
-const loginPage = document.getElementById('loginPage');
-const loading = document.getElementById('loading');
-const app = document.getElementById('app');
+<footer class="footer">© <span id="year"></span> Organisasi Anda</footer>
 
-loginForm.addEventListener('submit', (e) => {
+<script>
+let loadingDone = false;
+let once = false;
+document.getElementById("year").textContent = new Date().getFullYear();
+
+// LOGIN LOGIC
+document.getElementById('loginForm').addEventListener('submit', function(e) {
   e.preventDefault();
   const u = document.getElementById('username').value;
   const p = document.getElementById('password').value;
 
   if(u === "RohisSmanc" && p === "GuestSmanc") {
-    loginPage.style.display = 'none';
+    document.getElementById('loginPage').style.display = 'none';
     startLoading();
   } else {
     document.getElementById('errorMsg').style.display = 'block';
   }
 });
 
+// LOADING LOGIC
 function startLoading() {
-  loading.style.display = 'flex';
-  let pct = 0;
-  const bar = document.getElementById('loadBar');
-  
-  const int = setInterval(() => {
-    pct += Math.random() * 15;
-    if(pct >= 100) {
-      pct = 100;
+  const loadDiv = document.getElementById('loading');
+  loadDiv.style.display = 'flex';
+  let p = 0;
+  let bar = document.getElementById("battery");
+  let txt = document.getElementById("percent");
+
+  let int = setInterval(() => {
+    p += Math.random() * 10 + 5;
+    if(p >= 100) {
+      p = 100;
       clearInterval(int);
       setTimeout(() => {
-        loading.style.display = 'none';
-        app.style.display = 'flex';
-        animateCounts();
-      }, 500);
+        loadDiv.style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+        loadingDone = true;
+        startCountIfReady();
+      }, 400);
     }
-    bar.style.width = pct + '%';
+    bar.style.width = p + "%";
+    txt.textContent = Math.floor(p) + "%";
   }, 150);
 }
 
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+// DASHBOARD LOGIC
+function showPage(pg){
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(pg).classList.add("active");
 }
 
-function animateCounts() {
-  let valA = 0; let valE = 0;
-  setInterval(() => { if(valA < 1500) valA += 25; document.getElementById('cA').innerText = valA; }, 30);
-  setInterval(() => { if(valE < 80) valE += 1; document.getElementById('cE').innerText = valE; }, 50);
+function toggleDark() {
+  document.body.classList.toggle("dark");
+  document.getElementById("darkSwitch").style.background = document.body.classList.contains("dark") ? "#2563eb" : "#94a3b8";
+}
+
+function animateCount(id, target) {
+  let el = document.getElementById(id);
+  let num = 0;
+  let step = target / 60;
+  let int = setInterval(() => {
+    num += step;
+    if(num >= target) { num = target; clearInterval(int); }
+    el.textContent = Math.floor(num).toLocaleString("id-ID");
+  }, 20);
+}
+
+function startCountIfReady() {
+  if(once || !loadingDone) return;
+  once = true;
+  animateCount("countAnggota", 1500);
+  animateCount("countEvent", 80);
+  animateCount("countProgram", 14);
 }
 </script>
+
 </body>
 </html>
